@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .container {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .bg-white, .bg-purple-50, .bg-gray-100 {
+    background: white !important;
+    box-shadow: none !important;
+  }
+
+  .rounded-lg {
+    border-radius: 0 !important;
+  }
+
+  .shadow-md, .shadow-lg {
+    box-shadow: none !important;
+  }
+
+  /* Zorg ervoor dat de kaarten netjes op de pagina passen */
+  .grid {
+    display: block !important;
+  }
+
+  .grid > * {
+    margin-bottom: 2rem;
+    page-break-inside: avoid;
+  }
+
+  /* Verbeter de leesbaarheid van tekst */
+  p, li {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+    page-break-after: avoid;
+  }
+
+  /* Zorg voor goede paginaonderbrekingen */
+  .card-interpretation {
+    page-break-inside: avoid;
+  }
+
+  /* Verberg interactieve elementen */
+  button, 
+  .cursor-pointer,
+  .hover\:scale-105,
+  .transition-transform {
+    display: none !important;
+  }
+}
