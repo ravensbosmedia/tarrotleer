@@ -1,5 +1,8 @@
 import { TarotCard } from '../../types/cards';
 
+const img = (name: string) =>
+  `/cards/${name.replace('.jpg', '.webp')}`;
+
 export const wands: TarotCard[] = [
   {
     id: 22,
@@ -10,7 +13,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Inspiratie, nieuwe kansen, groei en potentieel",
     meaningReversed: "Vertraagde start, gemiste kansen, gebrek aan richting",
     description: "De Aas van Staven vertegenwoordigt het begin van nieuwe ondernemingen en creatieve projecten.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/1/11/Wands01.jpg"
+    imageUrl: img("Wands01.jpg")
   },
   {
     id: 23,
@@ -21,7 +24,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Toekomstplanning, vooruitgang, beslissingen",
     meaningReversed: "Angst voor verandering, speelruimte, desorganisatie",
     description: "De Twee van Staven staat voor het maken van keuzes en het plannen van de toekomst.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/0f/Wands02.jpg"
+    imageUrl: img("Wands02.jpg")
   },
   {
     id: 24,
@@ -32,7 +35,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Expansie, vooruitgang, avontuur",
     meaningReversed: "Vertraging, teleurstelling, gebrek aan vooruitgang",
     description: "De Drie van Staven symboliseert groei, expansie en het zien van eerste resultaten.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Wands03.jpg"
+    imageUrl: img("Wands03.jpg")
   },
   {
     id: 25,
@@ -43,7 +46,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Viering, harmonie, huwelijk, thuis",
     meaningReversed: "Transitie, gebrek aan ondersteuning, instabiliteit",
     description: "De Vier van Staven staat voor vieringen, mijlpalen en huiselijke harmonie.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Wands04.jpg"
+    imageUrl: img("Wands04.jpg")
   },
   {
     id: 26,
@@ -54,7 +57,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Competitie, conflict, strijd",
     meaningReversed: "Vermijding van conflict, harmonie na strijd",
     description: "De Vijf van Staven symboliseert competitie en conflicten.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Wands05.jpg"
+    imageUrl: img("Wands05.jpg")
   },
   {
     id: 27,
@@ -65,7 +68,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Overwinning, succes, erkenning",
     meaningReversed: "Zelfkritiek, twijfel aan succes, slechte nieuws",
     description: "De Zes van Staven staat voor overwinning en publieke erkenning.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/3/3b/Wands06.jpg"
+    imageUrl: img("Wands06.jpg")
   },
   {
     id: 28,
@@ -76,7 +79,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Uitdaging, competitie, verdediging",
     meaningReversed: "Overgave, overweldigd voelen, twijfel",
     description: "De Zeven van Staven symboliseert het verdedigen van je positie.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Wands07.jpg"
+    imageUrl: img("Wands07.jpg")
   },
   {
     id: 29,
@@ -87,7 +90,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Snelle actie, beweging, vooruitgang",
     meaningReversed: "Vertraging, frustratie, tegenslag",
     description: "De Acht van Staven staat voor snelle actie en vooruitgang.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Wands08.jpg"
+    imageUrl: img("Wands08.jpg")
   },
   {
     id: 30,
@@ -98,7 +101,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Volharding, uithoudingsvermogen, doorzetting",
     meaningReversed: "Uitputting, opgeven, overweldigd",
     description: "De Negen van Staven symboliseert volharding en de laatste verdedigingslinie.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/4d/Wands09.jpg"
+    imageUrl: img("Wands09.jpg")
   },
   {
     id: 31,
@@ -109,7 +112,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Lasten, verantwoordelijkheid, druk",
     meaningReversed: "Stress, burn-out, het opgeven van verantwoordelijkheden",
     description: "De Tien van Staven staat voor zware lasten en verantwoordelijkheden.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Wands10.jpg"
+    imageUrl: img("Wands10.jpg")
   },
   {
     id: 32,
@@ -120,7 +123,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Avontuur, enthousiasme, ontdekking",
     meaningReversed: "Instabiliteit, vertragingen, slecht nieuws",
     description: "De Schildknaap van Staven symboliseert enthousiasme en nieuwe ontdekkingen.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/6/6a/Wands11.jpg"
+    imageUrl: img("Wands11.jpg")
   },
   {
     id: 33,
@@ -131,7 +134,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Actie, avontuur, impulsiviteit",
     meaningReversed: "Haast, ongeduld, agressie",
     description: "De Ridder van Staven staat voor energie en snelle actie.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/1/16/Wands12.jpg"
+    imageUrl: img("Wands12.jpg")
   },
   {
     id: 34,
@@ -142,7 +145,7 @@ export const wands: TarotCard[] = [
     meaningUpright: "Vertrouwen, vitaliteit, passie",
     meaningReversed: "Dominantie, jaloezie, onzekerheid",
     description: "De Koningin van Staven symboliseert zelfvertrouwen en charisma.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/0d/Wands13.jpg"
+    imageUrl: img("Wands13.jpg")
   },
   {
     id: 35,
@@ -153,6 +156,6 @@ export const wands: TarotCard[] = [
     meaningUpright: "Leiderschap, visie, ondernemerschap",
     meaningReversed: "Impulsiviteit, haast, intolerantie",
     description: "De Koning van Staven staat voor charismatisch leiderschap en visie.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/c/ce/Wands14.jpg"
+    imageUrl: img("Wands14.jpg")
   }
 ];

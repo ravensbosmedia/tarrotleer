@@ -1,5 +1,8 @@
 import { TarotCard } from '../../types/cards';
 
+const img = (name: string) =>
+  `/cards/${name.replace('.jpg', '.webp')}`;
+
 export const pentacles: TarotCard[] = [
   {
     id: 64,
@@ -10,7 +13,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Nieuwe financiële kansen, manifestatie, overvloed",
     meaningReversed: "Gemiste kansen, materiële zorgen, slechte investeringen",
     description: "De Aas van Pentakels vertegenwoordigt nieuwe materiële en financiële mogelijkheden.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Pents01.jpg"
+    imageUrl: img("Pents01.jpg")
   },
   {
     id: 65,
@@ -21,7 +24,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Balans, aanpassing, jongleren met taken",
     meaningReversed: "Onbalans, desorganisatie",
     description: "De Twee van Pentakels staat voor het balanceren van verschillende aspecten.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/9f/Pents02.jpg"
+    imageUrl: img("Pents02.jpg")
   },
   {
     id: 66,
@@ -32,7 +35,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Samenwerking, vakmanschap, vaardigheid",
     meaningReversed: "Gebrek aan teamwork, demotivatie",
     description: "De Drie van Pentakels symboliseert samenwerking en expertise.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/42/Pents03.jpg"
+    imageUrl: img("Pents03.jpg")
   },
   {
     id: 67,
@@ -43,7 +46,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Zekerheid, conservatisme, vasthouden",
     meaningReversed: "Verlies, loslaten, verandering",
     description: "De Vier van Pentakels staat voor materiële zekerheid.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/3/35/Pents04.jpg"
+    imageUrl: img("Pents04.jpg")
   },
   {
     id: 68,
@@ -54,7 +57,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Armoede, isolatie, zorgen",
     meaningReversed: "Herstel, spirituele groei",
     description: "De Vijf van Pentakels symboliseert materiële moeilijkheden.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/96/Pents05.jpg"
+    imageUrl: img("Pents05.jpg")
   },
   {
     id: 69,
@@ -65,7 +68,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Vrijgevigheid, delen, ontvangen",
     meaningReversed: "Schuld, egoïsme, ongelijkheid",
     description: "De Zes van Pentakels staat voor geven en ontvangen.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Pents06.jpg"
+    imageUrl: img("Pents06.jpg")
   },
   {
     id: 70,
@@ -76,7 +79,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Geduld, evaluatie, investering",
     meaningReversed: "Angst, gebrek aan vooruitgang",
     description: "De Zeven van Pentakels symboliseert geduld en evaluatie.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/6/6a/Pents07.jpg"
+    imageUrl: img("Pents07.jpg")
   },
   {
     id: 71,
@@ -87,7 +90,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Vakmanschap, toewijding, vaardigheid",
     meaningReversed: "Perfectionisme, demotivatie",
     description: "De Acht van Pentakels staat voor het ontwikkelen van vaardigheden.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/49/Pents08.jpg"
+    imageUrl: img("Pents08.jpg")
   },
   {
     id: 72,
@@ -98,7 +101,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Onafhankelijkheid, luxe, zelfverzekerdheid",
     meaningReversed: "Materiële verliezen, afhankelijkheid",
     description: "De Negen van Pentakels symboliseert materieel succes.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/f/f0/Pents09.jpg"
+    imageUrl: img("Pents09.jpg")
   },
   {
     id: 73,
@@ -109,7 +112,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Rijkdom, erfenis, familie",
     meaningReversed: "Financiële problemen, familieconflicten",
     description: "De Tien van Pentakels staat voor materiële en familiale welvaart.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/42/Pents10.jpg"
+    imageUrl: img("Pents10.jpg")
   },
   {
     id: 74,
@@ -120,7 +123,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Manifestatie, studie, reflectie",
     meaningReversed: "Gebrek aan vooruitgang, luiheid",
     description: "De Schildknaap van Pentakels symboliseert nieuwe kansen.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Pents11.jpg"
+    imageUrl: img("Pents11.jpg")
   },
   {
     id: 75,
@@ -131,7 +134,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Hard werken, betrouwbaarheid, routine",
     meaningReversed: "Luiheid, stagnatie, saaiheid",
     description: "De Ridder van Pentakels staat voor toewijding en hard werken.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Pents12.jpg"
+    imageUrl: img("Pents12.jpg")
   },
   {
     id: 76,
@@ -142,7 +145,7 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Overvloed, verzorging, praktisch",
     meaningReversed: "Financiële problemen, jaloezie",
     description: "De Koningin van Pentakels symboliseert praktische wijsheid.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/88/Pents13.jpg"
+    imageUrl: img("Pents13.jpg")
   },
   {
     id: 77,
@@ -153,6 +156,6 @@ export const pentacles: TarotCard[] = [
     meaningUpright: "Overvloed, zekerheid, discipline",
     meaningReversed: "Corruptie, materialisme",
     description: "De Koning van Pentakels staat voor materieel succes en stabiliteit.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Pents14.jpg"
+    imageUrl: img("Pents14.jpg")
   }
 ];

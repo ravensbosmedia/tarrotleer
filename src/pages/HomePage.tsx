@@ -103,11 +103,12 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="bg-purple-600 text-white py-6 shadow-lg">
+      <div className="bg-purple-700 text-white py-8">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold text-center">Tarot Leggingen</h1>
+          <h1 className="text-3xl font-bold mb-1">Leggingen</h1>
+          <p className="text-purple-200">Trek kaarten en krijg inzicht in je situatie</p>
         </div>
-      </header>
+      </div>
 
       <main className="container mx-auto px-4 py-8">
         {/* Basis Informatie Secties */}
@@ -164,12 +165,6 @@ export const HomePage: React.FC = () => {
           ))}
         </div>
       </main>
-
-      <footer className="bg-gray-800 text-white py-6 mt-12">
-        <div className="container mx-auto px-4 text-center">
-          <p>© 2024 Tarot Leggingen - Alle rechten voorbehouden</p>
-        </div>
-      </footer>
     </div>
   );
 };

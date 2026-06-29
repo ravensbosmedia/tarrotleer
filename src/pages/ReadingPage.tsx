@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { getCards } from '../config/localDB';
 import { TarotCard as TarotCardType } from '../types/cards';
 import { allCards as localCards } from '../data/cards';
 import { TarotCard } from '../components/TarotCard';
@@ -112,40 +111,24 @@ const ReadingPage: React.FC = () => {
   const [isShuffling, setIsShuffling] = useState(false);
   const [vraagstelling, setVraagstelling] = useState('');
   const [showInterpretation, setShowInterpretation] = useState(false);
+  const [reversedStates, setReversedStates] = useState<boolean[]>([]);
 
   const currentReading = type && READINGS[type as ReadingType];
 
   useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        try {
-          const cardsCollection = collection(db, 'cards');
-          const cardsSnapshot = await getDocs(cardsCollection);
-          const cardsData = cardsSnapshot.docs.map(doc => ({
-            id: parseInt(doc.id),
-            ...doc.data()
-          })) as TarotCardType[];
-          
-          if (cardsData.length > 0) {
-            setAllCards(cardsData.sort((a, b) => a.id - b.id));
-          } else {
-            // Gebruik lokale kaarten als fallback
-            setAllCards(localCards);
-          }
-        } catch (firebaseError) {
-          console.warn('Firebase niet beschikbaar, gebruik lokale kaarten:', firebaseError);
-          setAllCards(localCards);
-        }
-      } catch (error) {
-        console.error('Error fetching cards:', error);
-        // Gebruik lokale kaarten als fallback
+    try {
+      const cardsData = getCards() as TarotCardType[];
+      if (cardsData.length > 0) {
+        setAllCards(cardsData.sort((a, b) => a.id - b.id));
+      } else {
         setAllCards(localCards);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    fetchCards();
+    } catch (error) {
+      console.error('Error fetching cards:', error);
+      setAllCards(localCards);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const getCardById = (id: number): TarotCardType | undefined => {
@@ -156,8 +139,10 @@ const ReadingPage: React.FC = () => {
     setIsShuffling(true);
     setTimeout(() => {
       const shuffledCards = [...allCards].sort(() => Math.random() - 0.5);
-      const newCards = shuffledCards.slice(0, currentReading?.cardCount || 0);
+      const count = currentReading?.cardCount || 0;
+      const newCards = shuffledCards.slice(0, count);
       setSelectedCards(newCards.map(card => card.id));
+      setReversedStates(Array.from({ length: count }, () => Math.random() > 0.5));
       setShowInterpretation(true);
       setIsShuffling(false);
     }, 1000);
@@ -183,6 +168,7 @@ const ReadingPage: React.FC = () => {
 
   const handleConfirmSelection = () => {
     if (selectedCards.length === currentReading?.cardCount) {
+      setReversedStates(Array.from({ length: selectedCards.length }, () => Math.random() > 0.5));
       setShowInterpretation(true);
     }
   };
@@ -190,11 +176,11 @@ const ReadingPage: React.FC = () => {
   const handleCardClick = (cardId: number, position: string) => {
     const card = getCardById(cardId);
     if (!card) return;
-
+    const index = selectedCards.indexOf(cardId);
     setSelectedCardDetails({
       card,
       position,
-      isReversed: Math.random() > 0.5
+      isReversed: reversedStates[index] ?? false
     });
   };
 
@@ -203,6 +189,7 @@ const ReadingPage: React.FC = () => {
     setSelectedCardDetails(null);
     setVraagstelling('');
     setShowInterpretation(false);
+    setReversedStates([]);
   };
 
   const handlePrint = () => {
@@ -382,7 +369,7 @@ const ReadingPage: React.FC = () => {
                             <div className="w-32 h-48">
                               <TarotCard
                                 card={card}
-                                isReversed={Math.random() > 0.5}
+                                isReversed={reversedStates[index] ?? false}
                               />
                             </div>
                             {showPositionInfo && (
@@ -431,19 +418,36 @@ const ReadingPage: React.FC = () => {
         </div>
 
         {selectedCardDetails && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div
+            className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50"
+            onClick={() => setSelectedCardDetails(null)}
+          >
+            <div
+              className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-gray-100">
+                <h3 className="text-xl font-bold text-purple-800">
+                  {selectedCardDetails.card.nameNL}
+                  {selectedCardDetails.position && (
+                    <span className="ml-2 text-sm font-normal text-gray-400">
+                      — {selectedCardDetails.position}
+                    </span>
+                  )}
+                </h3>
+                <button
+                  onClick={() => setSelectedCardDetails(null)}
+                  className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+                >
+                  ×
+                </button>
+              </div>
               <div className="p-6">
                 <CardDetails
                   card={selectedCardDetails.card}
                   isReversed={selectedCardDetails.isReversed}
+                  position={selectedCardDetails.position}
                 />
-                <button
-                  onClick={() => setSelectedCardDetails(null)}
-                  className="mt-4 w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition-colors"
-                >
-                  Sluiten
-                </button>
               </div>
             </div>
           </div>

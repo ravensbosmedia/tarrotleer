@@ -1,19 +1,26 @@
 import React, { useState } from 'react';
-import { importCardsToFirebase } from '../../utils/importCards';
+import { importCardsToLocalStorage } from '../../utils/importCards';
 
-export const ImportButton: React.FC = () => {
+interface ImportButtonProps {
+  onImported?: () => void;
+}
+
+export const ImportButton: React.FC<ImportButtonProps> = ({ onImported }) => {
   const [importing, setImporting] = useState(false);
   const [message, setMessage] = useState('');
 
-  const handleImport = async () => {
+  const handleImport = () => {
     if (importing) return;
-    
+
     setImporting(true);
     setMessage('Bezig met importeren...');
-    
+
     try {
-      const result = await importCardsToFirebase();
+      const result = importCardsToLocalStorage();
       setMessage(result.message);
+      if (result.success && onImported) {
+        onImported();
+      }
     } catch (error) {
       setMessage('Er is een fout opgetreden.');
     } finally {

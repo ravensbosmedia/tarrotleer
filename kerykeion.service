@@ -1,0 +1,16 @@
+[Unit]
+Description=Kerykeion Astrologie Service (Tarrot)
+After=network.target
+
+[Service]
+Type=simple
+User=fb-techlabs3
+WorkingDirectory=/home/fb-techlabs3/rescue/tarrot
+ExecStart=/home/fb-techlabs3/.hermes/hermes-agent/venv/bin/python3 kerykeion_service.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -2,6 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Pendel module gold/cream thema ───────────────────────────────────── */
+.pendel-pagina {
+  font-family: 'Crimson Pro', Georgia, serif;
+  background: #FDFAF4;
+  color: #2C2416;
+  min-height: 100vh;
+  line-height: 1.7;
+}
+.pendel-pagina h1,
+.pendel-pagina h2,
+.pendel-pagina h3,
+.pendel-cinzel {
+  font-family: 'Cinzel', Georgia, serif;
+}
+
+/* ── Kristal pendel animaties (uniek – geen ronde bob) ────────────────── */
+@keyframes kristal-adem {
+  0%, 100% { opacity: 0.10; }
+  50%       { opacity: 0.55; }
+}
+@keyframes kristal-shimmer {
+  0%, 100% { opacity: 0.20; transform: translateY(0px); }
+  33%      { opacity: 0.50; transform: translateY(-2px); }
+  66%      { opacity: 0.28; transform: translateY(1px); }
+}
+
+/* Pendelbewegingen (transform-origin wordt inline gezet) */
+@keyframes pendel-schommel {
+  0%   { transform: rotate(-22deg); }
+  50%  { transform: rotate( 22deg); }
+  100% { transform: rotate(-22deg); }
+}
+@keyframes pendel-rechtsom {
+  from { transform: rotate(  0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes pendel-linksom {
+  from { transform: rotate(   0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes pendel-voor-achter {
+  0%   { transform: rotate(-4deg) scaleX(0.94); }
+  50%  { transform: rotate( 4deg) scaleX(1.00); }
+  100% { transform: rotate(-4deg) scaleX(0.94); }
+}
+@keyframes pendel-links-rechts {
+  0%   { transform: rotate(-28deg); }
+  50%  { transform: rotate( 28deg); }
+  100% { transform: rotate(-28deg); }
+}
+
 /* Print styles */
 @media print {
   body {

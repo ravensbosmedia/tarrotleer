@@ -1,7 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../../config/firebase';
-import { v4 as uuidv4 } from 'uuid';
 import { Upload } from 'lucide-react';
 
 interface ImageUploadProps {
@@ -14,17 +11,15 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded, curre
   const [error, setError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Controleer bestandstype
     if (!file.type.startsWith('image/')) {
       setError('Alleen afbeeldingsbestanden zijn toegestaan');
       return;
     }
 
-    // Controleer bestandsgrootte (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setError('Afbeelding mag niet groter zijn dan 5MB');
       return;
@@ -33,20 +28,16 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded, curre
     setUploading(true);
     setError('');
 
-    try {
-      const fileName = `card-images/${uuidv4()}-${file.name}`;
-      const storageRef = ref(storage, fileName);
-      
-      await uploadBytes(storageRef, file);
-      const downloadUrl = await getDownloadURL(storageRef);
-      
-      onImageUploaded(downloadUrl);
-    } catch (err) {
-      console.error('Error uploading image:', err);
-      setError('Er is een fout opgetreden bij het uploaden van de afbeelding');
-    } finally {
+    const reader = new FileReader();
+    reader.onload = () => {
+      onImageUploaded(reader.result as string);
       setUploading(false);
-    }
+    };
+    reader.onerror = () => {
+      setError('Er is een fout opgetreden bij het lezen van de afbeelding');
+      setUploading(false);
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -60,7 +51,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded, curre
           />
         </div>
       )}
-      
+
       <div className="flex flex-col items-center">
         <input
           type="file"
@@ -77,9 +68,9 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded, curre
           }`}
         >
           <Upload size={20} />
-          {uploading ? 'Bezig met uploaden...' : 'Upload Nieuwe Afbeelding'}
+          {uploading ? 'Bezig met laden...' : 'Upload Nieuwe Afbeelding'}
         </button>
-        
+
         {error && (
           <p className="text-red-600 mt-2">{error}</p>
         )}

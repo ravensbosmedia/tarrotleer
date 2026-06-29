@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import { getCards, updateCard } from '../../config/localDB';
 import { TarotCard } from '../../types/cards';
 import { ImportButton } from './ImportButton';
 import { RotateCw, CheckCircle2, Search } from 'lucide-react';
@@ -15,33 +14,15 @@ export const CardEditor: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        const cardsCollection = collection(db, 'cards');
-        const cardsSnapshot = await getDocs(cardsCollection);
-        const cardsData = cardsSnapshot.docs.map(doc => ({
-          id: parseInt(doc.id),
-          name: doc.data().name || '',
-          nameNL: doc.data().nameNL || '',
-          suit: doc.data().suit,
-          number: doc.data().number,
-          meaningUpright: doc.data().meaningUpright || '',
-          meaningReversed: doc.data().meaningReversed || '',
-          description: doc.data().description || '',
-          imageUrl: doc.data().imageUrl || '',
-          extendedDescription: doc.data().extendedDescription || '',
-          loveReading: doc.data().loveReading || ''
-        })) as TarotCard[];
-        setCards(cardsData.sort((a, b) => a.id - b.id));
-      } catch (error) {
-        console.error('Error fetching cards:', error);
-        setMessage('Er is een fout opgetreden bij het laden van de kaarten.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCards();
+    try {
+      const cardsData = getCards() as TarotCard[];
+      setCards(cardsData.sort((a, b) => a.id - b.id));
+    } catch (error) {
+      console.error('Error fetching cards:', error);
+      setMessage('Er is een fout opgetreden bij het laden van de kaarten.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const handleCardSelect = (card: TarotCard) => {
@@ -59,13 +40,12 @@ export const CardEditor: React.FC = () => {
     setIsReversed(false);
   };
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCard) return;
 
     try {
-      const cardRef = doc(db, 'cards', selectedCard.id.toString());
-      await updateDoc(cardRef, {
+      updateCard(selectedCard.id, {
         name: selectedCard.name || '',
         nameNL: selectedCard.nameNL || '',
         meaningUpright: selectedCard.meaningUpright || '',
@@ -79,9 +59,8 @@ export const CardEditor: React.FC = () => {
       setMessage('Kaart succesvol bijgewerkt!');
       setUpdatedCards([...updatedCards, selectedCard.id]);
       setTimeout(() => setMessage(''), 3000);
-      
-      // Update the card in the local state
-      setCards(cards.map(card => 
+
+      setCards(cards.map(card =>
         card.id === selectedCard.id ? selectedCard : card
       ));
     } catch (error) {
@@ -94,7 +73,7 @@ export const CardEditor: React.FC = () => {
     setIsReversed(!isReversed);
   };
 
-  const filteredCards = cards.filter(card => 
+  const filteredCards = cards.filter(card =>
     card.nameNL.toLowerCase().includes(searchTerm.toLowerCase()) ||
     card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     card.id.toString().includes(searchTerm)
@@ -122,11 +101,13 @@ export const CardEditor: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-2xl font-bold text-purple-800 mb-6">Kaarten Beheren</h2>
-      
-      <ImportButton />
-      
+
+      <ImportButton onImported={() => {
+        const cardsData = getCards() as TarotCard[];
+        setCards(cardsData.sort((a, b) => a.id - b.id));
+      }} />
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Kaarten lijst */}
         <div className="bg-white p-4 rounded-lg shadow-md">
           <div className="mb-4">
             <div className="relative">
@@ -174,14 +155,12 @@ export const CardEditor: React.FC = () => {
           </div>
         </div>
 
-        {/* Kaart editor */}
         <div className="md:col-span-2">
           {selectedCard ? (
             <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="flex items-start gap-6 mb-6">
-                {/* Kaart preview */}
                 <div className="flex flex-col items-center gap-2">
-                  <div 
+                  <div
                     className={`w-48 h-72 rounded-lg shadow-lg overflow-hidden transition-transform duration-500 ${
                       isReversed ? 'rotate-180' : ''
                     }`}
@@ -210,7 +189,6 @@ export const CardEditor: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Betekenis preview */}
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold mb-2">
                     {selectedCard.nameNL || selectedCard.name}

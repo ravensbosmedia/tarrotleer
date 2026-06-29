@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../config/firebase';
+import { login } from '../../config/localAuth';
 import { useNavigate } from 'react-router-dom';
 
 export const AdminLogin: React.FC = () => {
@@ -9,12 +8,11 @@ export const AdminLogin: React.FC = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
+    if (login(email, password)) {
       navigate('/admin/cards');
-    } catch (err) {
+    } else {
       setError('Ongeldige inloggegevens');
     }
   };
@@ -23,6 +21,7 @@ export const AdminLogin: React.FC = () => {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-purple-800 mb-6">Admin Login</h2>
+        <p className="text-sm text-gray-500 mb-4">Standaard wachtwoord: <code>admin123</code></p>
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}

@@ -1,17 +1,11 @@
-import { collection, doc, setDoc } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { setCard } from '../config/localDB';
 import { allCards } from '../data/cards';
 
-export const importCardsToFirebase = async () => {
+export const importCardsToLocalStorage = () => {
   try {
-    const cardsCollection = collection(db, 'cards');
-    
     for (const card of allCards) {
-      await setDoc(doc(cardsCollection, card.id.toString()), {
-        ...card
-      });
+      setCard(card.id, { ...card });
     }
-    
     return { success: true, message: 'Alle kaarten zijn succesvol geïmporteerd!' };
   } catch (error) {
     console.error('Error importing cards:', error);

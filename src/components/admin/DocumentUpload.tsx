@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { collection, addDoc } from 'firebase/firestore';
-import { storage, db } from '../../config/firebase';
+import { addDocument } from '../../config/localDB';
 import { Upload, FileText, AlertCircle } from 'lucide-react';
 
 export const DocumentUpload: React.FC = () => {
@@ -9,17 +7,15 @@ export const DocumentUpload: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check bestandstype
     if (!file.type.match('application/pdf') && !file.type.match('application/epub+zip')) {
       setError('Alleen PDF en EPUB bestanden zijn toegestaan');
       return;
     }
 
-    // Check bestandsgrootte (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
       setError('Bestand mag niet groter zijn dan 10MB');
       return;
@@ -29,27 +25,27 @@ export const DocumentUpload: React.FC = () => {
     setError('');
     setSuccess('');
 
-    try {
-      // Upload naar Firebase Storage
-      const storageRef = ref(storage, `tarot-documents/${file.name}`);
-      await uploadBytes(storageRef, file);
-      const downloadUrl = await getDownloadURL(storageRef);
-
-      // Sla referentie op in Firestore
-      await addDoc(collection(db, 'tarot-documents'), {
-        fileName: file.name,
-        fileUrl: downloadUrl,
-        uploadDate: new Date(),
-        processed: false // Voor latere verwerking
-      });
-
-      setSuccess('Document succesvol geüpload! Het zal binnenkort worden verwerkt.');
-    } catch (err) {
-      console.error('Error uploading document:', err);
-      setError('Er is een fout opgetreden bij het uploaden');
-    } finally {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        addDocument({
+          fileName: file.name,
+          fileUrl: reader.result as string,
+          uploadDate: new Date().toISOString(),
+          processed: false
+        });
+        setSuccess('Document succesvol opgeslagen in lokale opslag!');
+      } catch (err) {
+        setError('Er is een fout opgetreden bij het opslaan');
+      } finally {
+        setUploading(false);
+      }
+    };
+    reader.onerror = () => {
+      setError('Er is een fout opgetreden bij het lezen van het bestand');
       setUploading(false);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -57,11 +53,11 @@ export const DocumentUpload: React.FC = () => {
       <h2 className="text-xl font-semibold text-purple-700 mb-4">
         Document Uploaden
       </h2>
-      
+
       <div className="mb-4">
         <p className="text-gray-600">
           Upload PDF's of e-books met tarot kennis om de interpretaties te verbeteren.
-          De inhoud wordt verwerkt en toegevoegd aan de kennisbank.
+          De bestanden worden lokaal opgeslagen.
         </p>
       </div>
 
@@ -71,7 +67,7 @@ export const DocumentUpload: React.FC = () => {
             <div className="flex flex-col items-center space-y-2">
               <FileText className="w-8 h-8 text-purple-600" />
               <span className="font-medium text-gray-600">
-                {uploading ? 'Bezig met uploaden...' : 'Klik om een document te kiezen'}
+                {uploading ? 'Bezig met opslaan...' : 'Klik om een document te kiezen'}
               </span>
               <span className="text-sm text-gray-500">PDF of EPUB (max. 10MB)</span>
             </div>
