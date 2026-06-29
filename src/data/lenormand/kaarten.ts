@@ -3,6 +3,7 @@ import { LenormandKaart } from '../../types/lenormand';
 export const lenormandKaarten: LenormandKaart[] = [
   {
     id: 1,
+    afbeelding: '/lenormand/01.jpg',
     naam: 'De Ruiter',
     symbool: '🏇',
     kleur: '#F97316',
@@ -18,6 +19,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 2,
+    afbeelding: '/lenormand/02.jpg',
     naam: 'De Klavertjes',
     symbool: '🍀',
     kleur: '#22C55E',
@@ -33,6 +35,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 3,
+    afbeelding: '/lenormand/03.jpg',
     naam: 'Het Schip',
     symbool: '⛵',
     kleur: '#3B82F6',
@@ -48,6 +51,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 4,
+    afbeelding: '/lenormand/04.jpg',
     naam: 'Het Huis',
     symbool: '🏠',
     kleur: '#B45309',
@@ -63,6 +67,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 5,
+    afbeelding: '/lenormand/05.jpg',
     naam: 'De Boom',
     symbool: '🌳',
     kleur: '#16A34A',
@@ -78,6 +83,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 6,
+    afbeelding: '/lenormand/06.jpg',
     naam: 'De Wolken',
     symbool: '☁️',
     kleur: '#94A3B8',
@@ -93,6 +99,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 7,
+    afbeelding: '/lenormand/07.jpg',
     naam: 'De Slang',
     symbool: '🐍',
     kleur: '#CA8A04',
@@ -108,6 +115,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 8,
+    afbeelding: '/lenormand/08.jpg',
     naam: 'De Doodskist',
     symbool: '⬛',
     kleur: '#374151',
@@ -123,6 +131,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 9,
+    afbeelding: '/lenormand/09.jpg',
     naam: 'Het Boeket',
     symbool: '💐',
     kleur: '#EC4899',
@@ -138,6 +147,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 10,
+    afbeelding: '/lenormand/10.jpg',
     naam: 'De Zeis',
     symbool: '⚔️',
     kleur: '#EF4444',
@@ -153,6 +163,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 11,
+    afbeelding: '/lenormand/11.jpg',
     naam: 'De Zweep',
     symbool: '🔱',
     kleur: '#7C3AED',
@@ -168,6 +179,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 12,
+    afbeelding: '/lenormand/12.jpg',
     naam: 'De Vogels',
     symbool: '🐦',
     kleur: '#0EA5E9',
@@ -183,6 +195,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 13,
+    afbeelding: '/lenormand/13.jpg',
     naam: 'Het Kind',
     symbool: '✨',
     kleur: '#F0ABFC',
@@ -198,6 +211,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 14,
+    afbeelding: '/lenormand/14.jpg',
     naam: 'De Vos',
     symbool: '🦊',
     kleur: '#EA580C',
@@ -213,6 +227,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 15,
+    afbeelding: '/lenormand/15.jpg',
     naam: 'De Beer',
     symbool: '🐻',
     kleur: '#78350F',
@@ -228,6 +243,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 16,
+    afbeelding: '/lenormand/16.jpg',
     naam: 'De Sterren',
     symbool: '⭐',
     kleur: '#1D4ED8',
@@ -243,6 +259,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 17,
+    afbeelding: '/lenormand/17.jpg',
     naam: 'De Ooievaar',
     symbool: '🦢',
     kleur: '#06B6D4',
@@ -258,6 +275,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 18,
+    afbeelding: '/lenormand/18.jpg',
     naam: 'De Hond',
     symbool: '🐕',
     kleur: '#D97706',
@@ -273,6 +291,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 19,
+    afbeelding: '/lenormand/19.jpg',
     naam: 'De Toren',
     symbool: '🗼',
     kleur: '#4B5563',
@@ -288,6 +307,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 20,
+    afbeelding: '/lenormand/20.jpg',
     naam: 'De Tuin',
     symbool: '🌹',
     kleur: '#059669',
@@ -303,6 +323,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 21,
+    afbeelding: '/lenormand/21.jpg',
     naam: 'De Berg',
     symbool: '⛰️',
     kleur: '#6B7280',
@@ -318,6 +339,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 22,
+    afbeelding: '/lenormand/22.jpg',
     naam: 'De Kruispunt',
     symbool: '🔀',
     kleur: '#F59E0B',
@@ -333,6 +355,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 23,
+    afbeelding: '/lenormand/23.jpg',
     naam: 'De Muizen',
     symbool: '🐭',
     kleur: '#6B7280',
@@ -348,6 +371,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 24,
+    afbeelding: '/lenormand/24.jpg',
     naam: 'Het Hart',
     symbool: '❤️',
     kleur: '#DC2626',
@@ -363,6 +387,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 25,
+    afbeelding: '/lenormand/25.jpg',
     naam: 'De Ring',
     symbool: '💍',
     kleur: '#B8860B',
@@ -378,6 +403,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 26,
+    afbeelding: '/lenormand/26.jpg',
     naam: 'Het Boek',
     symbool: '📚',
     kleur: '#1E40AF',
@@ -393,6 +419,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 27,
+    afbeelding: '/lenormand/27.jpg',
     naam: 'De Brief',
     symbool: '✉️',
     kleur: '#0891B2',
@@ -408,6 +435,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 28,
+    afbeelding: '/lenormand/28.jpg',
     naam: 'De Man',
     symbool: '👨',
     kleur: '#2563EB',
@@ -423,6 +451,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 29,
+    afbeelding: '/lenormand/29.jpg',
     naam: 'De Vrouw',
     symbool: '👩',
     kleur: '#DB2777',
@@ -438,6 +467,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 30,
+    afbeelding: '/lenormand/30.jpg',
     naam: 'De Lelie',
     symbool: '⚜️',
     kleur: '#F3F4F6',
@@ -453,6 +483,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 31,
+    afbeelding: '/lenormand/31.jpg',
     naam: 'De Zon',
     symbool: '☀️',
     kleur: '#FBBF24',
@@ -468,6 +499,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 32,
+    afbeelding: '/lenormand/32.jpg',
     naam: 'De Maan',
     symbool: '🌙',
     kleur: '#818CF8',
@@ -483,6 +515,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 33,
+    afbeelding: '/lenormand/33.jpg',
     naam: 'De Sleutel',
     symbool: '🗝️',
     kleur: '#B8860B',
@@ -498,6 +531,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 34,
+    afbeelding: '/lenormand/34.jpg',
     naam: 'De Vis',
     symbool: '🐟',
     kleur: '#0EA5E9',
@@ -513,6 +547,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 35,
+    afbeelding: '/lenormand/35.jpg',
     naam: 'Het Anker',
     symbool: '⚓',
     kleur: '#1E3A5F',
@@ -528,6 +563,7 @@ export const lenormandKaarten: LenormandKaart[] = [
   },
   {
     id: 36,
+    afbeelding: '/lenormand/36.jpg',
     naam: 'Het Kruis',
     symbool: '✝️',
     kleur: '#5B21B6',

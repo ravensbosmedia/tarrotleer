@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LenormandKaart } from '../../types/lenormand';
 
 interface Props {
@@ -18,6 +18,11 @@ export const LenormandKaartVisueel: React.FC<Props> = ({
   selected = false,
   dimmed = false,
 }) => {
+  // Toon de echte kaartafbeelding zodra die in public/lenormand/ staat;
+  // ontbreekt het bestand (of laadt het niet), dan valt de kaart terug op het symbool.
+  const [afbFout, setAfbFout] = useState(false);
+  const toonAfbeelding = !!kaart.afbeelding && !afbFout;
+
   const breedte = Math.round(grootte * 0.65);
   const hoogte = grootte;
   const fontSize = Math.round(grootte * 0.28);
@@ -51,45 +56,94 @@ export const LenormandKaartVisueel: React.FC<Props> = ({
         overflow: 'hidden',
       }}
     >
-      {/* Decoratieve hoek-ornament */}
-      <div style={{
-        position: 'absolute', top: 4, left: 4, right: 4,
-        height: 1, background: `${kaart.kleur}33`,
-      }} />
-      <div style={{
-        position: 'absolute', bottom: 4, left: 4, right: 4,
-        height: 1, background: `${kaart.kleur}33`,
-      }} />
+      {toonAfbeelding ? (
+        <>
+          {/* Echte kaartafbeelding (vult de kaart) */}
+          <img
+            src={kaart.afbeelding}
+            alt={kaart.naam}
+            onError={() => setAfbFout(true)}
+            style={{
+              position: 'absolute', inset: 0,
+              width: '100%', height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+          {/* Nummer-badge */}
+          <div style={{
+            position: 'absolute',
+            top: Math.round(grootte * 0.04),
+            left: Math.round(grootte * 0.05),
+            fontFamily: "'Cinzel', serif",
+            fontSize: numFontSize,
+            color: '#fff',
+            fontWeight: 700,
+            letterSpacing: '0.05em',
+            textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+            zIndex: 2,
+          }}>
+            {kaart.id}
+          </div>
+          {/* Naam-balk onderaan voor leesbaarheid */}
+          <div style={{
+            position: 'absolute', left: 0, right: 0, bottom: 0,
+            padding: `${Math.round(grootte * 0.07)}px ${Math.round(grootte * 0.04)}px ${Math.round(grootte * 0.04)}px`,
+            background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0) 100%)',
+            fontFamily: "'Cinzel', serif",
+            fontSize: naamFontSize,
+            color: '#fff',
+            textAlign: 'center',
+            lineHeight: 1.2,
+            fontWeight: 500,
+            letterSpacing: '0.02em',
+            zIndex: 2,
+          }}>
+            {kaart.naam}
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Decoratieve hoek-ornament */}
+          <div style={{
+            position: 'absolute', top: 4, left: 4, right: 4,
+            height: 1, background: `${kaart.kleur}33`,
+          }} />
+          <div style={{
+            position: 'absolute', bottom: 4, left: 4, right: 4,
+            height: 1, background: `${kaart.kleur}33`,
+          }} />
 
-      {/* Nummer */}
-      <div style={{
-        fontFamily: "'Cinzel', serif",
-        fontSize: numFontSize,
-        color: kaart.kleur,
-        fontWeight: 600,
-        letterSpacing: '0.05em',
-        opacity: 0.85,
-      }}>
-        {kaart.id}
-      </div>
+          {/* Nummer */}
+          <div style={{
+            fontFamily: "'Cinzel', serif",
+            fontSize: numFontSize,
+            color: kaart.kleur,
+            fontWeight: 600,
+            letterSpacing: '0.05em',
+            opacity: 0.85,
+          }}>
+            {kaart.id}
+          </div>
 
-      {/* Symbool */}
-      <div style={{ fontSize: fontSize, lineHeight: 1, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.15))' }}>
-        {kaart.symbool}
-      </div>
+          {/* Symbool */}
+          <div style={{ fontSize: fontSize, lineHeight: 1, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.15))' }}>
+            {kaart.symbool}
+          </div>
 
-      {/* Naam */}
-      <div style={{
-        fontFamily: "'Cinzel', serif",
-        fontSize: naamFontSize,
-        color: kaart.kleurDonker,
-        textAlign: 'center',
-        lineHeight: 1.2,
-        fontWeight: 500,
-        letterSpacing: '0.02em',
-      }}>
-        {kaart.naam}
-      </div>
+          {/* Naam */}
+          <div style={{
+            fontFamily: "'Cinzel', serif",
+            fontSize: naamFontSize,
+            color: kaart.kleurDonker,
+            textAlign: 'center',
+            lineHeight: 1.2,
+            fontWeight: 500,
+            letterSpacing: '0.02em',
+          }}>
+            {kaart.naam}
+          </div>
+        </>
+      )}
     </div>
   );
 };

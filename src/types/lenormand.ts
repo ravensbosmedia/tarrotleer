@@ -2,6 +2,9 @@ export interface LenormandKaart {
   id: number;
   naam: string;
   symbool: string;
+  /** Pad naar de kaartafbeelding in public/lenormand/ (bijv. /lenormand/01.jpg).
+   *  Ontbreekt het bestand, dan valt de kaart automatisch terug op het symbool. */
+  afbeelding?: string;
   kleur: string;
   kleurDonker: string;
   sleutelwoorden: string[];
