@@ -1,7 +1,51 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { lenormandKaarten, lenormandSpreads } from '../../data/lenormand';
 import { LenormandKaart, LenormandSpreadType } from '../../types/lenormand';
 import { LenormandKaartVisueel, LenormandKaartRug } from '../../components/lenormand/LenormandKaartVisueel';
+
+// ── Verbindingen: waarom vullen de buur-duo's elkaar aan (AI-uitleg) ─────────
+const Verbindingen: React.FC<{
+  kaarten: LenormandKaart[];
+  uitleg: string[] | null;
+  bezig: boolean;
+}> = ({ kaarten, uitleg, bezig }) => {
+  if (kaarten.length < 2) return null;
+
+  const kernIndex = Math.floor(kaarten.length / 2); // middenkaart = thema
+  const paren = kaarten.slice(0, -1).map((k, i) => ({ links: k, rechts: kaarten[i + 1] }));
+
+  return (
+    <div style={{ marginBottom: '1.5rem', background: G.bg, border: `0.5px solid ${G.rand2}`, borderRadius: 10, padding: '1.4rem 1.5rem' }}>
+      <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: 4 }}>
+        De verbindingen
+      </div>
+      <p style={{ fontSize: 13, color: G.tekst3, fontStyle: 'italic', margin: '0 0 1.1rem' }}>
+        Lees de kaarten twee-aan-twee — waarom vullen ze elkaar aan? <strong style={{ color: G.tekst2 }}>{kaarten[kernIndex].naam}</strong> staat in het midden, dat is je hoofdthema.
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+        {paren.map((p, i) => (
+          <div key={i} style={{ display: 'flex', gap: '0.9rem', alignItems: 'flex-start', paddingBottom: '0.8rem', borderBottom: i < paren.length - 1 ? `0.5px solid ${G.rand}` : 'none' }}>
+            <div style={{ flexShrink: 0, fontFamily: "'Cinzel', serif", fontSize: 13, color: G.tekst, whiteSpace: 'nowrap', paddingTop: 1 }}>
+              <span style={{ color: p.links.kleurDonker }}>{p.links.symbool} {p.links.naam}</span>
+              <span style={{ color: G.goud, margin: '0 6px' }}>+</span>
+              <span style={{ color: p.rechts.kleurDonker }}>{p.rechts.symbool} {p.rechts.naam}</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              {uitleg && uitleg[i] ? (
+                <p style={{ fontSize: 14, color: G.tekst, lineHeight: 1.65, margin: 0 }}>{uitleg[i]}</p>
+              ) : (
+                <p style={{ fontSize: 13, color: G.tekst3, fontStyle: 'italic', margin: 0 }}>
+                  {bezig ? 'Wordt geduid…' : 'Lees deze twee kaarten samen.'}
+                </p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const G = {
   goud: '#B8860B', goudBleek: '#F5EDD8', goudDonker: '#7A5C00',
@@ -77,14 +121,74 @@ export const LenormandLezingPage: React.FC = () => {
   const [onthuldeIndices, setOnthuldeIndices] = useState<Set<number>>(new Set());
   const [actieveKaart, setActieveKaart] = useState<{ kaart: LenormandKaart; index: number } | null>(null);
   const [vraag, setVraag] = useState('');
+  const [duiding, setDuiding] = useState<string | null>(null);
+  const [duidingBezig, setDuidingBezig] = useState(false);
+  const [duidingFout, setDuidingFout] = useState<string | null>(null);
+  const [duoUitleg, setDuoUitleg] = useState<string[] | null>(null);
+  const [duosBezig, setDuosBezig] = useState(false);
+  const duosRef = useRef(false);
+
+  const vraagDuiding = async () => {
+    setDuidingBezig(true); setDuidingFout(null); setDuiding(null);
+    try {
+      const kaartenPayload = getrokken.map((k, i) => ({
+        naam: k.naam,
+        positie: spread.posities[i],
+        betekenis: k.betekenis,
+        sleutelwoorden: k.sleutelwoorden,
+      }));
+      const comboPayload = duoUitleg
+        ? getrokken.slice(0, -1).map((k, i) => ({
+            links: k.naam, rechts: getrokken[i + 1].naam, betekenis: duoUitleg[i] || '',
+          })).filter((x) => x.betekenis)
+        : [];
+      const r = await fetch('/api/lenormand/duiding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vraag, legging: spread.naam, kaarten: kaartenPayload, combinaties: comboPayload }),
+      });
+      const j = await r.json();
+      if (j.error) setDuidingFout(typeof j.error === 'string' ? j.error : 'Er ging iets mis');
+      else setDuiding(j.duiding || '(leeg antwoord)');
+    } catch {
+      setDuidingFout('Kon de duiding niet ophalen.');
+    } finally {
+      setDuidingBezig(false);
+    }
+  };
 
   const spread = useMemo(() => lenormandSpreads.find(s => s.id === actieveSpread)!, [actieveSpread]);
+
+  // Zodra alle kaarten van een lijn-legging open zijn: laat gpt-5.5 de buur-duo's uitleggen.
+  // Ref-guard zorgt dat dit precies één keer per legging vuurt (deps bevatten géén setState-toggles).
+  useEffect(() => {
+    if (spread.id === 'tableau' || spread.id === 'dag') return;
+    if (getrokken.length < 2 || onthuldeIndices.size !== getrokken.length) return;
+    if (duosRef.current) return;
+    duosRef.current = true;
+    setDuosBezig(true);
+    const duosPayload = getrokken.slice(0, -1).map((k, i) => ({
+      links: { naam: k.naam, betekenis: k.betekenis },
+      rechts: { naam: getrokken[i + 1].naam, betekenis: getrokken[i + 1].betekenis },
+    }));
+    fetch('/api/lenormand/duos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ duos: duosPayload, vraag }),
+    })
+      .then((r) => r.json())
+      .then((j) => setDuoUitleg(Array.isArray(j.uitleg) ? j.uitleg : []))
+      .catch(() => setDuoUitleg([]))
+      .finally(() => setDuosBezig(false));
+  }, [onthuldeIndices, getrokken, spread, vraag]);
 
   const startLezing = () => {
     const geschud = melangeerDeck();
     setGetrokken(geschud.slice(0, spread.aantalKaarten));
     setOnthuldeIndices(spread.id === 'dag' ? new Set([0]) : new Set());
     setActieveKaart(null);
+    setDuoUitleg(null); setDuosBezig(false); duosRef.current = false;
+    setDuiding(null); setDuidingFout(null);
     setFase('lezing');
   };
 
@@ -98,7 +202,7 @@ export const LenormandLezingPage: React.FC = () => {
     setActieveKaart(null);
   };
 
-  const reset = () => { setFase('start'); setGetrokken([]); setOnthuldeIndices(new Set()); setActieveKaart(null); setVraag(''); };
+  const reset = () => { setFase('start'); setGetrokken([]); setOnthuldeIndices(new Set()); setActieveKaart(null); setVraag(''); setDuiding(null); setDuidingFout(null); setDuoUitleg(null); setDuosBezig(false); duosRef.current = false; };
 
   return (
     <div className="pendel-pagina">
@@ -221,6 +325,49 @@ export const LenormandLezingPage: React.FC = () => {
                   positie={spread.posities[actieveKaart.index]}
                   onSluit={() => setActieveKaart(null)}
                 />
+              </div>
+            )}
+
+            {/* Verbindingen — buur-duo's van de lijn-legging */}
+            {spread.id !== 'tableau' && spread.id !== 'dag' &&
+              onthuldeIndices.size === getrokken.length && getrokken.length >= 2 && (
+                <Verbindingen kaarten={getrokken} uitleg={duoUitleg} bezig={duosBezig} />
+              )}
+
+            {/* AI-duiding — gevoed met onze kaartbetekenissen + combinaties */}
+            {spread.id !== 'tableau' && onthuldeIndices.size === getrokken.length && getrokken.length >= 1 && (
+              <div style={{ marginBottom: '1.5rem' }}>
+                {!duiding && !duidingBezig && (
+                  <button onClick={vraagDuiding} style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.07em', padding: '10px 22px', borderRadius: 22, border: 'none', background: G.goud, color: '#2C2416', cursor: 'pointer', fontWeight: 600 }}>
+                    ✦ Vraag een samenvattende duiding
+                  </button>
+                )}
+                {duidingBezig && (
+                  <div style={{ fontSize: 14, color: G.tekst3, fontStyle: 'italic' }}>
+                    De kaarten worden geduid…
+                  </div>
+                )}
+                {duidingFout && (
+                  <div style={{ fontSize: 14, color: '#B91C1C' }}>{duidingFout}</div>
+                )}
+                {duiding && (
+                  <div style={{ background: 'linear-gradient(160deg, #FFFDF7, #F7F1E4)', border: `0.5px solid ${G.rand2}`, borderRadius: 12, padding: '1.6rem 1.7rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.8rem' }}>
+                      <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase' }}>
+                        Duiding van de legging
+                      </div>
+                      <button onClick={vraagDuiding} style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.06em', padding: '4px 11px', borderRadius: 14, border: `0.5px solid ${G.rand2}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
+                        Opnieuw
+                      </button>
+                    </div>
+                    <div style={{ fontSize: 15.5, color: G.tekst, lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>
+                      {duiding}
+                    </div>
+                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, color: G.tekst3, marginTop: '1rem', letterSpacing: '0.05em' }}>
+                      Op basis van onze kaartbetekenissen en combinaties · gpt-5.5
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

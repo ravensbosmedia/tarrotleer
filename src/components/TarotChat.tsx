@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Send, User, Bot, Sparkles } from 'lucide-react';
-import OpenAI from 'openai';
 import { TarotCard } from '../types/cards';
 import { QuotaManager } from '../utils/quotaManager';
 
@@ -44,11 +43,6 @@ export const TarotChat: React.FC<Props> = ({ cards, positions }) => {
       setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
       setLoading(true);
 
-      const openai = new OpenAI({
-        apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-        dangerouslyAllowBrowser: true
-      });
-
       const cardsInfo = cards.map((card, index) => ({
         name: card.nameNL,
         position: positions[index],
@@ -58,33 +52,16 @@ export const TarotChat: React.FC<Props> = ({ cards, positions }) => {
         loveReading: card.loveReading
       }));
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: `Je bent een ervaren Nederlandse tarotlezer met een warme, empathische benadering.
-            Geef persoonlijke, inzichtelijke antwoorden die hoop en begrip bieden.
-            Gebruik een vriendelijke, toegankelijke taal en spreek de persoon direct aan.
-            Focus op praktische adviezen en positieve groeimogelijkheden.`
-          },
-          {
-            role: "user",
-            content: `Tarotlegging: ${JSON.stringify(cardsInfo)}
-            Vraag van de bezoeker: ${userMessage}
-            
-            Geef een persoonlijk, behulpzaam antwoord dat:
-            - Direct ingaat op de specifieke vraag
-            - De relevante kaarten betrekt
-            - Praktische inzichten biedt
-            - Bemoedigend en opbouwend is`
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 500
+      // Via de eigen backend: de OpenAI-key blijft op de server
+      const res = await fetch('/api/tarot/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kaarten: cardsInfo, vraag: userMessage, geschiedenis: messages }),
       });
+      if (!res.ok) throw new Error(`Chat mislukt (${res.status})`);
+      const data = await res.json();
 
-      const aiResponse = response.choices[0].message.content || '';
+      const aiResponse: string = data.antwoord || '';
       setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
       await QuotaManager.incrementChatMessage();
     } catch (err) {

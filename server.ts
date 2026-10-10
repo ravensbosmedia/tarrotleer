@@ -16,6 +16,68 @@ const PORT = 4210;
 const CACHE_DIR = join(__dirname, 'cache');
 
 app.use(express.json());
+
+// ─── Pincode-beveiliging ─────────────────────────────────────────
+// Pincode komt uit .env (ACCESS_PIN). Zonder pincode blijft alles dicht.
+const ACCESS_PIN = process.env.ACCESS_PIN || '';
+if (!ACCESS_PIN) console.warn('[pin] ACCESS_PIN ontbreekt in .env — platform is niet toegankelijk');
+const PIN_COOKIE = 'tl_auth';
+const PIN_TOKEN = 'ok-' + ACCESS_PIN;
+
+function hasValidPin(req: express.Request): boolean {
+  const cookie = req.headers.cookie || '';
+  return cookie.split(';').some((c) => c.trim() === `${PIN_COOKIE}=${PIN_TOKEN}`);
+}
+
+const PIN_PAGE = `<!doctype html><html lang="nl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mystieke Kaarten — Toegang</title>
+<style>
+  *{box-sizing:border-box}body{margin:0;height:100vh;display:flex;align-items:center;justify-content:center;
+  font-family:system-ui,sans-serif;background:radial-gradient(circle at 50% 30%,#2a1a4a,#0d0a1a)}
+  .box{background:rgba(20,14,40,.85);border:1px solid #4a3a7a;border-radius:18px;padding:38px 34px;
+  width:300px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+  h1{color:#e6d8ff;font-size:20px;margin:0 0 4px}p{color:#9a8ac0;font-size:13px;margin:0 0 22px}
+  input{width:100%;padding:13px;font-size:22px;letter-spacing:8px;text-align:center;border-radius:10px;
+  border:1px solid #5a4a8a;background:#171028;color:#fff;outline:none}
+  input:focus{border-color:#a98bff}
+  button{margin-top:16px;width:100%;padding:12px;font-size:15px;border:0;border-radius:10px;cursor:pointer;
+  background:linear-gradient(135deg,#7a5cff,#a98bff);color:#fff;font-weight:600}
+  .err{color:#ff8a8a;font-size:12px;height:16px;margin-top:10px}
+</style></head><body>
+<form class="box" onsubmit="return go(event)">
+  <h1>🔮 Mystieke Kaarten</h1><p>Voer de pincode in</p>
+  <input id="pin" type="password" inputmode="numeric" autocomplete="off" autofocus maxlength="12" placeholder="••••">
+  <button type="submit">Toegang</button>
+  <div class="err" id="err"></div>
+</form>
+<script>
+async function go(e){e.preventDefault();
+  const pin=document.getElementById('pin').value;
+  const r=await fetch('/__pin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin})});
+  if(r.ok){location.reload()}else{document.getElementById('err').textContent='Onjuiste pincode';
+  document.getElementById('pin').value='';document.getElementById('pin').focus()}
+  return false}
+</script></body></html>`;
+
+app.post('/__pin', (req, res) => {
+  const pin = (req.body && req.body.pin) || '';
+  if (ACCESS_PIN && pin === ACCESS_PIN) {
+    res.setHeader(
+      'Set-Cookie',
+      `${PIN_COOKIE}=${PIN_TOKEN}; HttpOnly; Path=/; Max-Age=2592000; SameSite=Lax`
+    );
+    return res.json({ ok: true });
+  }
+  return res.status(401).json({ ok: false });
+});
+
+app.use((req, res, next) => {
+  if (req.path === '/__pin') return next();
+  if (ACCESS_PIN && hasValidPin(req)) return next();
+  return res.status(401).type('html').send(PIN_PAGE);
+});
+
 app.use(express.static(join(__dirname, 'dist')));
 
 // ─── Kaarten API ─────────────────────────────────────────────────
@@ -64,9 +126,9 @@ Kaarten: ${cardDescriptions}
 
 Geef een persoonlijke, reflectieve interpretatie van maximaal 200 woorden. Focus op inzicht, niet op voorspelling.`;
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-5.5',
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 400, temperature: 0.8,
+      max_completion_tokens: 1500,
     });
     res.json({ interpretation: completion.choices[0].message.content });
   } catch (err: unknown) {
@@ -106,28 +168,160 @@ Gebruik concrete voorbeelden en praktische adviezen. Schrijf in vloeiend Nederla
         ['laatste vijf kaarten (6-10)', cardsInfo.slice(5)],
       ] as [string, typeof cardsInfo][]) {
         const resp = await openai.chat.completions.create({
-          model: 'gpt-4o-mini',
+          model: 'gpt-5.5',
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: `Interpreteer de ${half} van het Keltisch Kruis:\n${JSON.stringify(slice, null, 2)}\n\n${vraagstelling ? `Vraag: ${vraagstelling}` : ''}` }
           ],
-          temperature: 0.7, max_tokens: 1500,
+          max_completion_tokens: 3000,
         });
         interpretaties.push(resp.choices[0].message.content || '');
       }
     } else {
       const resp = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: 'gpt-5.5',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: `Interpreteer deze tarotlegging:\n${JSON.stringify(cardsInfo, null, 2)}\n\n${vraagstelling ? `Vraag: ${vraagstelling}` : ''}` }
         ],
-        temperature: 0.7, max_tokens: 1000,
+        max_completion_tokens: 2500,
       });
       interpretaties.push(resp.choices[0].message.content || '');
     }
 
     res.json({ interpretaties });
+  } catch (err: unknown) {
+    res.status(500).json({ error: err instanceof Error ? err.message : 'Onbekende fout' });
+  }
+});
+
+// Lenormand legging-duiding — voedt het model met ONZE kaartbetekenissen + ONZE combinaties
+app.post('/api/lenormand/duiding', async (req, res) => {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) { res.status(503).json({ error: 'OpenAI API sleutel niet geconfigureerd' }); return; }
+  const { vraag, legging, kaarten, combinaties } = req.body;
+  if (!kaarten || !Array.isArray(kaarten) || kaarten.length === 0) {
+    res.status(400).json({ error: 'Geef kaarten[] mee' }); return;
+  }
+  try {
+    const { default: OpenAI } = await import('openai');
+    const openai = new OpenAI({ apiKey });
+
+    const kaartLijst = (kaarten as Array<{ naam: string; positie?: string; betekenis?: string; sleutelwoorden?: string[] }>)
+      .map((k, i) =>
+        `${i + 1}. ${k.positie ? `[${k.positie}] ` : ''}${k.naam}` +
+        `${k.sleutelwoorden?.length ? ` — sleutelwoorden: ${k.sleutelwoorden.join(', ')}` : ''}` +
+        `\n   Betekenis: ${k.betekenis || ''}`
+      ).join('\n');
+
+    const comboLijst = Array.isArray(combinaties) && combinaties.length
+      ? (combinaties as Array<{ links: string; rechts: string; betekenis: string }>)
+          .map((c) => `- ${c.links} + ${c.rechts}: ${c.betekenis}`).join('\n')
+      : '(geen specifieke combinaties beschikbaar — lees de buurkaarten intuïtief samen)';
+
+    const systemPrompt = `Je bent een ervaren Nederlandse Lenormand-lezer met een warme, heldere stijl.
+BELANGRIJK: baseer je UITSLUITEND op de meegegeven kaartbetekenissen en de meegegeven combinaties. Verzin geen andere kaartbetekenissen en haal er geen tarot-symboliek bij. Lees de kaarten als buur-duo's (de combinaties) en weef die tot één samenhangend verhaal. De middelste kaart is het hoofdthema.`;
+
+    const userPrompt = `Legging: ${legging || 'Lenormand-lijn'}
+${vraag ? `Vraag van de cliënt: ${vraag}` : 'Geen specifieke vraag — geef een algemene duiding.'}
+
+DE KAARTEN (met ONZE betekenissen):
+${kaartLijst}
+
+DE COMBINATIES (buur-duo's uit ONZE database):
+${comboLijst}
+
+Geef een persoonlijke, reflectieve duiding in vloeiend Nederlands (max ~250 woorden). Verwijs naar de combinaties waar relevant. Focus op inzicht, niet op stellige voorspelling.`;
+
+    const resp = await openai.chat.completions.create({
+      model: 'gpt-5.5',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      max_completion_tokens: 3000,
+    });
+    res.json({ duiding: resp.choices[0].message.content });
+  } catch (err: unknown) {
+    res.status(500).json({ error: err instanceof Error ? err.message : 'Onbekende fout' });
+  }
+});
+
+// Buur-duo's: waarom vullen twee kaarten elkaar aan? — gevoed met ONZE betekenissen, geen woordenteller-bias
+app.post('/api/lenormand/duos', async (req, res) => {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) { res.status(503).json({ error: 'OpenAI API sleutel niet geconfigureerd' }); return; }
+  const { duos, vraag } = req.body;
+  if (!duos || !Array.isArray(duos) || duos.length === 0) {
+    res.status(400).json({ error: 'Geef duos[] mee' }); return;
+  }
+  try {
+    const { default: OpenAI } = await import('openai');
+    const openai = new OpenAI({ apiKey });
+
+    const lijst = (duos as Array<{ links: { naam: string; betekenis?: string }; rechts: { naam: string; betekenis?: string } }>)
+      .map((d, i) => `${i + 1}. ${d.links.naam} (${d.links.betekenis || ''}) + ${d.rechts.naam} (${d.rechts.betekenis || ''})`)
+      .join('\n');
+
+    const systemPrompt = `Je bent een ervaren Nederlandse Lenormand-lezer. Leg voor ELK kaartpaar in 1 à 2 heldere zinnen uit WAAROM de twee kaarten elkaar aanvullen — hoe ze op elkaar inwerken, elkaar versterken of nuanceren. Baseer je UITSLUITEND op de gegeven betekenissen. Maak GEEN aannames over geslacht (gebruik niet "mannelijk/vrouwelijk") tenzij een betekenis dat expliciet noemt. Antwoord als JSON: {"uitleg": ["...","..."]} met precies één string per paar, in dezelfde volgorde.`;
+    const userPrompt = `${vraag ? `Context-vraag van de cliënt: ${vraag}\n\n` : ''}Paren:\n${lijst}`;
+
+    const resp = await openai.chat.completions.create({
+      model: 'gpt-5.5',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      max_completion_tokens: 3000,
+      response_format: { type: 'json_object' },
+    });
+
+    let uitleg: string[] = [];
+    try {
+      const parsed = JSON.parse(resp.choices[0].message.content || '{}');
+      if (Array.isArray(parsed.uitleg)) uitleg = parsed.uitleg.map((x: unknown) => String(x));
+    } catch { /* laat leeg bij parse-fout */ }
+    res.json({ uitleg });
+  } catch (err: unknown) {
+    res.status(500).json({ error: err instanceof Error ? err.message : 'Onbekende fout' });
+  }
+});
+
+// Tarot-gesprek over een legging — gebruikt door TarotChat (key blijft op de server)
+app.post('/api/tarot/chat', async (req, res) => {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) { res.status(503).json({ error: 'OpenAI API sleutel niet geconfigureerd' }); return; }
+  const { kaarten, vraag, geschiedenis } = req.body;
+  if (!kaarten || !Array.isArray(kaarten) || typeof vraag !== 'string' || !vraag.trim()) {
+    res.status(400).json({ error: 'Geef kaarten[] en een vraag mee' }); return;
+  }
+  try {
+    const { default: OpenAI } = await import('openai');
+    const openai = new OpenAI({ apiKey });
+
+    const systemPrompt = `Je bent een ervaren Nederlandse tarotlezer met een warme, empathische benadering.
+Geef persoonlijke, inzichtelijke antwoorden die hoop en begrip bieden.
+Gebruik een vriendelijke, toegankelijke taal en spreek de persoon direct aan.
+Focus op praktische adviezen en positieve groeimogelijkheden. Houd het antwoord onder de 250 woorden.
+
+Tarotlegging: ${JSON.stringify(kaarten).slice(0, 12000)}`;
+
+    // Laatste beurten van het gesprek meesturen zodat vervolgvragen context hebben
+    const eerder = (Array.isArray(geschiedenis) ? geschiedenis : [])
+      .filter((m: { role?: string; content?: unknown }) => (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
+      .slice(-8)
+      .map((m: { role: 'user' | 'assistant'; content: string }) => ({ role: m.role, content: m.content.slice(0, 4000) }));
+
+    const resp = await openai.chat.completions.create({
+      model: 'gpt-5.5',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...eerder,
+        { role: 'user', content: vraag.slice(0, 2000) },
+      ],
+      max_completion_tokens: 2500,
+    });
+    res.json({ antwoord: resp.choices[0].message.content || '' });
   } catch (err: unknown) {
     res.status(500).json({ error: err instanceof Error ? err.message : 'Onbekende fout' });
   }

@@ -1,0 +1,16 @@
+[Unit]
+Description=Kerykeion Astrologie Service (Tarrot, poort 4211)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/tarrotleer
+ExecStart=/home/ubuntu/tarrotleer/venv/bin/python3 kerykeion_service.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -6,6 +6,7 @@ import { isLoggedIn } from './config/localAuth';
 import { Navbar } from './components/Navbar';
 import ReadingPage from './pages/ReadingPage';
 import { HomePage } from './pages/HomePage';
+import { StartPage } from './pages/StartPage';
 import { BibliotheekPage } from './pages/BibliotheekPage';
 import { FlashcardsPage } from './pages/FlashcardsPage';
 import { QuizPage } from './pages/QuizPage';
@@ -30,6 +31,7 @@ import { LenormandBibliotheekPage } from './pages/lenormand/LenormandBibliotheek
 import { LenormandLezingPage } from './pages/lenormand/LenormandLezingPage';
 import { LenormandFlashcardsPage } from './pages/lenormand/LenormandFlashcardsPage';
 import { LenormandQuizPage } from './pages/lenormand/LenormandQuizPage';
+import { LenormandCombinatiesPage } from './pages/lenormand/LenormandCombinatiesPage';
 import { KristallenPage } from './pages/KristallenPage';
 import { RituelenPage } from './pages/RituelenPage';
 import { CompatibiliteitPage } from './pages/CompatibiliteitPage';
@@ -69,7 +71,8 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Layout><HomePage /></Layout>} />
+        <Route path="/" element={<Layout><StartPage /></Layout>} />
+        <Route path="/tarot" element={<Layout><HomePage /></Layout>} />
         <Route path="/reading/:type" element={<Layout><ReadingPage /></Layout>} />
         <Route path="/bibliotheek" element={<Layout><BibliotheekPage /></Layout>} />
         <Route path="/flashcards" element={<Layout><FlashcardsPage /></Layout>} />
@@ -97,6 +100,7 @@ function App() {
         <Route path="/lenormand/bibliotheek" element={<Layout><LenormandBibliotheekPage /></Layout>} />
         <Route path="/lenormand/flashcards" element={<Layout><LenormandFlashcardsPage /></Layout>} />
         <Route path="/lenormand/quiz" element={<Layout><LenormandQuizPage /></Layout>} />
+        <Route path="/lenormand/combinaties" element={<Layout><LenormandCombinatiesPage /></Layout>} />
         <Route path="/kristallen" element={<Layout><KristallenPage /></Layout>} />
         <Route path="/rituelen" element={<Layout><RituelenPage /></Layout>} />
         <Route path="/compatibiliteit" element={<Layout><CompatibiliteitPage /></Layout>} />
