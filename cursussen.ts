@@ -7,7 +7,7 @@ import Database from 'better-sqlite3';
 import { createWriteStream, mkdirSync, renameSync, unlinkSync, openSync, readSync, closeSync, existsSync } from 'fs';
 import { join } from 'path';
 
-const MAX_BYTES = 300 * 1024 * 1024;
+const MAX_BYTES = 1024 * 1024 * 1024; // 1 GB (zips met afbeeldingen)
 const STATUSSEN = ['nieuw', 'in_behandeling', 'concept', 'goedgekeurd', 'afgewezen'] as const;
 type Status = typeof STATUSSEN[number];
 
@@ -43,7 +43,7 @@ export function installeerCursusUploads(app: express.Express, root: string) {
   app.post('/api/admin/cursus-upload', alleenAdmin, (req, res) => {
     const origineel = String(req.query.naam || 'cursus.zip').replace(/[^\w.\- ()]/g, '_').slice(0, 150) || 'cursus.zip';
     const lengte = Number(req.headers['content-length'] || 0);
-    if (lengte > MAX_BYTES) { res.status(413).json({ error: 'Bestand is groter dan 300 MB' }); return; }
+    if (lengte > MAX_BYTES) { res.status(413).json({ error: 'Bestand is groter dan 1 GB' }); return; }
 
     const tijdelijk = join(map, `upload-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.tmp`);
     const uit = createWriteStream(tijdelijk);
@@ -59,7 +59,7 @@ export function installeerCursusUploads(app: express.Express, root: string) {
 
     req.on('data', (stuk: Buffer) => {
       ontvangen += stuk.length;
-      if (ontvangen > MAX_BYTES) { stop(413, 'Bestand is groter dan 300 MB'); req.destroy(); }
+      if (ontvangen > MAX_BYTES) { stop(413, 'Bestand is groter dan 1 GB'); req.destroy(); }
     });
     req.on('aborted', () => stop(400, 'Upload afgebroken'));
     req.pipe(uit);

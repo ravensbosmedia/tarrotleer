@@ -57,12 +57,22 @@ async function api<T>(pad: string, opties?: RequestInit): Promise<T> {
   return d as T;
 }
 
-/** Stuurt een gekozen bestand als ruwe body naar de server en geeft het JSON-antwoord terug. */
-async function uploadBestand<T>(pad: string, bestand: File, type: string): Promise<T> {
-  const r = await fetch(pad, { method: 'POST', headers: { 'Content-Type': type }, body: bestand });
-  const d = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(d.error || `Upload mislukt (${r.status})`);
-  return d as T;
+/** Stuurt een gekozen bestand als ruwe body naar de server (met voortgang) en geeft het JSON-antwoord terug. */
+function uploadBestand<T>(pad: string, bestand: File, type: string, voortgang?: (pct: number) => void): Promise<T> {
+  return new Promise((ok, fout) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', pad);
+    xhr.setRequestHeader('Content-Type', type);
+    if (voortgang) xhr.upload.onprogress = (e) => { if (e.lengthComputable) voortgang(Math.round((e.loaded / e.total) * 100)); };
+    xhr.onload = () => {
+      let d: Record<string, unknown> = {};
+      try { d = JSON.parse(xhr.responseText); } catch { /* geen JSON */ }
+      if (xhr.status >= 200 && xhr.status < 300) ok(d as T);
+      else fout(new Error((d.error as string) || `Upload mislukt (${xhr.status})`));
+    };
+    xhr.onerror = () => fout(new Error('Upload mislukt: geen verbinding'));
+    xhr.send(bestand);
+  });
 }
 
 /** Knop die een verborgen bestandskiezer opent. */
@@ -90,12 +100,17 @@ export const AcademieOverzichtPage: React.FC = () => {
   // Nieuwe cursus(sen): eerst als upload bewaren, daarna meteen importeren
   async function nieuweCursus(f: File) {
     if (!f.name.toLowerCase().endsWith('.zip')) { setVerslag('Kies een .zip-bestand.'); return; }
-    setVerslag('Bezig met uploaden en importeren…');
+    setVerslag('Uploaden… 0%');
     try {
-      const upload = await uploadBestand<{ id: number }>(`/api/admin/cursus-upload?naam=${encodeURIComponent(f.name)}`, f, 'application/zip');
-      const d = await api<{ nieuweCursussen: number; nieuweHoofdstukken: number; overgeslagen: number }>(`/api/admin/academie/importeer/${upload.id}`, { method: 'POST' });
-      setVerslag(d.nieuweCursussen || d.nieuweHoofdstukken
-        ? `✓ ${d.nieuweCursussen} nieuwe cursus(sen) en ${d.nieuweHoofdstukken} hoofdstukken toegevoegd${d.overgeslagen ? ` · ${d.overgeslagen} bestonden al en zijn niet overschreven` : ''}.`
+      const upload = await uploadBestand<{ id: number }>(`/api/admin/cursus-upload?naam=${encodeURIComponent(f.name)}`, f, 'application/zip',
+        (pct) => setVerslag(pct < 100 ? `Uploaden… ${pct}%` : 'Geüpload — bezig met importeren (bij een grote zip met afbeeldingen kan dit even duren)…'));
+      setVerslag('Geüpload — bezig met importeren (bij een grote zip met afbeeldingen kan dit even duren)…');
+      const d = await api<{ nieuweCursussen: number; nieuweHoofdstukken: number; bijgewerkt: number; overgeslagen: number; bewerktOvergeslagen: string[]; afbeeldingen: number }>(`/api/admin/academie/importeer/${upload.id}`, { method: 'POST' });
+      setVerslag(d.nieuweCursussen || d.nieuweHoofdstukken || d.bijgewerkt || d.bewerktOvergeslagen.length
+        ? `✓ ${d.nieuweCursussen} nieuwe cursus(sen), ${d.nieuweHoofdstukken} nieuwe hoofdstukken, ${d.bijgewerkt ?? 0} bijgewerkt` +
+        `${d.afbeeldingen ? `, ${d.afbeeldingen} afbeeldingen` : ''}${d.overgeslagen ? ` · ${d.overgeslagen} ongewijzigd` : ''}` +
+        `${d.bewerktOvergeslagen?.length ? ` · ${d.bewerktOvergeslagen.length} al bewerkt en niet overschreven (nieuwe versie staat klaar onder ‘Origineel’): ${d.bewerktOvergeslagen.join(', ')}` : ''}`
+        : d.overgeslagen ? `Alle ${d.overgeslagen} hoofdstukken waren al gelijk; er is niets veranderd.`
         : 'Er is niets nieuws gevonden. Controleer of de mappen en bestanden de opbouw uit het sjabloon volgen (bijv. 21-naam/21-01-titel.md).');
       laadOverzicht();
     } catch (e) { setVerslag((e as Error).message); }
@@ -170,9 +185,10 @@ export const AcademieCursusPage: React.FC = () => {
 
   async function uploadZip(f: File) {
     if (!f.name.toLowerCase().endsWith('.zip')) { setUploadVerslag('Kies een .zip-bestand.'); return; }
-    setUploadVerslag('Bezig met uploaden…');
+    setUploadVerslag('Uploaden… 0%');
     try {
-      const d = await uploadBestand<{ gewijzigd: string[]; ongewijzigd: number; onbekend: string[] }>(`/api/admin/academie/${slug}/upload`, f, 'application/zip');
+      const d = await uploadBestand<{ gewijzigd: string[]; ongewijzigd: number; onbekend: string[] }>(`/api/admin/academie/${slug}/upload`, f, 'application/zip',
+        (pct) => setUploadVerslag(pct < 100 ? `Uploaden… ${pct}%` : 'Geüpload — bezig met verwerken…'));
       setUploadVerslag(`✓ ${d.gewijzigd.length} hoofdstuk(ken) bijgewerkt${d.gewijzigd.length ? `: ${d.gewijzigd.join(', ')}` : ''} · ${d.ongewijzigd} ongewijzigd` +
         (d.onbekend.length ? ` · niet herkend: ${d.onbekend.join(', ')}` : ''));
       laadCursus();

@@ -5,9 +5,11 @@
 // Niets hiervan is zichtbaar voor gewone leden.
 import express from 'express';
 import Database from 'better-sqlite3';
-import { execFileSync } from 'child_process';
+import { execFileSync, execFile } from 'child_process';
+import { promisify } from 'util';
+import { posix } from 'path';
 import { join } from 'path';
-import { writeFileSync, unlinkSync, mkdirSync, readdirSync, readFileSync, statSync } from 'fs';
+import { unlinkSync, mkdirSync, readdirSync, readFileSync, statSync, createWriteStream, openSync, readSync, closeSync } from 'fs';
 
 type HoofdstukStatus = 'te_beoordelen' | 'aangepast' | 'goedgekeurd';
 type CursusStatus = 'concept' | 'in_beoordeling' | 'goedgekeurd';
@@ -20,16 +22,90 @@ interface HoofdstukRij {
   status: HoofdstukStatus; notitie: string; bijgewerkt: string; bijgewerkt_door: string;
 }
 
-// Leest alle .md-bestanden uit een zip (via Python, dat al op de server staat)
+const execFileAsync = promisify(execFile);
+
+// Leest alle .md-bestanden uit een zip en pakt afbeeldingen uit naar een mediamap (via Python, staat al op de server).
+// Uitvoer: { md: [{ pad, tekst }], img: [pad, …] } met genormaliseerde paden binnen de zip.
 const ZIP_LEZER = `
-import json, sys, zipfile
+import json, os, shutil, sys, zipfile
 z = zipfile.ZipFile(sys.argv[1])
-uit = []
-for n in z.namelist():
-    if n.endswith('.md') and not n.startswith('/') and '..' not in n and not n.startswith('__MACOSX'):
-        uit.append({'pad': n, 'tekst': z.read(n).decode('utf-8', 'replace')})
-print(json.dumps(uit))
+media = sys.argv[2] if len(sys.argv) > 2 else None
+afb = {'.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg'}
+md, img = [], []
+for info in z.infolist():
+    n = info.filename
+    if info.is_dir() or n.startswith('__MACOSX') or '/.' in '/' + n:
+        continue
+    pad = os.path.normpath(n).replace(os.sep, '/')
+    if pad.startswith('..') or pad.startswith('/'):
+        continue
+    ext = os.path.splitext(pad)[1].lower()
+    if ext == '.md':
+        md.append({'pad': pad, 'tekst': z.read(info).decode('utf-8', 'replace')})
+    elif ext in afb and media:
+        doel = os.path.join(media, pad)
+        os.makedirs(os.path.dirname(doel), exist_ok=True)
+        with z.open(info) as bron, open(doel, 'wb') as uit:
+            shutil.copyfileobj(bron, uit, 1 << 20)
+        img.append(pad)
+print(json.dumps({'md': md, 'img': img}))
 `;
+
+interface ZipInhoud { md: { pad: string; tekst: string }[]; img: string[] }
+
+/** Schrijft de request-body rechtstreeks naar een bestand (niet in het geheugen); geeft het aantal bytes terug. */
+function ontvangNaarBestand(req: express.Request, pad: string, max: number): Promise<number> {
+  return new Promise((ok, fout) => {
+    const uit = createWriteStream(pad);
+    let n = 0;
+    req.on('data', (stuk: Buffer) => { n += stuk.length; if (n > max) { req.destroy(); uit.destroy(); fout(new Error('Bestand is te groot (max 1 GB)')); } });
+    req.on('aborted', () => { uit.destroy(); fout(new Error('Upload afgebroken')); });
+    uit.on('finish', () => ok(n));
+    uit.on('error', fout);
+    req.pipe(uit);
+  });
+}
+
+/** Controleert of een bestand met "PK\x03\x04" begint (zip). */
+function isZip(pad: string): boolean {
+  const kop = Buffer.alloc(4);
+  const fd = openSync(pad, 'r');
+  try { readSync(fd, kop, 0, 4, 0); } finally { closeSync(fd); }
+  return kop.readUInt32LE(0) === 0x04034b50;
+}
+
+/** Leest een zip asynchroon (blokkeert de server niet), optioneel met uitpakken van afbeeldingen. */
+async function leesZip(zip: string, mediaMap?: string): Promise<ZipInhoud> {
+  const args = ['-c', ZIP_LEZER, zip, ...(mediaMap ? [mediaMap] : [])];
+  const { stdout } = await execFileAsync('python3', args, { maxBuffer: 300 * 1024 * 1024 });
+  return JSON.parse(stdout);
+}
+
+/**
+ * Zet afbeeldingsverwijzingen in Markdown (en <img>-tags) om naar adressen op onze server.
+ * Paden zijn relatief aan de map van het .md-bestand in de zip; alleen afbeeldingen die in de zip zaten tellen.
+ */
+function koppelAfbeeldingen(md: string, mdPad: string, afbeeldingen: Set<string>, prefix: string): string {
+  const map = posix.dirname(mdPad);
+  const url = (ref: string): string | null => {
+    const schoon = decodeURIComponent(ref.trim().replace(/^<|>$/g, '')).replace(/^\.\//, '');
+    if (/^(https?:|data:|\/)/i.test(schoon)) return null;
+    const pad = posix.normalize(posix.join(map, schoon));
+    const gevonden = afbeeldingen.has(pad) ? pad : [...afbeeldingen].find((a) => a.endsWith('/' + schoon) || a === schoon);
+    return gevonden ? `/api/academie-media/${prefix}/${gevonden.split('/').map(encodeURIComponent).join('/')}` : null;
+  };
+  return md
+    // <img src="…" alt="…"> → Markdown-afbeelding (de weergave voert geen HTML uit)
+    .replace(/<img\b[^>]*?src=["']([^"']+)["'][^>]*>/gi, (heel, src) => {
+      const alt = heel.match(/alt=["']([^"']*)["']/i)?.[1] || '';
+      const u = url(src);
+      return u ? `![${alt}](${u})` : heel;
+    })
+    .replace(/!\[([^\]]*)\]\((<[^>]+>|[^)\s]+)(\s+"[^"]*")?\)/g, (heel, alt, ref) => {
+      const u = url(ref);
+      return u ? `![${alt}](${u})` : heel;
+    });
+}
 
 // Maakt een zip van de meegegeven bestanden (JSON via stdin) en schrijft die naar stdout
 const ZIP_MAKER = `
@@ -107,26 +183,31 @@ export function installeerAcademie(app: express.Express, root: string) {
   const cursusVan = db.prepare<[string], CursusRij>('SELECT * FROM academie_cursussen WHERE slug = ?');
   const hoofdstukVan = db.prepare<[number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE id = ?');
 
-  // ── Import uit een geüploade zip: alleen nieuwe cursussen/hoofdstukken, bewerkte inhoud blijft staan ──
-  app.post('/api/admin/academie/importeer/:uploadId', alleenAdmin, (req, res) => {
+  // ── Import uit een geüploade zip ──
+  // Nieuwe cursussen/hoofdstukken worden toegevoegd. Bestaande hoofdstukken die nog NIET bewerkt zijn, krijgen de
+  // nieuwe versie (bv. met afbeeldingen); bij al bewerkte hoofdstukken wordt alleen het "origineel" bijgewerkt.
+  const mediaRoot = join(root, 'data', 'academie-media');
+  app.post('/api/admin/academie/importeer/:uploadId', alleenAdmin, async (req, res) => {
     const upload = db.prepare<[number], { id: number; bestand: string }>('SELECT id, bestand FROM cursus_uploads WHERE id = ?')
       .get(Number(req.params.uploadId));
     if (!upload) { res.status(404).json({ error: 'Upload niet gevonden' }); return; }
-    let bestanden: { pad: string; tekst: string }[];
+    const prefix = `u${upload.id}`;
+    let zipInhoud: ZipInhoud;
     try {
-      const uit = execFileSync('python3', ['-c', ZIP_LEZER, join(root, 'data', 'uploads', 'cursussen', upload.bestand)],
-        { maxBuffer: 200 * 1024 * 1024 });
-      bestanden = JSON.parse(uit.toString('utf-8'));
+      zipInhoud = await leesZip(join(root, 'data', 'uploads', 'cursussen', upload.bestand), join(mediaRoot, prefix));
     } catch {
       res.status(400).json({ error: 'Zip kon niet gelezen worden' }); return;
     }
+    const afbeeldingen = new Set(zipInhoud.img);
+    const bestanden = zipInhoud.md.map((b) => ({ ...b, tekst: koppelAfbeeldingen(b.tekst, b.pad, afbeeldingen, prefix) }));
+    const bewerktOvergeslagen: string[] = [];
 
     // Cursustitels uit het startbestand ("## 01. Mediumschap & …"), anders uit "**Cursus:**" in een hoofdstuk
     const titels = new Map<number, string>();
     const start = bestanden.find((b) => /START/i.test(b.pad.split('/').pop() || ''));
     for (const m of (start?.tekst || '').matchAll(/^##\s+(\d+)\.\s+(.+)$/gm)) titels.set(Number(m[1]), m[2].trim());
 
-    let nieuweCursussen = 0, nieuweHoofdstukken = 0, overgeslagen = 0;
+    let nieuweCursussen = 0, nieuweHoofdstukken = 0, overgeslagen = 0, bijgewerkt = 0;
     const voegToe = db.transaction(() => {
       for (const b of bestanden) {
         const delen = b.pad.split('/');
@@ -145,9 +226,24 @@ export function installeerAcademie(app: express.Express, root: string) {
           nieuweCursussen++;
         }
         const nr = Number(hm[2]);
-        const bestaat = db.prepare('SELECT 1 FROM academie_hoofdstukken WHERE cursus_id = ? AND nr = ?').get(cursus.id, nr);
-        if (bestaat) { overgeslagen++; continue; }
+        const bestaat = db.prepare<[number, number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? AND nr = ?').get(cursus.id, nr);
         const { titel, inhoud } = kaleInhoud(b.tekst);
+        if (bestaat) {
+          if (inhoud === bestaat.origineel) { overgeslagen++; continue; }
+          if (bestaat.inhoud === bestaat.origineel) {
+            // Nog niet bewerkt: nieuwe versie overnemen (vorige als versie bewaren)
+            db.prepare('INSERT INTO academie_versies (hoofdstuk_id, titel, inhoud, door, reden) VALUES (?, ?, ?, ?, ?)')
+              .run(bestaat.id, bestaat.titel, bestaat.inhoud, req.lid!.email, 'vervangen door nieuwe import');
+            db.prepare(`UPDATE academie_hoofdstukken SET inhoud = ?, origineel = ?, titel = ?, bijgewerkt = datetime('now'), bijgewerkt_door = ? WHERE id = ?`)
+              .run(inhoud, inhoud, titel || bestaat.titel, req.lid!.email, bestaat.id);
+            bijgewerkt++;
+          } else {
+            // Al bewerkt: niets overschrijven, alleen het origineel bijwerken zodat het met één knop over te nemen is
+            db.prepare('UPDATE academie_hoofdstukken SET origineel = ? WHERE id = ?').run(inhoud, bestaat.id);
+            bewerktOvergeslagen.push(`${cursusNr}.${nr} ${bestaat.titel}`);
+          }
+          continue;
+        }
         db.prepare(`INSERT INTO academie_hoofdstukken (cursus_id, nr, slug, titel, inhoud, origineel, bijgewerkt_door)
           VALUES (?, ?, ?, ?, ?, ?, ?)`).run(cursus.id, nr, hm[3], titel || hm[3].replace(/-/g, ' '), inhoud, inhoud, 'import');
         nieuweHoofdstukken++;
@@ -155,7 +251,7 @@ export function installeerAcademie(app: express.Express, root: string) {
       db.prepare(`UPDATE cursus_uploads SET status = CASE WHEN status = 'nieuw' THEN 'in_behandeling' ELSE status END WHERE id = ?`).run(upload.id);
     });
     voegToe();
-    res.json({ nieuweCursussen, nieuweHoofdstukken, overgeslagen });
+    res.json({ nieuweCursussen, nieuweHoofdstukken, bijgewerkt, overgeslagen, bewerktOvergeslagen, afbeeldingen: afbeeldingen.size });
   });
 
   // ── Overzicht van alle cursussen met voortgang van de beoordeling ──
@@ -270,16 +366,18 @@ export function installeerAcademie(app: express.Express, root: string) {
   });
 
   // Zip met .md-bestanden; hoofdstukken worden herkend aan het nummer in de bestandsnaam (NN-MM-… of MM-…)
-  app.post('/api/admin/academie/:slug/upload', alleenAdmin, express.raw({ type: () => true, limit: '30mb' }), (req, res) => {
+  app.post('/api/admin/academie/:slug/upload', alleenAdmin, async (req, res) => {
     const c = cursusVan.get(String(req.params.slug));
     if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
-    const buf = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
-    if (buf.length < 22 || buf.readUInt32LE(0) !== 0x04034b50) { res.status(400).json({ error: 'Dit is geen zip-bestand' }); return; }
     const tmp = join(tmpMap, `cursus-${Date.now()}.zip`);
+    const prefix = `c${c.id}-${Date.now()}`;
     let bestanden: { pad: string; tekst: string }[];
     try {
-      writeFileSync(tmp, buf);
-      bestanden = JSON.parse(execFileSync('python3', ['-c', ZIP_LEZER, tmp], { maxBuffer: 100 * 1024 * 1024 }).toString('utf-8'));
+      const n = await ontvangNaarBestand(req, tmp, 1024 * 1024 * 1024);
+      if (n < 22 || !isZip(tmp)) { res.status(400).json({ error: 'Dit is geen zip-bestand' }); try { unlinkSync(tmp); } catch { /* weg */ } return; }
+      const z = await leesZip(tmp, join(mediaRoot, prefix));
+      const afb = new Set(z.img);
+      bestanden = z.md.map((b) => ({ ...b, tekst: koppelAfbeeldingen(b.tekst, b.pad, afb, prefix) }));
     } catch {
       res.status(400).json({ error: 'Zip kon niet gelezen worden' }); return;
     } finally {
@@ -324,5 +422,14 @@ export function installeerAcademie(app: express.Express, root: string) {
     res.setHeader('Content-Type', 'application/zip');
     res.setHeader('Content-Disposition', 'attachment; filename="academie-sjabloon-voor-chatgpt.zip"');
     res.send(zip);
+  });
+
+  // ── Afbeeldingen van de Academie (voorlopig alleen voor beheerders) ──
+  app.get(/^\/api\/academie-media\/(.+)$/, alleenAdmin, (req, res) => {
+    const rel = decodeURIComponent((req.params as unknown as string[])[0] || '');
+    if (rel.includes('..') || rel.startsWith('/')) { res.status(400).end(); return; }
+    if (/\.svg$/i.test(rel)) res.setHeader('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; sandbox");
+    res.setHeader('Cache-Control', 'private, max-age=86400');
+    res.sendFile(rel, { root: mediaRoot, dotfiles: 'deny' }, (err) => { if (err && !res.headersSent) res.status(404).end(); });
   });
 }

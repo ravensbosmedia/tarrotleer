@@ -2,24 +2,36 @@ import React from 'react';
 
 // Eenvoudige, veilige Markdown-weergave: bouwt React-elementen (geen innerHTML), dus ingevoerde HTML
 // wordt nooit uitgevoerd. Ondersteunt: ## / ### koppen, alinea's, - en 1. lijsten, **vet**, *cursief*,
-// [links](https://…), regeleinde met twee spaties, en <details><summary>…</summary> … </details>.
+// [links](https://…), ![afbeeldingen](/api/academie-media/… of https://…), regeleinde met twee spaties,
+// en <details><summary>…</summary> … </details>.
 
 interface Stijl { kop2: React.CSSProperties; kop3: React.CSSProperties; tekst: React.CSSProperties; link: string; rand: string }
 
-/** Inline opmaak: **vet**, *cursief*, [tekst](url). Links naar .md-bestanden worden gewone tekst. */
+/** Alleen afbeeldingen van onze eigen server of via https worden getoond. */
+const veiligeBron = (src: string) => /^\/api\/academie-media\//.test(src) || /^https:\/\//.test(src);
+
+const Afbeelding: React.FC<{ src: string; alt: string; los?: boolean }> = ({ src, alt, los }) => (
+  <img src={src} alt={alt} loading="lazy"
+    style={los
+      ? { display: 'block', maxWidth: '100%', maxHeight: 520, margin: '0.8rem auto', borderRadius: 8 }
+      : { maxWidth: '100%', verticalAlign: 'middle', borderRadius: 4 }} />
+);
+
+/** Inline opmaak: **vet**, *cursief*, ![afbeelding](url), [tekst](url). Links naar .md-bestanden worden gewone tekst. */
 function inline(tekst: string, stijl: Stijl, sleutel = ''): React.ReactNode[] {
   const uit: React.ReactNode[] = [];
-  const patroon = /\*\*(.+?)\*\*|\*(.+?)\*|\[([^\]]+)\]\(([^)\s]+)\)/g;
+  const patroon = /!\[([^\]]*)\]\(([^)\s]+)\)|\*\*(.+?)\*\*|\*(.+?)\*|\[([^\]]+)\]\(([^)\s]+)\)/g;
   let laatste = 0;
   let m: RegExpExecArray | null;
   let i = 0;
   while ((m = patroon.exec(tekst))) {
     if (m.index > laatste) uit.push(tekst.slice(laatste, m.index));
     const k = `${sleutel}-${i++}`;
-    if (m[1] !== undefined) uit.push(<strong key={k}>{inline(m[1], stijl, k)}</strong>);
-    else if (m[2] !== undefined) uit.push(<em key={k}>{inline(m[2], stijl, k)}</em>);
-    else if (/^https?:\/\//.test(m[4])) uit.push(<a key={k} href={m[4]} target="_blank" rel="noopener noreferrer" style={{ color: stijl.link }}>{m[3]}</a>);
-    else uit.push(m[3]);
+    if (m[2] !== undefined) uit.push(veiligeBron(m[2]) ? <Afbeelding key={k} src={m[2]} alt={m[1]} /> : `[afbeelding: ${m[1] || m[2]}]`);
+    else if (m[3] !== undefined) uit.push(<strong key={k}>{inline(m[3], stijl, k)}</strong>);
+    else if (m[4] !== undefined) uit.push(<em key={k}>{inline(m[4], stijl, k)}</em>);
+    else if (/^https?:\/\//.test(m[6])) uit.push(<a key={k} href={m[6]} target="_blank" rel="noopener noreferrer" style={{ color: stijl.link }}>{m[5]}</a>);
+    else uit.push(m[5]);
     laatste = m.index + m[0].length;
   }
   if (laatste < tekst.length) uit.push(tekst.slice(laatste));
@@ -65,6 +77,19 @@ function blokken(md: string, stijl: Stijl, prefix = 'b'): React.ReactNode[] {
           <div style={{ marginTop: '0.6rem' }}>{blokken(binnen.join('\n'), stijl, `${k}d`)}</div>
         </details>,
       );
+      continue;
+    }
+
+    // Afbeelding op een eigen regel: groot en gecentreerd, met het alt-bijschrift eronder
+    const losseAfb = r.trim().match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/);
+    if (losseAfb) {
+      uit.push(veiligeBron(losseAfb[2]) ? (
+        <figure key={k} style={{ margin: '1rem 0', textAlign: 'center' }}>
+          <Afbeelding src={losseAfb[2]} alt={losseAfb[1]} los />
+          {losseAfb[1] && <figcaption style={{ fontSize: 13, opacity: 0.7, marginTop: 4 }}>{losseAfb[1]}</figcaption>}
+        </figure>
+      ) : <p key={k} style={stijl.tekst}>[afbeelding: {losseAfb[1] || losseAfb[2]}]</p>);
+      i++;
       continue;
     }
 

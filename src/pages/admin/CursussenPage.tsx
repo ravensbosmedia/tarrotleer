@@ -24,7 +24,7 @@ const STATUS: Record<Status, { label: string; uitleg: string; kleur: string }> =
   afgewezen:      { label: 'Afgewezen',      uitleg: 'Wordt niet gebruikt',                      kleur: '#C8604F' },
 };
 
-const MAX_MB = 300;
+const MAX_MB = 1024;
 const mb = (b: number) => `${(b / 1024 / 1024).toFixed(1)} MB`;
 
 const invoer: React.CSSProperties = {
@@ -46,7 +46,9 @@ export const CursussenPage: React.FC = () => {
     const r = await fetch(`/api/admin/academie/importeer/${u.id}`, { method: 'POST' });
     const d = await r.json().catch(() => ({}));
     setImportMelding((m) => ({ ...m, [u.id]: r.ok
-      ? `✓ ${d.nieuweCursussen} nieuwe cursussen, ${d.nieuweHoofdstukken} hoofdstukken${d.overgeslagen ? ` (${d.overgeslagen} bestonden al en zijn niet overschreven)` : ''}`
+      ? `✓ ${d.nieuweCursussen} nieuwe cursus(sen), ${d.nieuweHoofdstukken} nieuwe hoofdstukken, ${d.bijgewerkt ?? 0} bijgewerkt` +
+        `${d.afbeeldingen ? `, ${d.afbeeldingen} afbeeldingen` : ''}${d.overgeslagen ? ` · ${d.overgeslagen} ongewijzigd` : ''}` +
+        `${d.bewerktOvergeslagen?.length ? ` · ${d.bewerktOvergeslagen.length} al bewerkt en niet overschreven (nieuwe versie staat klaar onder ‘Origineel’): ${d.bewerktOvergeslagen.join(', ')}` : ''}`
       : (d.error || 'Importeren mislukt') }));
     if (r.ok) laad();
   }
@@ -113,7 +115,7 @@ export const CursussenPage: React.FC = () => {
             <>
               <div style={{ fontSize: 34, marginBottom: 6 }}>📦</div>
               <div style={{ fontSize: 17 }}>Sleep je zip hierheen of <span style={{ color: G.goud, textDecoration: 'underline' }}>kies een bestand</span></div>
-              <div style={{ fontSize: 13, color: G.tekst3, marginTop: 4 }}>Alleen .zip, maximaal {MAX_MB} MB</div>
+              <div style={{ fontSize: 13, color: G.tekst3, marginTop: 4 }}>Alleen .zip, maximaal 1 GB</div>
             </>
           ) : (
             <>
