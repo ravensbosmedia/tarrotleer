@@ -56,8 +56,12 @@ interface DagHoroscoop {
   gebieden?: Gebied[];
   tips?: string[];
   geluk?: { colors?: string[]; numbers?: number[]; stones?: string[] } | null;
-  maan?: { emoji?: string; sign?: string; prediction?: string } | null;
+  maan?: { emoji?: string; sign?: string; fase?: string; prediction?: string } | null;
+  weken?: Record<string, { theme?: string; focus?: string; energy_level?: number }> | null;
+  maancycli?: { phase: string; date: string; interpretation?: string | null }[];
 }
+
+type Periode = 'dag' | 'maand';
 
 // Volgorde waarin de levensgebieden getoond worden (de rest valt weg)
 const GEBIED_VOLGORDE = ['love', 'relationships', 'career', 'finance', 'health', 'spirituality', 'home', 'communication'];
@@ -73,19 +77,20 @@ export const HoroscoopPage: React.FC = () => {
   const [geselecteerd, setGeselecteerd] = useState<string | null>(null);
   const [horoscoop, setHoroscoop] = useState<DagHoroscoop | null>(null);
   const [fout, setFout] = useState<string | null>(null);
+  const [periode, setPeriode] = useState<Periode>('dag');
   const [laden, setLaden] = useState(false);
   const [geboortejaar, setGeboortejaar] = useState('');
   const [chineesResultaat, setChineesResultaat] = useState<typeof CHINEES_TEKENS[0] | null>(null);
 
   const vandaag = new Date().toLocaleDateString('nl-NL', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
 
-  async function laadHoroscoop(teken: string) {
+  async function laadHoroscoop(teken: string, welke: Periode = periode) {
     setGeselecteerd(teken);
     setHoroscoop(null);
     setFout(null);
     setLaden(true);
     try {
-      const r = await fetch(`/api/horoscoop/${teken}`);
+      const r = await fetch(welke === 'maand' ? `/api/horoscoop/maand/${teken}` : `/api/horoscoop/${teken}`);
       if (!r.ok) throw new Error();
       setHoroscoop(await r.json());
     } catch {
@@ -136,6 +141,23 @@ export const HoroscoopPage: React.FC = () => {
         {/* ─── WESTERS ─── */}
         {tab === 'westers' && (
           <div>
+            {/* Dag of maand */}
+            <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'center', marginBottom: '1.2rem' }}>
+              {([['dag', 'Vandaag'], ['maand', 'Deze maand']] as [Periode, string][]).map(([id, label]) => (
+                <button
+                  key={id}
+                  onClick={() => { setPeriode(id); if (geselecteerd) laadHoroscoop(geselecteerd, id); }}
+                  style={{
+                    fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em',
+                    padding: '5px 16px', borderRadius: 16, cursor: 'pointer',
+                    border: `0.5px solid ${periode === id ? G.goud : G.rand}`,
+                    background: periode === id ? G.accent : 'transparent',
+                    color: periode === id ? G.goud : 'rgba(245,237,216,0.7)',
+                  }}
+                >{label}</button>
+              ))}
+            </div>
+
             {/* Teken grid */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.8rem', marginBottom: '2rem' }}>
               {TEKENS.map(t => {
@@ -201,7 +223,7 @@ export const HoroscoopPage: React.FC = () => {
                       </p>
                       {typeof horoscoop.score === 'number' && (
                         <div style={{ marginTop: '0.6rem', fontSize: 13, color: 'rgba(245,237,216,0.6)' }}>
-                          Dagenergie <Sterren n={horoscoop.score} />
+                          {periode === 'maand' ? 'Maandenergie' : 'Dagenergie'} <Sterren n={horoscoop.score} />
                         </div>
                       )}
                     </div>
@@ -226,11 +248,42 @@ export const HoroscoopPage: React.FC = () => {
                       </div>
                     )}
 
+                    {/* Maand: weekoverzicht en nieuwe/volle maan */}
+                    {horoscoop.weken && Object.keys(horoscoop.weken).length > 0 && (
+                      <div style={{ marginTop: '1.5rem' }}>
+                        <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.6rem' }}>WEEK VOOR WEEK</h3>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
+                          {Object.entries(horoscoop.weken).sort(([a], [b]) => a.localeCompare(b)).map(([k, w], i) => (
+                            <div key={k} style={{ background: 'rgba(255,255,255,0.03)', border: `0.5px solid ${G.rand}`, borderRadius: 12, padding: '0.8rem 1rem' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontFamily: "'Cinzel', serif", fontSize: 11, color: G.goud, letterSpacing: '0.08em' }}>WEEK {i + 1}</span>
+                                {typeof w.energy_level === 'number' && <Sterren n={w.energy_level} />}
+                              </div>
+                              {w.theme && <div style={{ fontSize: 15, marginTop: '0.35rem' }}>{w.theme}</div>}
+                              {w.focus && <div style={{ fontSize: 13, marginTop: '0.2rem', color: 'rgba(245,237,216,0.6)' }}>{w.focus}</div>}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {horoscoop.maancycli && horoscoop.maancycli.length > 0 && (
+                      <div style={{ marginTop: '1.5rem' }}>
+                        <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>NIEUWE EN VOLLE MAAN</h3>
+                        {horoscoop.maancycli.map(m => (
+                          <p key={m.date + m.phase} style={{ fontSize: 15, lineHeight: 1.6, margin: '0 0 0.4rem' }}>
+                            {m.phase === 'Full Moon' ? '🌕 Volle maan' : m.phase === 'New Moon' ? '🌑 Nieuwe maan' : m.phase}{' '}
+                            {new Date(m.date + 'T12:00:00').toLocaleDateString('nl-NL', { day: 'numeric', month: 'long' })}
+                            {m.interpretation ? ` — ${m.interpretation}` : ''}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+
                     {/* Tips, geluk en maan */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.2rem', marginTop: '1.5rem' }}>
                       {horoscoop.tips && horoscoop.tips.length > 0 && (
                         <div>
-                          <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>TIPS VOOR VANDAAG</h3>
+                          <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>{periode === 'maand' ? 'TIPS VOOR DEZE MAAND' : 'TIPS VOOR VANDAAG'}</h3>
                           <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: 15, lineHeight: 1.6 }}>
                             {horoscoop.tips.map(t => <li key={t}>{t}</li>)}
                           </ul>
@@ -246,12 +299,12 @@ export const HoroscoopPage: React.FC = () => {
                           </div>
                         </div>
                       )}
-                      {horoscoop.maan?.prediction && (
+                      {(horoscoop.maan?.prediction || horoscoop.maan?.fase) && (
                         <div>
                           <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>
-                            {horoscoop.maan.emoji} DE MAAN{horoscoop.maan.sign ? ` IN ${horoscoop.maan.sign.toUpperCase()}` : ''}
+                            {horoscoop.maan!.emoji} DE MAAN{horoscoop.maan!.sign ? ` IN ${horoscoop.maan!.sign.toUpperCase()}` : ''}
                           </h3>
-                          <p style={{ fontSize: 15, lineHeight: 1.6, margin: 0 }}>{horoscoop.maan.prediction}</p>
+                          <p style={{ fontSize: 15, lineHeight: 1.6, margin: 0 }}>{horoscoop.maan!.prediction ?? horoscoop.maan!.fase}</p>
                         </div>
                       )}
                     </div>

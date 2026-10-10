@@ -348,12 +348,6 @@ function chineesTekenVoorJaar(jaar: number): string {
   return CHINEES_VOLGORDE[((jaar - 2020) % 12 + 12) % 12];
 }
 
-function leesHoroscoopCache(datum: string): Record<string, unknown> | null {
-  const pad = join(CACHE_DIR, `horoscoop-${datum}.json`);
-  if (!existsSync(pad)) return null;
-  try { return JSON.parse(readFileSync(pad, 'utf-8')); } catch { return null; }
-}
-
 function isoWeekKey(date: Date): { key: string; week: number; jaar: number } {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
   d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
@@ -397,61 +391,147 @@ app.get('/api/horoscoop/chinees/:jaar', (req, res) => {
   res.json({ jaar, slug, ...CHINEES_INFO[slug] });
 });
 
-// Dagelijkse horoscoop via AstroAPI (astrology-api.io v3), in het Nederlands.
-// Per teken pas opgehaald bij de eerste aanvraag van de dag, daarna uit cache/horoscoop-DATUM.json.
 function vandaagNL(): string {
   return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Amsterdam' }); // JJJJ-MM-DD
 }
 
-const lopendeAanvragen = new Map<string, Promise<Record<string, unknown>>>();
+// ─── AstroAPI (astrology-api.io v3) — zuinig: gratis plan = 50 calls per maand ───
+// Elk antwoord wordt permanent opgeslagen in cache/astroapi/ en nooit opnieuw opgehaald.
+// Een maandteller (cache/astroapi/teller-JJJJ-MM.json) stopt bij ASTROAPI_MAANDLIMIET (standaard 45).
+const ASTRO_DIR = join(CACHE_DIR, 'astroapi');
+const ASTRO_LIMIET = parseInt(process.env.ASTROAPI_MAANDLIMIET || '45', 10);
+const astroBezig = new Map<string, Promise<Record<string, unknown>>>();
 
-async function haalDagHoroscoop(teken: string, datum: string): Promise<Record<string, unknown>> {
-  const cache = (leesHoroscoopCache(datum) || { datum, tekens: {} }) as { datum: string; tekens: Record<string, Record<string, unknown>> };
-  if (cache.tekens[teken]) return cache.tekens[teken];
+function astroTeller(maand: string): number {
+  const pad = join(ASTRO_DIR, `teller-${maand}.json`);
+  if (!existsSync(pad)) return 0;
+  try { return JSON.parse(readFileSync(pad, 'utf-8')).calls || 0; } catch { return ASTRO_LIMIET; }
+}
 
-  const sleutel = `${datum}:${teken}`;
-  const bezig = lopendeAanvragen.get(sleutel);
-  if (bezig) return bezig;
+async function astroApi(opslag: string, endpoint: string, body: Record<string, unknown>): Promise<Record<string, unknown>> {
+  const pad = join(ASTRO_DIR, `${opslag}.json`);
+  if (existsSync(pad)) return JSON.parse(readFileSync(pad, 'utf-8')).data;
+  const lopend = astroBezig.get(opslag);
+  if (lopend) return lopend;
 
   const aanvraag = (async () => {
     const apiKey = process.env.ASTROAPI_KEY;
     if (!apiKey) throw new Error('ASTROAPI_KEY niet geconfigureerd');
-    const r = await fetch('https://api.astrology-api.io/api/v3/horoscope/sign/daily', {
+    const maand = vandaagNL().slice(0, 7);
+    const calls = astroTeller(maand);
+    if (calls >= ASTRO_LIMIET) throw new Error(`AstroAPI-maandlimiet bereikt (${calls}/${ASTRO_LIMIET})`);
+    // Tellen vóór de call: ook mislukte calls kosten tegoed
+    mkdirSync(ASTRO_DIR, { recursive: true });
+    writeFileSync(join(ASTRO_DIR, `teller-${maand}.json`), JSON.stringify({ maand, calls: calls + 1, laatste: opslag }));
+    const r = await fetch(`https://api.astrology-api.io/api/v3/${endpoint}`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sign: teken, language: 'nl', date: datum }),
+      body: JSON.stringify(body),
       signal: AbortSignal.timeout(30000),
     });
     if (!r.ok) throw new Error(`AstroAPI gaf ${r.status}`);
     const json = await r.json() as { data?: Record<string, unknown> };
-    const d = json.data || {};
-    const item = {
-      slug: teken,
-      naam: TEKEN_NL[teken],
-      tekst_nl: d.overall_theme ?? null,
-      thema: d.overall_theme ?? null,
-      score: d.overall_rating ?? null,
-      gebieden: d.life_areas ?? [],
-      tips: d.tips ?? [],
-      geluk: d.lucky_elements ?? null,
-      maan: d.moon ?? null,
-    };
-    // Opnieuw lezen vlak voor schrijven: andere tekens kunnen intussen zijn toegevoegd
-    const vers = (leesHoroscoopCache(datum) || { datum, tekens: {} }) as typeof cache;
-    vers.tekens[teken] = item;
-    mkdirSync(CACHE_DIR, { recursive: true });
-    writeFileSync(join(CACHE_DIR, `horoscoop-${datum}.json`), JSON.stringify(vers), 'utf-8');
-    return item;
+    const data = json.data || {};
+    writeFileSync(pad, JSON.stringify({ opgehaald: new Date().toISOString(), endpoint, body, data }));
+    return data;
   })();
-  lopendeAanvragen.set(sleutel, aanvraag);
-  try { return await aanvraag; } finally { lopendeAanvragen.delete(sleutel); }
+  astroBezig.set(opslag, aanvraag);
+  try { return await aanvraag; } finally { astroBezig.delete(opslag); }
 }
 
-app.get('/api/horoscoop/vandaag', async (_req, res) => {
-  const datum = vandaagNL();
+app.get('/api/astroapi/verbruik', (_req, res) => {
+  const maand = vandaagNL().slice(0, 7);
+  res.json({ maand, calls: astroTeller(maand), limiet: ASTRO_LIMIET });
+});
+
+// Maandhoroscoop per teken via AstroAPI: max 12 calls per maand
+app.get('/api/horoscoop/maand/:teken', async (req, res) => {
+  const teken = req.params.teken.toLowerCase();
+  if (!ALLE_TEKENS.includes(teken)) {
+    res.status(400).json({ error: `Ongeldig teken. Gebruik: ${ALLE_TEKENS.join(', ')}` }); return;
+  }
+  const maand = vandaagNL().slice(0, 7);
   try {
-    const items = await Promise.all(ALLE_TEKENS.map((t) => haalDagHoroscoop(t, datum)));
-    res.json({ datum, tekens: Object.fromEntries(ALLE_TEKENS.map((t, i) => [t, items[i]])) });
+    const d = await astroApi(`maand-${maand}-${teken}`, 'horoscope/sign/monthly', { sign: teken, month: maand, language: 'nl' });
+    res.json({
+      maand, slug: teken, naam: TEKEN_NL[teken],
+      thema: d.monthly_theme ?? null,
+      score: d.overall_rating ?? null,
+      weken: d.key_periods ?? null,
+      gebieden: d.life_areas ?? [],
+      tips: d.tips ?? [],
+      maancycli: d.lunations ?? [],
+      geluk: d.lucky_elements ?? null,
+    });
+  } catch (err: unknown) {
+    res.status(503).json({ error: err instanceof Error ? err.message : 'Maandhoroscoop niet beschikbaar' });
+  }
+});
+
+// ─── Dagelijkse horoscoop: één gpt-5.5-call per dag voor alle 12 tekens ───
+// Gevoed met de echte maanstand (SunCalc); opgeslagen in cache/daghoroscoop-DATUM.json.
+const GEBIEDEN_NL: Record<string, string> = {
+  love: 'Liefde', relationships: 'Relaties', career: 'Carrière', finance: 'Financiën',
+  health: 'Gezondheid', spirituality: 'Spiritualiteit',
+};
+let dagBezig: Promise<Record<string, unknown>> | null = null;
+
+async function haalDagHoroscopen(datum: string): Promise<Record<string, unknown>> {
+  const pad = join(CACHE_DIR, `daghoroscoop-${datum}.json`);
+  if (existsSync(pad)) return JSON.parse(readFileSync(pad, 'utf-8'));
+  if (dagBezig) return dagBezig;
+
+  dagBezig = (async () => {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) throw new Error('OpenAI API sleutel niet geconfigureerd');
+    const { default: OpenAI } = await import('openai');
+    const openai = new OpenAI({ apiKey });
+    const maan = getMaanData(new Date(`${datum}T12:00:00`));
+
+    const systemPrompt = `Je bent een ervaren Nederlandse astroloog. Schrijf de dagelijkse horoscoop voor ${datum} voor alle 12 sterrenbeelden.
+Maanstand vandaag: ${maan.fase} (${maan.verlichtingspercentage}% verlicht). Laat die energie meeklinken.
+Toon: warm, reflectief en praktisch; geen angstaanjagende voorspellingen, geen aannames over geslacht.
+Antwoord als JSON: {"tekens": {"<slug>": {"thema": "1 zin", "score": 1-5, "gebieden": {${Object.keys(GEBIEDEN_NL).map(k => `"${k}": {"tekst": "1-2 zinnen", "score": 1-5}`).join(', ')}}, "tips": ["...","...","..."], "geluk": {"numbers": [4 getallen], "colors": [2-3 kleuren], "stones": [2 stenen]}}}}
+Slugs: ${ALLE_TEKENS.join(', ')}. Varieer echt per teken (element, heerser); scores niet allemaal gelijk.`;
+
+    const resp = await openai.chat.completions.create({
+      model: 'gpt-5.5',
+      messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: `Horoscopen voor ${datum}` }],
+      max_completion_tokens: 12000,
+      response_format: { type: 'json_object' },
+    });
+    const ruw = JSON.parse(resp.choices[0].message.content || '{}').tekens || {};
+    const tekens: Record<string, unknown> = {};
+    for (const t of ALLE_TEKENS) {
+      const x = ruw[t] || {};
+      tekens[t] = {
+        slug: t, naam: TEKEN_NL[t],
+        thema: x.thema ?? null, tekst_nl: x.thema ?? null, score: x.score ?? null,
+        gebieden: Object.entries(GEBIEDEN_NL)
+          .filter(([k]) => x.gebieden?.[k]?.tekst)
+          .map(([k, titel]) => ({ area: k, title: titel, prediction: x.gebieden[k].tekst, rating: x.gebieden[k].score ?? 3 })),
+        tips: Array.isArray(x.tips) ? x.tips : [],
+        geluk: x.geluk ?? null,
+        maan: { emoji: maan.emoji, fase: maan.fase },
+      };
+    }
+    if (!Object.values(tekens).some((v) => (v as { thema: unknown }).thema)) throw new Error('Lege horoscoop ontvangen');
+    const cache = { datum, gegenereerd: new Date().toISOString(), bron: 'gpt-5.5', tekens };
+    mkdirSync(CACHE_DIR, { recursive: true });
+    writeFileSync(pad, JSON.stringify(cache), 'utf-8');
+    return cache;
+  })();
+  try { return await dagBezig; } finally { dagBezig = null; }
+}
+
+// Vooraf genereren (duurt ~1 min) zodat de eerste bezoeker van de dag niet hoeft te wachten
+const voorbereidDag = () => { haalDagHoroscopen(vandaagNL()).catch((e) => console.warn('[daghoroscoop]', e.message)); };
+setTimeout(voorbereidDag, 5000);
+setInterval(voorbereidDag, 30 * 60 * 1000);
+
+app.get('/api/horoscoop/vandaag', async (_req, res) => {
+  try {
+    res.json(await haalDagHoroscopen(vandaagNL()));
   } catch (err: unknown) {
     res.status(503).json({ error: err instanceof Error ? err.message : 'Horoscoop niet beschikbaar' });
   }
@@ -464,7 +544,8 @@ app.get('/api/horoscoop/:teken', async (req, res) => {
   }
   const datum = vandaagNL();
   try {
-    res.json({ datum, ...(await haalDagHoroscoop(teken, datum)) });
+    const cache = await haalDagHoroscopen(datum) as { tekens: Record<string, object> };
+    res.json({ datum, ...cache.tekens[teken] });
   } catch (err: unknown) {
     res.status(503).json({ error: err instanceof Error ? err.message : 'Horoscoop niet beschikbaar' });
   }
