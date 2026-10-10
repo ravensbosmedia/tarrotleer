@@ -1,5 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { lenormandQuizVragen } from '../../data/lenormand';
+import React, { useEffect, useState } from 'react';
+import { laadCombinaties, Combinatie } from '../../data/lenormand/combinaties';
+import { maakRonde, QuizVraag, QuizOnderwerp } from '../../data/lenormand/quizGenerator';
+import { haalVoortgang, slaVoortgangOp } from '../../lib/voortgang';
 
 const G = {
   goud: '#B8860B', goudBleek: '#F5EDD8', goudDonker: '#7A5C00',
@@ -10,14 +12,25 @@ const G = {
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
-function schud<T>(arr: T[]): T[] {
-  const k = [...arr];
-  for (let i = k.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [k[i], k[j]] = [k[j], k[i]];
-  }
-  return k;
+const ONDERWERPEN: { id: QuizOnderwerp; label: string; uitleg: string }[] = [
+  { id: 'mix', label: 'Alles door elkaar', uitleg: 'Kaarten, combinaties en basiskennis' },
+  { id: 'kaarten', label: 'De 36 kaarten', uitleg: 'Nummers, sleutelwoorden, betekenissen' },
+  { id: 'combinaties', label: 'Combinaties', uitleg: 'Wat betekenen twee kaarten samen?' },
+];
+const AANTALLEN = [10, 20, 30];
+
+interface QuizResultaat {
+  rondes: number;
+  beste_pct: number;
+  laatste: { score: number; totaal: number; onderwerp: QuizOnderwerp; datum: string } | null;
+  totaal_goed: number;
+  totaal_vragen: number;
 }
+
+const knopStijl: React.CSSProperties = {
+  fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', padding: '11px 28px', borderRadius: 24,
+  border: `0.5px solid ${G.goud}`, background: G.goudBleek, color: G.goudDonker, cursor: 'pointer',
+};
 
 function boodschap(score: number, total: number): string {
   const pct = score / total;
@@ -28,102 +41,160 @@ function boodschap(score: number, total: number): string {
   return 'Geen zorgen — herhaling is de sleutel. Ga terug naar de bibliotheek en flashcards.';
 }
 
+const Hero: React.FC<{ titel: string; ondertitel?: string }> = ({ titel, ondertitel }) => (
+  <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3rem 1rem 2rem' }}>
+    <div style={{ maxWidth: 640, margin: '0 auto' }}>
+      <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>Mystieke Lenormand</p>
+      <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 400, color: G.tekst, marginBottom: ondertitel ? '0.6rem' : 0 }}>{titel}</h1>
+      {ondertitel && <p style={{ fontSize: 17, fontStyle: 'italic', color: G.tekst2 }}>{ondertitel}</p>}
+    </div>
+  </div>
+);
+
 export const LenormandQuizPage: React.FC = () => {
-  const [vragen] = useState(() => schud(lenormandQuizVragen));
+  const [combinaties, setCombinaties] = useState<Combinatie[] | null>(null);
+  const [onderwerp, setOnderwerp] = useState<QuizOnderwerp>('mix');
+  const [aantal, setAantal] = useState(20);
+  const [vragen, setVragen] = useState<QuizVraag[] | null>(null);  // null = keuzescherm
   const [vraagIndex, setVraagIndex] = useState(0);
   const [gekozen, setGekozen] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [klaar, setKlaar] = useState(false);
-  const [highscore, setHighscore] = useState<number>(() => {
-    const opgeslagen = localStorage.getItem('lenormand-quiz-highscore');
-    return opgeslagen ? parseInt(opgeslagen, 10) : 0;
-  });
+  const [resultaat, setResultaat] = useState<QuizResultaat | null>(null);
+  const [nieuwRecord, setNieuwRecord] = useState(false);
 
-  const vraag = vragen[vraagIndex];
-  const totaal = vragen.length;
-  const nieuweRecord = klaar && score > highscore;
+  useEffect(() => {
+    laadCombinaties().then(setCombinaties).catch(() => setCombinaties([]));
+    haalVoortgang<QuizResultaat>('lenormand-quiz', 'resultaat').then(setResultaat);
+  }, []);
 
-  const kiesOptie = (i: number) => {
-    if (gekozen !== null) return;
-    setGekozen(i);
-    if (i === vraag.correct) setScore(s => s + 1);
-  };
-
-  const volgende = () => {
-    if (vraagIndex + 1 >= totaal) {
-      const nieuweScore = gekozen === vraag.correct ? score + 1 : score;
-      const finaalScore = vraagIndex === 0 ? (gekozen === vraag.correct ? 1 : 0) : nieuweScore;
-      // Gebruik de al-bijgehouden score
-      const eindScore = score + (gekozen === vraag.correct ? 1 : 0);
-      if (eindScore > highscore) {
-        setHighscore(eindScore);
-        localStorage.setItem('lenormand-quiz-highscore', String(eindScore));
-      }
-      setKlaar(true);
-    } else {
-      setVraagIndex(i => i + 1);
-      setGekozen(null);
-    }
-  };
-
-  const herstart = () => {
+  const start = () => {
+    setVragen(maakRonde(aantal, onderwerp, combinaties));
     setVraagIndex(0);
     setGekozen(null);
     setScore(0);
     setKlaar(false);
+    setNieuwRecord(false);
   };
 
-  if (klaar) {
-    const eindScore = score;
+  const kiesOptie = (i: number) => {
+    if (gekozen !== null || !vragen) return;
+    setGekozen(i);
+    if (i === vragen[vraagIndex].correct) setScore((s) => s + 1);
+  };
+
+  const volgende = () => {
+    if (!vragen) return;
+    if (vraagIndex + 1 < vragen.length) {
+      setVraagIndex((i) => i + 1);
+      setGekozen(null);
+      return;
+    }
+    // Ronde klaar: score bewaren bij het account
+    const totaal = vragen.length;
+    const pct = Math.round((score / totaal) * 100);
+    const oud = resultaat;
+    const nieuw: QuizResultaat = {
+      rondes: (oud?.rondes || 0) + 1,
+      beste_pct: Math.max(oud?.beste_pct || 0, pct),
+      laatste: { score, totaal, onderwerp, datum: new Date().toISOString() },
+      totaal_goed: (oud?.totaal_goed || 0) + score,
+      totaal_vragen: (oud?.totaal_vragen || 0) + totaal,
+    };
+    setNieuwRecord(!!oud && pct > (oud.beste_pct || 0));
+    setResultaat(nieuw);
+    slaVoortgangOp('lenormand-quiz', 'resultaat', nieuw);
+    setKlaar(true);
+  };
+
+  // ── Keuzescherm ──
+  if (!vragen) {
+    const combiLaden = onderwerp !== 'kaarten' && combinaties === null;
     return (
       <div className="pendel-pagina">
-        <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3rem 2rem 2rem' }}>
-          <div style={{ maxWidth: 640, margin: '0 auto' }}>
-            <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>Mystieke Lenormand</p>
-            <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 400, color: G.tekst }}>Quiz resultaat</h1>
+        <Hero titel="Quiz" ondertitel="Elke ronde nieuwe vragen — uit de 36 kaarten en 1260 combinaties." />
+        <div style={{ maxWidth: 640, margin: '0 auto', padding: '2.5rem 1rem' }}>
+          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, marginBottom: '0.7rem' }}>WAAROVER?</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '0.6rem', marginBottom: '1.8rem' }}>
+            {ONDERWERPEN.map((o) => (
+              <button key={o.id} onClick={() => setOnderwerp(o.id)} style={{
+                textAlign: 'left', padding: '0.9rem 1rem', borderRadius: 10, cursor: 'pointer',
+                border: `0.5px solid ${onderwerp === o.id ? G.goud : G.rand2}`,
+                background: onderwerp === o.id ? G.goudBleek : G.bg,
+              }}>
+                <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: onderwerp === o.id ? G.goudDonker : G.tekst }}>{o.label}</div>
+                <div style={{ fontSize: 14, color: G.tekst3, marginTop: 3 }}>{o.uitleg}</div>
+              </button>
+            ))}
           </div>
+
+          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, marginBottom: '0.7rem' }}>HOEVEEL VRAGEN?</p>
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
+            {AANTALLEN.map((n) => (
+              <button key={n} onClick={() => setAantal(n)} style={{
+                fontFamily: "'Cinzel', serif", fontSize: 14, padding: '9px 22px', borderRadius: 20, cursor: 'pointer',
+                border: `0.5px solid ${aantal === n ? G.goud : G.rand2}`,
+                background: aantal === n ? G.goudBleek : G.bg, color: aantal === n ? G.goudDonker : G.tekst2,
+              }}>{n}</button>
+            ))}
+          </div>
+
+          <button onClick={start} disabled={combiLaden} style={{ ...knopStijl, opacity: combiLaden ? 0.6 : 1 }}>
+            {combiLaden ? 'Combinaties laden…' : 'Start de quiz →'}
+          </button>
+
+          {resultaat && resultaat.rondes > 0 && (
+            <div style={{ marginTop: '2rem', background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 8, padding: '1rem 1.2rem', fontSize: 15, color: G.tekst2, lineHeight: 1.7 }}>
+              Je hebt <strong>{resultaat.rondes}</strong> {resultaat.rondes === 1 ? 'ronde' : 'rondes'} gespeeld ·
+              beste score <strong style={{ color: G.goudDonker }}>{resultaat.beste_pct}%</strong> ·
+              in totaal {resultaat.totaal_goed} van {resultaat.totaal_vragen} goed
+            </div>
+          )}
         </div>
-        <div style={{ maxWidth: 640, margin: '0 auto', padding: '3rem 2rem', textAlign: 'center' }}>
+      </div>
+    );
+  }
+
+  const totaal = vragen.length;
+
+  // ── Resultaat ──
+  if (klaar) {
+    return (
+      <div className="pendel-pagina">
+        <Hero titel="Quiz resultaat" />
+        <div style={{ maxWidth: 640, margin: '0 auto', padding: '3rem 1rem', textAlign: 'center' }}>
           <div style={{ fontFamily: "'Cinzel', serif", fontSize: 56, fontWeight: 400, color: G.goudDonker, marginBottom: '0.3rem' }}>
-            {eindScore}<span style={{ fontSize: 28, color: G.tekst3 }}>/{totaal}</span>
+            {score}<span style={{ fontSize: 28, color: G.tekst3 }}>/{totaal}</span>
           </div>
-          {nieuweRecord && (
+          {nieuwRecord && (
             <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: G.goud, letterSpacing: '0.1em', marginBottom: '0.5rem' }}>✦ Nieuw record!</div>
           )}
-          <p style={{ fontSize: 17, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, marginBottom: '2rem', maxWidth: 400, margin: '0 auto 2rem' }}>
-            {boodschap(eindScore, totaal)}
+          <p style={{ fontSize: 17, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, maxWidth: 400, margin: '0 auto 2rem' }}>
+            {boodschap(score, totaal)}
           </p>
-          <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 8, padding: '1rem 1.5rem', display: 'inline-block', marginBottom: '2rem', fontSize: 14, color: G.tekst2 }}>
-            Highscore: <strong style={{ color: G.goudDonker }}>{Math.max(eindScore, highscore)}/{totaal}</strong>
-          </div>
-          <div style={{ display: 'flex', gap: '0.7rem', justifyContent: 'center' }}>
-            <button onClick={herstart} style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', padding: '11px 28px', borderRadius: 24, border: `0.5px solid ${G.goud}`, background: G.goudBleek, color: G.goudDonker, cursor: 'pointer' }}>
-              Opnieuw proberen
-            </button>
+          {resultaat && (
+            <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 8, padding: '1rem 1.5rem', display: 'inline-block', marginBottom: '2rem', fontSize: 14, color: G.tekst2 }}>
+              Beste score: <strong style={{ color: G.goudDonker }}>{resultaat.beste_pct}%</strong> · {resultaat.rondes} rondes gespeeld
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: '0.7rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button onClick={start} style={knopStijl}>Nieuwe ronde</button>
+            <button onClick={() => setVragen(null)} style={{ ...knopStijl, background: 'transparent' }}>Ander onderwerp</button>
           </div>
         </div>
       </div>
     );
   }
 
+  // ── Vraag ──
+  const vraag = vragen[vraagIndex];
   const voortgangPct = (vraagIndex / totaal) * 100;
 
   return (
     <div className="pendel-pagina">
-      {/* Hero */}
-      <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3rem 2rem 2rem' }}>
-        <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>Mystieke Lenormand</p>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 400, color: G.tekst, marginBottom: '0.6rem' }}>Quiz</h1>
-          <p style={{ fontSize: 17, fontStyle: 'italic', color: G.tekst2 }}>
-            Test je kennis van de 36 Lenormand-symbolen.
-          </p>
-        </div>
-      </div>
+      <Hero titel="Quiz" ondertitel={ONDERWERPEN.find((o) => o.id === onderwerp)?.label} />
 
-      <div style={{ maxWidth: 640, margin: '0 auto', padding: '2.5rem 2rem' }}>
-
-        {/* Voortgang */}
+      <div style={{ maxWidth: 640, margin: '0 auto', padding: '2.5rem 1rem' }}>
         <div style={{ marginBottom: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: G.tekst3, marginBottom: 4 }}>
             <span>Vraag {vraagIndex + 1} van {totaal}</span>
@@ -134,14 +205,17 @@ export const LenormandQuizPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Vraag */}
-        <div style={{ background: G.bg2, border: `0.5px solid ${G.rand2}`, borderRadius: 10, padding: '1.8rem', marginBottom: '1.2rem' }}>
+        <div style={{ background: G.bg2, border: `0.5px solid ${G.rand2}`, borderRadius: 10, padding: '1.6rem', marginBottom: '1.2rem' }}>
           <p style={{ fontFamily: "'Crimson Pro', serif", fontSize: 19, color: G.tekst, lineHeight: 1.65, margin: 0 }}>
             {vraag.vraag}
           </p>
+          {vraag.citaat && (
+            <p style={{ fontFamily: "'Crimson Pro', serif", fontSize: 17, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.65, margin: '0.8rem 0 0', paddingLeft: '0.9rem', borderLeft: `2px solid ${G.goud}` }}>
+              {vraag.citaat}
+            </p>
+          )}
         </div>
 
-        {/* Opties */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '1.5rem' }}>
           {vraag.opties.map((optie, i) => {
             const isCorrect = i === vraag.correct;
@@ -153,7 +227,6 @@ export const LenormandQuizPage: React.FC = () => {
               if (isCorrect) { bg = '#F0FDF4'; borderColor = '#86EFAC'; textColor = '#15803D'; }
               else if (isGekozen) { bg = '#FEF2F2'; borderColor = '#FCA5A5'; textColor = '#B91C1C'; }
             }
-
             return (
               <button
                 key={i}
@@ -184,7 +257,6 @@ export const LenormandQuizPage: React.FC = () => {
           })}
         </div>
 
-        {/* Uitleg na antwoord */}
         {gekozen !== null && (
           <>
             <div style={{
@@ -197,10 +269,7 @@ export const LenormandQuizPage: React.FC = () => {
               <strong>{gekozen === vraag.correct ? '✓ Goed!' : '✗ Helaas.'}</strong>
               <div style={{ marginTop: '0.4rem', color: G.tekst2 }}>{vraag.uitleg}</div>
             </div>
-            <button
-              onClick={volgende}
-              style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', padding: '11px 28px', borderRadius: 24, border: `0.5px solid ${G.goud}`, background: G.goudBleek, color: G.goudDonker, cursor: 'pointer' }}
-            >
+            <button onClick={volgende} style={knopStijl}>
               {vraagIndex + 1 >= totaal ? 'Resultaat bekijken →' : 'Volgende vraag →'}
             </button>
           </>
