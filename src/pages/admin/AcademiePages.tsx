@@ -170,8 +170,8 @@ export const AcademieOverzichtPage: React.FC = () => {
 };
 
 // ═════════════ Eén cursus met zijn hoofdstukken ═════════════
-interface HoofdstukKort { id: number; nr: number; titel: string; status: HStatus; notitie: string; bijgewerkt: string; bijgewerkt_door: string; gewijzigd: number; lengte: number }
-interface CursusDetail { id: number; slug: string; nr: number; titel: string; beschrijving: string; status: CStatus; hoofdstukken: HoofdstukKort[] }
+interface HoofdstukKort { id: number; nr: number; titel: string; status: HStatus; notitie: string; bijgewerkt: string; bijgewerkt_door: string; gewijzigd: number; lengte: number; heeft_advies: number }
+interface CursusDetail { id: number; slug: string; nr: number; titel: string; beschrijving: string; status: CStatus; advies: string; hoofdstukken: HoofdstukKort[] }
 
 export const AcademieCursusPage: React.FC = () => {
   const { slug = '' } = useParams();
@@ -195,7 +195,7 @@ export const AcademieCursusPage: React.FC = () => {
     } catch (e) { setUploadVerslag((e as Error).message); }
   }
 
-  async function wijzig(w: Partial<Pick<CursusDetail, 'titel' | 'beschrijving' | 'status'>>) {
+  async function wijzig(w: Partial<Pick<CursusDetail, 'titel' | 'beschrijving' | 'status' | 'advies'>>) {
     const d = await api<CursusDetail>(`/api/admin/academie/${slug}`, { method: 'PATCH', body: JSON.stringify(w) });
     setC((x) => x && { ...x, ...d, hoofdstukken: x.hoofdstukken });
     setOpgeslagen('Opgeslagen ✓');
@@ -226,6 +226,21 @@ export const AcademieCursusPage: React.FC = () => {
           {opgeslagen && <span style={{ fontSize: 13, color: '#9bd49b' }}>{opgeslagen}</span>}
           <span style={{ marginLeft: 'auto', fontSize: 14, color: G.tekst2 }}>{goed}/{c.hoofdstukken.length} goedgekeurd</span>
         </div>
+        {/* Beoordeling + pakket voor ChatGPT */}
+        <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 12, padding: '1rem 1.2rem', margin: '0 0 1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 8 }}>
+            <strong style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>💡 BEOORDELING EN ADVIES</strong>
+            <a href={`/api/admin/academie/${c.slug}/chatgpt-pakket`} style={{ ...knop, textDecoration: 'none' }}>⬇ Pakket voor ChatGPT (.zip)</a>
+          </div>
+          <textarea key={c.advies} defaultValue={c.advies} placeholder="Nog geen beoordeling voor deze cursus."
+            onBlur={(e) => e.target.value !== c.advies && wijzig({ advies: e.target.value })}
+            style={{ ...invoer, width: '100%', minHeight: 120, resize: 'vertical', lineHeight: 1.55 }} />
+          <p style={{ fontSize: 12, color: G.tekst3, margin: '6px 0 0' }}>
+            Het pakket bevat jullie herwerk-opdracht, de technische eisen, dit advies plus het advies per hoofdstuk, en de huidige hoofdstukken.
+            Geef het aan ChatGPT en upload de zip die je terugkrijgt hieronder met <em>Upload nieuwe versie</em>.
+          </p>
+        </div>
+
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
           <a href={`/api/admin/academie/${c.slug}/download`} style={{ ...knopLicht, textDecoration: 'none' }}>⬇ Download cursus (.zip)</a>
           <BestandKnop label="⬆ Upload nieuwe versie (.zip)" accept=".zip,application/zip" onKies={uploadZip} />
@@ -243,6 +258,7 @@ export const AcademieCursusPage: React.FC = () => {
             }}>
               <span style={{ fontSize: 16 }}>
                 <span style={{ color: G.tekst3, marginRight: 8 }}>{h.nr}.</span>{h.titel}
+                {h.heeft_advies ? <span style={{ fontSize: 13, marginLeft: 8 }} title="Er is advies voor dit hoofdstuk">💡</span> : null}
                 {h.notitie && <span style={{ fontSize: 13, color: G.tekst3, marginLeft: 8 }}>· 📝 {h.notitie.slice(0, 60)}</span>}
               </span>
               <span style={{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 13, color: G.tekst3 }}>
@@ -260,7 +276,7 @@ export const AcademieCursusPage: React.FC = () => {
 // ═════════════ Hoofdstuk-editor ═════════════
 interface Versie { id: number; titel: string; datum: string; door: string; reden: string; lengte: number }
 interface HoofdstukDetail {
-  id: number; nr: number; titel: string; inhoud: string; origineel: string; status: HStatus; notitie: string;
+  id: number; nr: number; titel: string; inhoud: string; origineel: string; status: HStatus; notitie: string; advies: string;
   bijgewerkt: string; bijgewerkt_door: string;
   cursus: { slug: string; titel: string; nr: number };
   buren: { id: number; nr: number; titel: string }[];
@@ -277,6 +293,7 @@ export const AcademieHoofdstukPage: React.FC = () => {
   const [inhoud, setInhoud] = useState('');
   const [status, setStatus] = useState<HStatus>('te_beoordelen');
   const [notitie, setNotitie] = useState('');
+  const [advies, setAdvies] = useState('');
   const [reden, setReden] = useState('opgeslagen');
   const [melding, setMelding] = useState<string | null>(null);
   const [weergave, setWeergave] = useState<Weergave>(() => (window.innerWidth > 1000 ? 'naast' : 'bewerken'));
@@ -286,13 +303,13 @@ export const AcademieHoofdstukPage: React.FC = () => {
 
   const laad = useCallback(() => {
     api<HoofdstukDetail>(`/api/admin/academie/hoofdstuk/${id}`).then((d) => {
-      setH(d); setTitel(d.titel); setInhoud(d.inhoud); setStatus(d.status); setNotitie(d.notitie); setReden('opgeslagen');
+      setH(d); setTitel(d.titel); setInhoud(d.inhoud); setStatus(d.status); setNotitie(d.notitie); setAdvies(d.advies || ''); setReden('opgeslagen');
       setVersieTekst(null); setToon('niets');
     }).catch((e) => setFout(e.message));
   }, [id]);
   useEffect(() => { laad(); }, [laad]);
 
-  const gewijzigd = !!h && (titel !== h.titel || inhoud !== h.inhoud || status !== h.status || notitie !== h.notitie);
+  const gewijzigd = !!h && (titel !== h.titel || inhoud !== h.inhoud || status !== h.status || notitie !== h.notitie || advies !== (h.advies || ''));
   const gewijzigdRef = useRef(false);
   gewijzigdRef.current = gewijzigd;
 
@@ -307,13 +324,13 @@ export const AcademieHoofdstukPage: React.FC = () => {
     if (!h) return;
     try {
       await api(`/api/admin/academie/hoofdstuk/${h.id}`, {
-        method: 'PUT', body: JSON.stringify({ titel, inhoud, status: nieuweStatus ?? status, notitie, reden }),
+        method: 'PUT', body: JSON.stringify({ titel, inhoud, status: nieuweStatus ?? status, notitie, advies, reden }),
       });
       setMelding('Opgeslagen ✓');
       setTimeout(() => setMelding(null), 2500);
       laad();
     } catch (e) { setMelding((e as Error).message); }
-  }, [h, titel, inhoud, status, notitie, reden, laad]);
+  }, [h, titel, inhoud, status, notitie, advies, reden, laad]);
 
   // Ctrl/Cmd + S = opslaan
   useEffect(() => {
@@ -447,6 +464,14 @@ ${inhoud}`;
         <label style={{ display: 'block', fontSize: 12, color: G.tekst3, marginBottom: '0.8rem' }}>Notitie (alleen voor beheerders)<br />
           <input value={notitie} onChange={(e) => setNotitie(e.target.value)} placeholder="Bijv. ‘nog een voorbeeld toevoegen’ of ‘toets controleren’" style={{ ...invoer, width: '100%' }} />
         </label>
+
+        <details open={!!advies} style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 10, padding: '0.7rem 1rem', marginBottom: '0.8rem' }}>
+          <summary style={{ cursor: 'pointer', fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.06em', color: G.goud }}>
+            💡 Advies voor dit hoofdstuk {advies ? '' : '(nog leeg)'}
+          </summary>
+          <textarea value={advies} onChange={(e) => setAdvies(e.target.value)} placeholder="Wat moet er in dit hoofdstuk beter? Dit advies gaat mee in het pakket voor ChatGPT."
+            style={{ ...invoer, width: '100%', minHeight: 110, marginTop: 8, resize: 'vertical', lineHeight: 1.55 }} />
+        </details>
 
         {/* Weergave-keuze */}
         <div style={{ display: 'flex', gap: 6, marginBottom: '0.7rem', flexWrap: 'wrap', alignItems: 'center' }}>

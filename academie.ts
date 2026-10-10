@@ -221,6 +221,12 @@ export function installeerAcademie(app: express.Express, root: string) {
     );
   `);
 
+  // Adviesvelden (beoordeling per cursus en per hoofdstuk), later toegevoegd
+  for (const [tabel, kolom] of [['academie_cursussen', 'advies'], ['academie_hoofdstukken', 'advies']]) {
+    const kolommen = db.prepare(`PRAGMA table_info(${tabel})`).all() as { name: string }[];
+    if (!kolommen.some((k) => k.name === kolom)) db.exec(`ALTER TABLE ${tabel} ADD COLUMN ${kolom} TEXT NOT NULL DEFAULT ''`);
+  }
+
   const alleenAdmin: express.RequestHandler = (req, res, next) => {
     if (req.lid?.rol !== 'admin') { res.status(403).json({ error: 'Alleen voor beheerders' }); return; }
     next();
@@ -317,7 +323,7 @@ export function installeerAcademie(app: express.Express, root: string) {
     const c = cursusVan.get(String(req.params.slug));
     if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
     const hoofdstukken = db.prepare(`SELECT id, nr, slug, titel, status, notitie, bijgewerkt, bijgewerkt_door,
-      (inhoud != origineel) AS gewijzigd, length(inhoud) AS lengte FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr`).all(c.id);
+      (inhoud != origineel) AS gewijzigd, length(inhoud) AS lengte, (advies != '') AS heeft_advies FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr`).all(c.id);
     res.json({ ...c, hoofdstukken });
   });
 
@@ -327,8 +333,9 @@ export function installeerAcademie(app: express.Express, root: string) {
     const titel = typeof req.body?.titel === 'string' && req.body.titel.trim() ? req.body.titel.trim().slice(0, 150) : c.titel;
     const beschrijving = typeof req.body?.beschrijving === 'string' ? req.body.beschrijving.slice(0, 2000) : c.beschrijving;
     const status = C_STATUS.includes(req.body?.status) ? req.body.status : c.status;
-    db.prepare(`UPDATE academie_cursussen SET titel = ?, beschrijving = ?, status = ?, bijgewerkt = datetime('now') WHERE id = ?`)
-      .run(titel, beschrijving, status, c.id);
+    const advies = typeof req.body?.advies === 'string' ? req.body.advies.slice(0, 20000) : (c as CursusRij & { advies: string }).advies;
+    db.prepare(`UPDATE academie_cursussen SET titel = ?, beschrijving = ?, status = ?, advies = ?, bijgewerkt = datetime('now') WHERE id = ?`)
+      .run(titel, beschrijving, status, advies, c.id);
     res.json(cursusVan.get(c.slug));
   });
 
@@ -349,14 +356,15 @@ export function installeerAcademie(app: express.Express, root: string) {
     const inhoud = typeof req.body?.inhoud === 'string' ? req.body.inhoud.slice(0, 100000) : h.inhoud;
     const status = H_STATUS.includes(req.body?.status) ? req.body.status : h.status;
     const notitie = typeof req.body?.notitie === 'string' ? req.body.notitie.slice(0, 2000) : h.notitie;
+    const advies = typeof req.body?.advies === 'string' ? req.body.advies.slice(0, 10000) : (h as HoofdstukRij & { advies: string }).advies;
     db.transaction(() => {
       // Vorige versie bewaren als de tekst of titel verandert (zo is alles terug te zetten)
       if (inhoud !== h.inhoud || titel !== h.titel) {
         db.prepare('INSERT INTO academie_versies (hoofdstuk_id, titel, inhoud, door, reden) VALUES (?, ?, ?, ?, ?)')
           .run(h.id, h.titel, h.inhoud, req.lid!.email, String(req.body?.reden || 'opgeslagen').slice(0, 100));
       }
-      db.prepare(`UPDATE academie_hoofdstukken SET titel = ?, inhoud = ?, status = ?, notitie = ?, bijgewerkt = datetime('now'), bijgewerkt_door = ? WHERE id = ?`)
-        .run(titel, inhoud, status, notitie, req.lid!.email, h.id);
+      db.prepare(`UPDATE academie_hoofdstukken SET titel = ?, inhoud = ?, status = ?, notitie = ?, advies = ?, bijgewerkt = datetime('now'), bijgewerkt_door = ? WHERE id = ?`)
+        .run(titel, inhoud, status, notitie, advies, req.lid!.email, h.id);
     })();
     res.json(hoofdstukVan.get(h.id));
   });
@@ -479,5 +487,36 @@ export function installeerAcademie(app: express.Express, root: string) {
     if (/\.svg$/i.test(rel)) res.setHeader('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; sandbox");
     res.setHeader('Cache-Control', 'private, max-age=86400');
     res.sendFile(rel, { root: mediaRoot, dotfiles: 'deny' }, (err) => { if (err && !res.headersSent) res.status(404).end(); });
+  });
+
+  // ── Pakket voor ChatGPT: opdracht + technische eisen + advies + huidige hoofdstukken (één cursus) ──
+  app.get('/api/admin/academie/:slug/chatgpt-pakket', alleenAdmin, (req, res) => {
+    const c = cursusVan.get(String(req.params.slug)) as (CursusRij & { advies: string }) | undefined;
+    if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
+    const hoofdstukken = db.prepare<[number], HoofdstukRij & { advies: string }>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(c.id);
+    const map = join(root, 'sjablonen', 'academie-herwerken');
+    const advies = [
+      `# Beoordeling en advies — Cursus ${c.nr}: ${c.titel}`,
+      '',
+      'Dit advies hoort bij de opdracht in 00-OPDRACHT.md. Gebruik het als startpunt voor je analyse; het vervangt je eigen kritische analyse niet.',
+      '',
+      '## De cursus als geheel',
+      '',
+      c.advies || '(nog geen cursusadvies)',
+      '',
+      '## Per hoofdstuk',
+      '',
+      ...hoofdstukken.flatMap((h) => [`### ${bestandsnaam(c.nr, h.nr, h.slug)} — ${h.titel}`, '', h.advies || '(nog geen advies)', '']),
+    ].join('\n');
+    const bestanden = [
+      { naam: '00-OPDRACHT.md', tekst: readFileSync(join(map, '00-OPDRACHT.md'), 'utf-8') },
+      { naam: '01-TECHNISCHE-EISEN.md', tekst: readFileSync(join(map, '01-TECHNISCHE-EISEN.md'), 'utf-8') },
+      { naam: '02-ADVIES-PER-HOOFDSTUK.md', tekst: advies },
+      ...hoofdstukken.map((h) => ({ naam: `${c.slug}/${bestandsnaam(c.nr, h.nr, h.slug)}`, tekst: alsBestand(h.nr, h.titel, h.inhoud) })),
+    ];
+    const zip = execFileSync('python3', ['-c', ZIP_MAKER], { input: JSON.stringify(bestanden), maxBuffer: 50 * 1024 * 1024 });
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="chatgpt-pakket-${c.slug}.zip"`);
+    res.send(zip);
   });
 }
