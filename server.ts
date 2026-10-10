@@ -1,7 +1,7 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
 import { allCards } from './src/data/cards/index.js';
 
 // Laad .env als die aanwezig is (voor lokale dev en PM2 zonder ecosystem config)
@@ -388,13 +388,6 @@ app.get('/api/horoscoop/week/:teken', (req, res) => {
   res.json({ weekKey: key, ...(tekens[teken] as object) });
 });
 
-app.get('/api/horoscoop/vandaag', (_req, res) => {
-  const vandaag = new Date().toISOString().slice(0, 10);
-  const cache = leesHoroscoopCache(vandaag);
-  if (!cache) { res.status(503).json({ error: 'Cache nog niet beschikbaar' }); return; }
-  res.json(cache);
-});
-
 app.get('/api/horoscoop/chinees/:jaar', (req, res) => {
   const jaar = parseInt(req.params.jaar);
   if (isNaN(jaar) || jaar < 1900 || jaar > 2100) {
@@ -404,16 +397,77 @@ app.get('/api/horoscoop/chinees/:jaar', (req, res) => {
   res.json({ jaar, slug, ...CHINEES_INFO[slug] });
 });
 
-app.get('/api/horoscoop/:teken', (req, res) => {
+// Dagelijkse horoscoop via AstroAPI (astrology-api.io v3), in het Nederlands.
+// Per teken pas opgehaald bij de eerste aanvraag van de dag, daarna uit cache/horoscoop-DATUM.json.
+function vandaagNL(): string {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Amsterdam' }); // JJJJ-MM-DD
+}
+
+const lopendeAanvragen = new Map<string, Promise<Record<string, unknown>>>();
+
+async function haalDagHoroscoop(teken: string, datum: string): Promise<Record<string, unknown>> {
+  const cache = (leesHoroscoopCache(datum) || { datum, tekens: {} }) as { datum: string; tekens: Record<string, Record<string, unknown>> };
+  if (cache.tekens[teken]) return cache.tekens[teken];
+
+  const sleutel = `${datum}:${teken}`;
+  const bezig = lopendeAanvragen.get(sleutel);
+  if (bezig) return bezig;
+
+  const aanvraag = (async () => {
+    const apiKey = process.env.ASTROAPI_KEY;
+    if (!apiKey) throw new Error('ASTROAPI_KEY niet geconfigureerd');
+    const r = await fetch('https://api.astrology-api.io/api/v3/horoscope/sign/daily', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sign: teken, language: 'nl', date: datum }),
+      signal: AbortSignal.timeout(30000),
+    });
+    if (!r.ok) throw new Error(`AstroAPI gaf ${r.status}`);
+    const json = await r.json() as { data?: Record<string, unknown> };
+    const d = json.data || {};
+    const item = {
+      slug: teken,
+      naam: TEKEN_NL[teken],
+      tekst_nl: d.overall_theme ?? null,
+      thema: d.overall_theme ?? null,
+      score: d.overall_rating ?? null,
+      gebieden: d.life_areas ?? [],
+      tips: d.tips ?? [],
+      geluk: d.lucky_elements ?? null,
+      maan: d.moon ?? null,
+    };
+    // Opnieuw lezen vlak voor schrijven: andere tekens kunnen intussen zijn toegevoegd
+    const vers = (leesHoroscoopCache(datum) || { datum, tekens: {} }) as typeof cache;
+    vers.tekens[teken] = item;
+    mkdirSync(CACHE_DIR, { recursive: true });
+    writeFileSync(join(CACHE_DIR, `horoscoop-${datum}.json`), JSON.stringify(vers), 'utf-8');
+    return item;
+  })();
+  lopendeAanvragen.set(sleutel, aanvraag);
+  try { return await aanvraag; } finally { lopendeAanvragen.delete(sleutel); }
+}
+
+app.get('/api/horoscoop/vandaag', async (_req, res) => {
+  const datum = vandaagNL();
+  try {
+    const items = await Promise.all(ALLE_TEKENS.map((t) => haalDagHoroscoop(t, datum)));
+    res.json({ datum, tekens: Object.fromEntries(ALLE_TEKENS.map((t, i) => [t, items[i]])) });
+  } catch (err: unknown) {
+    res.status(503).json({ error: err instanceof Error ? err.message : 'Horoscoop niet beschikbaar' });
+  }
+});
+
+app.get('/api/horoscoop/:teken', async (req, res) => {
   const teken = req.params.teken.toLowerCase();
   if (!ALLE_TEKENS.includes(teken)) {
     res.status(400).json({ error: `Ongeldig teken. Gebruik: ${ALLE_TEKENS.join(', ')}` }); return;
   }
-  const vandaag = new Date().toISOString().slice(0, 10);
-  const cache = leesHoroscoopCache(vandaag) as Record<string, unknown> | null;
-  if (!cache) { res.status(503).json({ error: 'Cache nog niet beschikbaar' }); return; }
-  const tekens = cache.tekens as Record<string, unknown>;
-  res.json({ datum: vandaag, ...(tekens[teken] as object) });
+  const datum = vandaagNL();
+  try {
+    res.json({ datum, ...(await haalDagHoroscoop(teken, datum)) });
+  } catch (err: unknown) {
+    res.status(503).json({ error: err instanceof Error ? err.message : 'Horoscoop niet beschikbaar' });
+  }
 });
 
 // ─── Numerologie API ──────────────────────────────────────────────

@@ -48,10 +48,31 @@ function chineesVoorJaar(jaar: number): typeof CHINEES_TEKENS[0] {
 
 type Tab = 'westers' | 'chinees';
 
+interface Gebied { area: string; title: string; prediction: string; rating: number; extra?: { emoji?: string } }
+interface DagHoroscoop {
+  thema?: string | null;
+  tekst_nl?: string | null;
+  score?: number | null;
+  gebieden?: Gebied[];
+  tips?: string[];
+  geluk?: { colors?: string[]; numbers?: number[]; stones?: string[] } | null;
+  maan?: { emoji?: string; sign?: string; prediction?: string } | null;
+}
+
+// Volgorde waarin de levensgebieden getoond worden (de rest valt weg)
+const GEBIED_VOLGORDE = ['love', 'relationships', 'career', 'finance', 'health', 'spirituality', 'home', 'communication'];
+
+const Sterren: React.FC<{ n: number }> = ({ n }) => (
+  <span style={{ color: '#B8860B', letterSpacing: 2, fontSize: 13 }} aria-label={`${n} van 5`}>
+    {'★'.repeat(Math.max(0, Math.min(5, n)))}<span style={{ opacity: 0.25 }}>{'★'.repeat(5 - Math.max(0, Math.min(5, n)))}</span>
+  </span>
+);
+
 export const HoroscoopPage: React.FC = () => {
   const [tab, setTab] = useState<Tab>('westers');
   const [geselecteerd, setGeselecteerd] = useState<string | null>(null);
-  const [horoscoop, setHoroscoop] = useState<string | null>(null);
+  const [horoscoop, setHoroscoop] = useState<DagHoroscoop | null>(null);
+  const [fout, setFout] = useState<string | null>(null);
   const [laden, setLaden] = useState(false);
   const [geboortejaar, setGeboortejaar] = useState('');
   const [chineesResultaat, setChineesResultaat] = useState<typeof CHINEES_TEKENS[0] | null>(null);
@@ -61,13 +82,14 @@ export const HoroscoopPage: React.FC = () => {
   async function laadHoroscoop(teken: string) {
     setGeselecteerd(teken);
     setHoroscoop(null);
+    setFout(null);
     setLaden(true);
     try {
       const r = await fetch(`/api/horoscoop/${teken}`);
-      const d = await r.json();
-      setHoroscoop(d.tekst_nl ?? d.tekst_en ?? 'Geen horoscoop beschikbaar.');
+      if (!r.ok) throw new Error();
+      setHoroscoop(await r.json());
     } catch {
-      setHoroscoop('Kon horoscoop niet laden.');
+      setFout('Kon de horoscoop niet laden. Probeer het later opnieuw.');
     } finally {
       setLaden(false);
     }
@@ -174,9 +196,68 @@ export const HoroscoopPage: React.FC = () => {
                       </div>
                     </div>
                     <div style={{ borderTop: `0.5px solid ${G.rand}`, paddingTop: '1.5rem' }}>
-                      <p style={{ fontSize: 16, lineHeight: 1.8, color: G.goudBleek, margin: 0 }}>{horoscoop}</p>
+                      <p style={{ fontSize: 19, lineHeight: 1.6, color: G.goudBleek, margin: 0, fontStyle: 'italic' }}>
+                        {horoscoop.thema ?? horoscoop.tekst_nl ?? 'Geen horoscoop beschikbaar.'}
+                      </p>
+                      {typeof horoscoop.score === 'number' && (
+                        <div style={{ marginTop: '0.6rem', fontSize: 13, color: 'rgba(245,237,216,0.6)' }}>
+                          Dagenergie <Sterren n={horoscoop.score} />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Levensgebieden */}
+                    {horoscoop.gebieden && horoscoop.gebieden.length > 0 && (
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '0.8rem', marginTop: '1.5rem' }}>
+                        {GEBIED_VOLGORDE
+                          .map(a => horoscoop.gebieden!.find(g => g.area === a))
+                          .filter((g): g is Gebied => !!g)
+                          .map(g => (
+                            <div key={g.area} style={{ background: 'rgba(255,255,255,0.03)', border: `0.5px solid ${G.rand}`, borderRadius: 12, padding: '0.9rem 1rem' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                                <span style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.08em', color: G.goud }}>
+                                  {g.extra?.emoji} {g.title.toUpperCase()}
+                                </span>
+                                <Sterren n={g.rating} />
+                              </div>
+                              <p style={{ fontSize: 15, lineHeight: 1.55, margin: '0.5rem 0 0', color: 'rgba(245,237,216,0.85)' }}>{g.prediction}</p>
+                            </div>
+                          ))}
+                      </div>
+                    )}
+
+                    {/* Tips, geluk en maan */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.2rem', marginTop: '1.5rem' }}>
+                      {horoscoop.tips && horoscoop.tips.length > 0 && (
+                        <div>
+                          <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>TIPS VOOR VANDAAG</h3>
+                          <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: 15, lineHeight: 1.6 }}>
+                            {horoscoop.tips.map(t => <li key={t}>{t}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                      {horoscoop.geluk && (
+                        <div>
+                          <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>GELUK</h3>
+                          <div style={{ fontSize: 15, lineHeight: 1.7 }}>
+                            {horoscoop.geluk.numbers?.length ? <div>Getallen: {horoscoop.geluk.numbers.join(', ')}</div> : null}
+                            {horoscoop.geluk.colors?.length ? <div>Kleuren: {horoscoop.geluk.colors.join(', ')}</div> : null}
+                            {horoscoop.geluk.stones?.length ? <div>Stenen: {horoscoop.geluk.stones.join(', ')}</div> : null}
+                          </div>
+                        </div>
+                      )}
+                      {horoscoop.maan?.prediction && (
+                        <div>
+                          <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>
+                            {horoscoop.maan.emoji} DE MAAN{horoscoop.maan.sign ? ` IN ${horoscoop.maan.sign.toUpperCase()}` : ''}
+                          </h3>
+                          <p style={{ fontSize: 15, lineHeight: 1.6, margin: 0 }}>{horoscoop.maan.prediction}</p>
+                        </div>
+                      )}
                     </div>
                   </>
+                ) : fout ? (
+                  <p style={{ textAlign: 'center', color: 'rgba(245,237,216,0.6)', fontSize: 14, margin: 0 }}>{fout}</p>
                 ) : null}
               </div>
             )}
