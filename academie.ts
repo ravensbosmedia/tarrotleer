@@ -1,6 +1,7 @@
 // ─── Academie: losse cursussen beoordelen en aanpassen (alleen beheerders) ───
 // Cursusmateriaal komt uit een geüploade zip (zie cursussen.ts) en wordt hier geïmporteerd
 // als concept. Beheerders beoordelen en bewerken elk hoofdstuk; elke opslag bewaart een versie.
+// Bewust GEEN AI-aanroep op de server (kost tegoed); verbeteren gebeurt via ChatGPT in de browser.
 // Niets hiervan is zichtbaar voor gewone leden.
 import type express from 'express';
 import Database from 'better-sqlite3';
@@ -199,45 +200,5 @@ export function installeerAcademie(app: express.Express, root: string) {
     const v = db.prepare('SELECT * FROM academie_versies WHERE id = ?').get(Number(req.params.id));
     if (!v) { res.status(404).json({ error: 'Versie niet gevonden' }); return; }
     res.json(v);
-  });
-
-  // ── AI-voorstel: gpt-5.5 maakt een verbeterde versie; de beheerder beslist of die wordt overgenomen ──
-  app.post('/api/admin/academie/hoofdstuk/:id/voorstel', alleenAdmin, async (req, res) => {
-    const h = hoofdstukVan.get(Number(req.params.id));
-    if (!h) { res.status(404).json({ error: 'Hoofdstuk niet gevonden' }); return; }
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) { res.status(503).json({ error: 'OpenAI API sleutel niet geconfigureerd' }); return; }
-    const c = db.prepare<[number], CursusRij>('SELECT * FROM academie_cursussen WHERE id = ?').get(h.cursus_id)!;
-    const alle = db.prepare<[number], { nr: number; titel: string }>('SELECT nr, titel FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(h.cursus_id);
-    const wens = String(req.body?.wens || '').slice(0, 1000);
-    try {
-      const { default: OpenAI } = await import('openai');
-      const openai = new OpenAI({ apiKey });
-      const systeem = `Je bent een ervaren Nederlandse docent en redacteur voor een spirituele online academie (Mystieke Kaarten).
-Je herschrijft één hoofdstuk zodat het ECHTE, specifieke inhoud heeft over het onderwerp in de titel, in plaats van algemene sjabloonzinnen.
-Regels:
-- Behoud de opbouw met deze kopjes (Markdown): ## Welkom, ## Leerdoelen, ## Uitleg, ## Toepassing, ## Praktijkoefening, ## Kennistoets, ## Afronden.
-- Uitleg: 400–700 woorden concrete kennis over het onderwerp (achtergrond, tradities, begrippen, voorbeelden). Specifiek voor DIT hoofdstuk, geen herhaling van andere hoofdstukken.
-- Praktijkoefening: een specifieke, uitvoerbare oefening in genummerde stappen.
-- Kennistoets: 4 meerkeuzevragen in dit formaat, plus 1 open reflectievraag:
-  **1. Vraag?**
-  - A) …
-  - B) …
-  - C) …
-  - D) …
-  Zet de juiste antwoorden met korte uitleg in een <details><summary>Antwoorden</summary> … </details>-blok.
-- Toon: warm, helder, je/jij. Spirituele begrippen als traditie of overtuiging; geen genezingsbeloften, geen medische, juridische of financiële adviezen; benoem grenzen en doorverwijzen waar passend.
-- Geef ALLEEN de Markdown van het hoofdstuk terug, zonder titelregel.`;
-      const gebruiker = `Cursus: ${c.titel}\nHoofdstukken van deze cursus: ${alle.map((a) => `${a.nr}. ${a.titel}`).join(' | ')}\n` +
-        `Dit hoofdstuk: ${h.nr}. ${h.titel}\n${wens ? `Extra wens van de beheerder: ${wens}\n` : ''}\nHuidige tekst:\n${h.inhoud}`;
-      const resp = await openai.chat.completions.create({
-        model: 'gpt-5.5',
-        messages: [{ role: 'system', content: systeem }, { role: 'user', content: gebruiker }],
-        max_completion_tokens: 12000,
-      });
-      res.json({ voorstel: (resp.choices[0].message.content || '').trim() });
-    } catch (err: unknown) {
-      res.status(500).json({ error: err instanceof Error ? err.message : 'Voorstel mislukt' });
-    }
   });
 }

@@ -204,13 +204,11 @@ export const AcademieHoofdstukPage: React.FC = () => {
   const [toon, setToon] = useState<'niets' | 'origineel' | 'versies'>('niets');
   const [versieTekst, setVersieTekst] = useState<{ id: number; titel: string; inhoud: string } | null>(null);
   const [wens, setWens] = useState('');
-  const [voorstel, setVoorstel] = useState<string | null>(null);
-  const [voorstelBezig, setVoorstelBezig] = useState(false);
 
   const laad = useCallback(() => {
     api<HoofdstukDetail>(`/api/admin/academie/hoofdstuk/${id}`).then((d) => {
       setH(d); setTitel(d.titel); setInhoud(d.inhoud); setStatus(d.status); setNotitie(d.notitie); setReden('opgeslagen');
-      setVoorstel(null); setVersieTekst(null); setToon('niets');
+      setVersieTekst(null); setToon('niets');
     }).catch((e) => setFout(e.message));
   }, [id]);
   useEffect(() => { laad(); }, [laad]);
@@ -250,14 +248,56 @@ export const AcademieHoofdstukPage: React.FC = () => {
     navigate(`/admin/academie/h/${doel}`);
   }
 
-  async function vraagVoorstel() {
-    if (!h) return;
-    setVoorstelBezig(true); setVoorstel(null);
+  // Geen AI-aanroep op de server (kost tegoed): we maken een kant-en-klare opdracht voor ChatGPT in de browser
+  function chatgptOpdracht(): string {
+    if (!h) return '';
+    return `Je bent een ervaren Nederlandse docent en redacteur voor een spirituele online academie (Mystieke Kaarten).
+Herschrijf het hoofdstuk hieronder zodat het ECHTE, specifieke inhoud heeft over het onderwerp in de titel, in plaats van algemene sjabloonzinnen.
+
+Regels:
+- Behoud deze kopjes in Markdown: ## Welkom, ## Leerdoelen, ## Uitleg, ## Toepassing, ## Praktijkoefening, ## Kennistoets, ## Afronden.
+- Uitleg: 400–700 woorden concrete kennis (achtergrond, tradities, begrippen, voorbeelden), specifiek voor dit hoofdstuk.
+- Praktijkoefening: een specifieke, uitvoerbare oefening in genummerde stappen.
+- Kennistoets: 4 meerkeuzevragen (vraag vetgedrukt, opties als "- A) …" t/m "- D) …") plus 1 open reflectievraag.
+  Zet de juiste antwoorden met korte uitleg in een blok:
+  <details>
+  <summary>Antwoorden</summary>
+  …
+  </details>
+- Toon: warm, helder, je/jij. Spirituele begrippen als traditie of overtuiging; geen genezingsbeloften en geen medische, juridische of financiële adviezen; benoem grenzen en doorverwijzen waar passend.
+- Geef ALLEEN de Markdown van het hoofdstuk terug, zonder titelregel, in één codeblok zodat ik het makkelijk kan kopiëren.
+${wens.trim() ? `\nExtra wens: ${wens.trim()}\n` : ''}
+Cursus: ${h.cursus.titel}
+Hoofdstukken van deze cursus: ${h.buren.map((b) => `${b.nr}. ${b.titel}`).join(' | ')}
+Dit hoofdstuk: ${h.nr}. ${titel}
+
+Huidige tekst:
+${inhoud}`;
+  }
+
+  async function kopieerOpdracht() {
+    const tekst = chatgptOpdracht();
     try {
-      const d = await api<{ voorstel: string }>(`/api/admin/academie/hoofdstuk/${h.id}/voorstel`, { method: 'POST', body: JSON.stringify({ wens }) });
-      setVoorstel(d.voorstel);
-    } catch (e) { setMelding((e as Error).message); }
-    setVoorstelBezig(false);
+      await navigator.clipboard.writeText(tekst);
+    } catch {
+      // Terugval voor browsers zonder klembord-toegang
+      const t = document.createElement('textarea');
+      t.value = tekst; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove();
+    }
+    setMelding('Opdracht gekopieerd ✓ — plak hem in ChatGPT');
+    setTimeout(() => setMelding(null), 4000);
+  }
+
+  async function plakUitKlembord() {
+    try {
+      const tekst = (await navigator.clipboard.readText()).replace(/^```(?:markdown|md)?\s*\n?/i, '').replace(/\n?```\s*$/, '').trim();
+      if (!tekst) { setMelding('Het klembord is leeg'); return; }
+      setInhoud(tekst); setReden('tekst uit ChatGPT geplakt');
+      if (status === 'te_beoordelen') setStatus('aangepast');
+      setMelding('Geplakt in de editor — controleer en sla op');
+    } catch {
+      setMelding('Plakken werd geweigerd door de browser; plak met Ctrl+V in het tekstvak');
+    }
   }
 
   async function bekijkVersie(v: Versie) {
@@ -369,25 +409,20 @@ export const AcademieHoofdstukPage: React.FC = () => {
           </div>
         )}
 
-        {/* AI-voorstel */}
+        {/* Verbeteren met ChatGPT in de browser (geen kosten op de server) */}
         <div style={{ marginTop: '1.2rem', background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 10, padding: '1rem 1.3rem' }}>
-          <strong style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>✦ AI-VOORSTEL</strong>
-          <p style={{ fontSize: 14, color: G.tekst2, margin: '4px 0 8px' }}>
-            Laat gpt-5.5 een verbeterde versie schrijven met echte inhoud, een specifieke oefening en meerkeuzevragen. Er verandert niets tot jij het overneemt en opslaat.
-          </p>
+          <strong style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>✦ VERBETEREN MET CHATGPT</strong>
+          <ol style={{ fontSize: 14, color: G.tekst2, margin: '6px 0 10px', paddingLeft: '1.2rem', lineHeight: 1.6 }}>
+            <li>Klik op <strong>Kopieer opdracht</strong>: de schrijfopdracht en de huidige tekst gaan naar je klembord.</li>
+            <li>Plak in ChatGPT (in je browser) en kopieer het antwoord.</li>
+            <li>Klik op <strong>Plak in editor</strong> (of plak zelf met Ctrl+V), controleer en sla op.</li>
+          </ol>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <input value={wens} onChange={(e) => setWens(e.target.value)} placeholder="Optioneel: wens, bijv. ‘meer over de geschiedenis’ of ‘eenvoudiger taal’" style={{ ...invoer, flex: '1 1 300px' }} />
-            <button style={knop} onClick={vraagVoorstel} disabled={voorstelBezig}>{voorstelBezig ? 'Bezig… (± 1 minuut)' : 'Maak voorstel'}</button>
+            <button style={knop} onClick={kopieerOpdracht}>📋 Kopieer opdracht</button>
+            <button style={knopLicht} onClick={plakUitKlembord}>Plak in editor</button>
+            <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" style={{ ...knopLicht, textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>ChatGPT openen ↗</a>
           </div>
-          {voorstel && (
-            <div style={{ marginTop: '1rem' }}>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
-                <button style={knop} onClick={() => { setInhoud(voorstel); setReden('AI-voorstel overgenomen'); if (status === 'te_beoordelen') setStatus('aangepast'); setVoorstel(null); setMelding('Voorstel staat in de editor — controleer en sla op'); }}>Overnemen in editor</button>
-                <button style={knopLicht} onClick={() => setVoorstel(null)}>Weggooien</button>
-              </div>
-              <div style={{ border: `1px dashed ${G.goud}`, borderRadius: 10, padding: '0.8rem 1.1rem' }}><Markdown tekst={voorstel} /></div>
-            </div>
-          )}
         </div>
 
         <p style={{ fontSize: 12, color: G.tekst3, marginTop: '1rem' }}>

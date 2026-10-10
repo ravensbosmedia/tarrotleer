@@ -81,7 +81,7 @@ Nieuwe, losse cursussen (los van de bestaande cursus numerologie/astrologie) kom
 
 1. **Uploaden:** `/admin/cursussen` (zip tot 300 MB → `data/uploads/cursussen/`, `cursussen.ts`; nginx heeft een eigen location met 300 MB voor deze route).
 2. **Importeren:** knop *Importeren in Academie* (`academie.ts`). Mappen `NN-naam/NN-MM-hoofdstuk.md` worden cursussen en hoofdstukken; titels komen uit `00-START-HIER.md`. Opnieuw importeren overschrijft geen bewerkte hoofdstukken.
-3. **Beoordelen:** `/admin/academie` (voortgang over alle cursussen) → `/admin/academie/:slug` (hoofdstukken met status) → `/admin/academie/h/:id` (editor: Markdown met voorbeeldweergave, status *te beoordelen / aangepast / goedgekeurd*, notitie, origineel, versiegeschiedenis met terugzetten, Ctrl+S). De knop **AI-voorstel** laat gpt-5.5 een verbeterde versie schrijven; er verandert pas iets na *Overnemen* en *Opslaan*.
+3. **Beoordelen:** `/admin/academie` (voortgang over alle cursussen) → `/admin/academie/:slug` (hoofdstukken met status) → `/admin/academie/h/:id` (editor: Markdown met voorbeeldweergave, status *te beoordelen / aangepast / goedgekeurd*, notitie, origineel, versiegeschiedenis met terugzetten, Ctrl+S). Verbeteren gebeurt **met ChatGPT in de browser** (abonnement), niet via de API: *Kopieer opdracht* zet een schrijfopdracht met de huidige tekst op het klembord, *Plak in editor* zet het antwoord terug. De server doet hier bewust geen AI-aanroepen (kosten).
 
 Tabellen: `academie_cursussen`, `academie_hoofdstukken`, `academie_versies` (elke opslag bewaart de vorige versie), `cursus_uploads`. De weergave van Markdown (`src/components/Markdown.tsx`) bouwt React-elementen en voert nooit HTML uit.
 
