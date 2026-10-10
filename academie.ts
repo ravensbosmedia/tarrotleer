@@ -40,8 +40,8 @@ for info in z.infolist():
     if pad.startswith('..') or pad.startswith('/'):
         continue
     ext = os.path.splitext(pad)[1].lower()
-    if ext == '.md':
-        md.append({'pad': pad, 'tekst': z.read(info).decode('utf-8', 'replace')})
+    if ext == '.md' or (ext == '.json' and 'koppeling' in os.path.basename(pad).lower()):
+        md.append({'pad': pad, 'tekst': z.read(info).decode('utf-8-sig', 'replace')})
     elif ext in afb and media:
         doel = os.path.join(media, pad)
         os.makedirs(os.path.dirname(doel), exist_ok=True)
@@ -79,6 +79,46 @@ async function leesZip(zip: string, mediaMap?: string): Promise<ZipInhoud> {
   const args = ['-c', ZIP_LEZER, zip, ...(mediaMap ? [mediaMap] : [])];
   const { stdout } = await execFileAsync('python3', args, { maxBuffer: 300 * 1024 * 1024 });
   return JSON.parse(stdout);
+}
+
+/**
+ * Bereidt de .md-bestanden uit een zip voor op import:
+ * - verwijzingen naar afbeeldingen in de tekst worden gekoppeld (zie koppelAfbeeldingen);
+ * - heeft een hoofdstuk géén afbeelding, dan komt er een kopafbeelding bovenaan uit een koppelbestand
+ *   (koppeling-hoofdstukken.json: markdown → afbeelding + alt), of anders een afbeelding met dezelfde naam;
+ * - een eventuele les_status uit het koppelbestand wordt teruggegeven als notitie.
+ */
+function bereidVoor(z: ZipInhoud, prefix: string): { pad: string; tekst: string; kop?: string; notitie?: string }[] {
+  const afbeeldingen = new Set(z.img);
+  const mediaUrl = (pad: string) => `/api/academie-media/${prefix}/${pad.split('/').map(encodeURIComponent).join('/')}`;
+  const koppeling = new Map<string, { afbeelding?: string; alt?: string; status?: string }>();
+  for (const b of z.md.filter((x) => x.pad.endsWith('.json'))) {
+    try {
+      const basis = posix.dirname(b.pad);
+      for (const r of JSON.parse(b.tekst) as Record<string, unknown>[]) {
+        if (typeof r.markdown !== 'string') continue;
+        koppeling.set(posix.normalize(posix.join(basis, r.markdown)), {
+          afbeelding: typeof r.afbeelding === 'string' ? posix.normalize(posix.join(basis, r.afbeelding)) : undefined,
+          alt: typeof r.alt === 'string' ? r.alt : undefined,
+          status: typeof r.les_status === 'string' ? r.les_status : undefined,
+        });
+      }
+    } catch { /* geen geldig koppelbestand */ }
+  }
+  // Afbeeldingen op basisnaam (zonder extensie), voor de terugval "zelfde naam als het hoofdstuk"
+  const opNaam = new Map<string, string>();
+  for (const a of z.img) opNaam.set(posix.basename(a).replace(/\.[^.]+$/, ''), a);
+
+  return z.md.filter((b) => b.pad.endsWith('.md')).map((b) => {
+    const tekst = koppelAfbeeldingen(b.tekst, b.pad, afbeeldingen, prefix);
+    const k = koppeling.get(b.pad);
+    let kop: string | undefined;
+    if (!tekst.includes('/api/academie-media/')) {
+      const afb = k?.afbeelding && afbeeldingen.has(k.afbeelding) ? k.afbeelding : opNaam.get(posix.basename(b.pad).replace(/\.md$/, ''));
+      if (afb) kop = `![${(k?.alt || '').replace(/[\[\]]/g, '')}](${mediaUrl(afb)})`;
+    }
+    return { pad: b.pad, tekst, kop, notitie: k?.status };
+  });
 }
 
 /**
@@ -204,7 +244,7 @@ export function installeerAcademie(app: express.Express, root: string) {
       res.status(400).json({ error: 'Zip kon niet gelezen worden' }); return;
     }
     const afbeeldingen = new Set(zipInhoud.img);
-    const bestanden = zipInhoud.md.map((b) => ({ ...b, tekst: koppelAfbeeldingen(b.tekst, b.pad, afbeeldingen, prefix) }));
+    const bestanden = bereidVoor(zipInhoud, prefix);
     const bewerktOvergeslagen: string[] = [];
 
     // Cursustitels uit het startbestand ("## 01. Mediumschap & …"), anders uit "**Cursus:**" in een hoofdstuk
@@ -232,7 +272,11 @@ export function installeerAcademie(app: express.Express, root: string) {
         }
         const nr = Number(hm[2]);
         const bestaat = db.prepare<[number, number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? AND nr = ?').get(cursus.id, nr);
-        const { titel, inhoud } = kaleInhoud(b.tekst);
+        const kaal = kaleInhoud(b.tekst);
+        const titel = kaal.titel;
+        const inhoud = b.kop ? `${b.kop}\n\n${kaal.inhoud}` : kaal.inhoud;
+        // Lesstatus uit het koppelbestand als notitie, alleen als er nog geen notitie staat
+        if (b.notitie) db.prepare(`UPDATE academie_hoofdstukken SET notitie = ? WHERE cursus_id = ? AND nr = ? AND notitie = ''`).run(b.notitie.slice(0, 2000), cursus.id, nr);
         if (bestaat) {
           if (inhoud === bestaat.origineel) { overgeslagen++; continue; }
           if (bestaat.inhoud === bestaat.origineel) {
@@ -249,8 +293,8 @@ export function installeerAcademie(app: express.Express, root: string) {
           }
           continue;
         }
-        db.prepare(`INSERT INTO academie_hoofdstukken (cursus_id, nr, slug, titel, inhoud, origineel, bijgewerkt_door)
-          VALUES (?, ?, ?, ?, ?, ?, ?)`).run(cursus.id, nr, hm[3], titel || hm[3].replace(/-/g, ' '), inhoud, inhoud, 'import');
+        db.prepare(`INSERT INTO academie_hoofdstukken (cursus_id, nr, slug, titel, inhoud, origineel, bijgewerkt_door, notitie)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`).run(cursus.id, nr, hm[3], titel || hm[3].replace(/-/g, ' '), inhoud, inhoud, 'import', (b.notitie || '').slice(0, 2000));
         nieuweHoofdstukken++;
       }
       db.prepare(`UPDATE cursus_uploads SET status = CASE WHEN status = 'nieuw' THEN 'in_behandeling' ELSE status END WHERE id = ?`).run(upload.id);
@@ -381,8 +425,7 @@ export function installeerAcademie(app: express.Express, root: string) {
       const n = await ontvangNaarBestand(req, tmp, 1024 * 1024 * 1024);
       if (n < 22 || !isZip(tmp)) { res.status(400).json({ error: 'Dit is geen zip-bestand' }); try { unlinkSync(tmp); } catch { /* weg */ } return; }
       const z = await leesZip(tmp, join(mediaRoot, prefix));
-      const afb = new Set(z.img);
-      bestanden = z.md.map((b) => ({ ...b, tekst: koppelAfbeeldingen(b.tekst, b.pad, afb, prefix) }));
+      bestanden = bereidVoor(z, prefix).map((b) => ({ pad: b.pad, tekst: b.kop ? b.tekst.replace(/^(#\s.*\n(?:\s*\n|\*\*.*\n)*)/, `$1\n${b.kop}\n\n`) : b.tekst }));
     } catch {
       res.status(400).json({ error: 'Zip kon niet gelezen worden' }); return;
     } finally {
