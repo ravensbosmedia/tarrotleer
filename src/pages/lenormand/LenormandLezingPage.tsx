@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { bewaarLegging } from '../../lib/voortgang';
 import { lenormandKaarten, lenormandSpreads } from '../../data/lenormand';
 import { LenormandKaart, LenormandSpreadType } from '../../types/lenormand';
 import { LenormandKaartVisueel, LenormandKaartRug } from '../../components/lenormand/LenormandKaartVisueel';
@@ -126,6 +128,20 @@ export const LenormandLezingPage: React.FC = () => {
   const [duidingFout, setDuidingFout] = useState<string | null>(null);
   const [duoUitleg, setDuoUitleg] = useState<string[] | null>(null);
   const [duosBezig, setDuosBezig] = useState(false);
+  const [bewaard, setBewaard] = useState<'nee' | 'bezig' | 'ja' | 'fout'>('nee');
+
+  const bewaar = async () => {
+    setBewaard('bezig');
+    const id = await bewaarLegging({
+      soort: 'lenormand',
+      legging: spread.naam,
+      vraag,
+      kaarten: getrokken.map((k, i) => ({ id: k.id, naam: k.naam, positie: spread.posities[i] ?? `Kaart ${i + 1}` })),
+      duiding: duiding ?? undefined,
+      verbindingen: duoUitleg ?? undefined,
+    });
+    setBewaard(id ? 'ja' : 'fout');
+  };
   const duosRef = useRef(false);
 
   const vraagDuiding = async () => {
@@ -188,7 +204,7 @@ export const LenormandLezingPage: React.FC = () => {
     setOnthuldeIndices(spread.id === 'dag' ? new Set([0]) : new Set());
     setActieveKaart(null);
     setDuoUitleg(null); setDuosBezig(false); duosRef.current = false;
-    setDuiding(null); setDuidingFout(null);
+    setDuiding(null); setDuidingFout(null); setBewaard('nee');
     setFase('lezing');
   };
 
@@ -202,7 +218,7 @@ export const LenormandLezingPage: React.FC = () => {
     setActieveKaart(null);
   };
 
-  const reset = () => { setFase('start'); setGetrokken([]); setOnthuldeIndices(new Set()); setActieveKaart(null); setVraag(''); setDuiding(null); setDuidingFout(null); setDuoUitleg(null); setDuosBezig(false); duosRef.current = false; };
+  const reset = () => { setBewaard('nee'); setFase('start'); setGetrokken([]); setOnthuldeIndices(new Set()); setActieveKaart(null); setVraag(''); setDuiding(null); setDuidingFout(null); setDuoUitleg(null); setDuosBezig(false); duosRef.current = false; };
 
   return (
     <div className="pendel-pagina">
@@ -377,6 +393,17 @@ export const LenormandLezingPage: React.FC = () => {
                 <button onClick={onthulAlles} style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.rand2}`, background: G.bg2, color: G.tekst2, cursor: 'pointer' }}>
                   Alle kaarten omdraaien
                 </button>
+              )}
+              {onthuldeIndices.size === getrokken.length && getrokken.length > 0 && (
+                bewaard === 'ja' ? (
+                  <span style={{ alignSelf: 'center', fontSize: 13, color: '#15803D' }}>
+                    ✓ Bewaard — zie <Link to="/voortgang#leggingen" style={{ color: G.goudDonker }}>Mijn voortgang</Link>
+                  </span>
+                ) : (
+                  <button onClick={bewaar} disabled={bewaard === 'bezig'} style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.goud}`, background: G.goudBleek, color: G.goudDonker, cursor: 'pointer', opacity: bewaard === 'bezig' ? 0.6 : 1 }}>
+                    {bewaard === 'bezig' ? 'Bewaren…' : bewaard === 'fout' ? 'Opnieuw proberen' : '💾 Bewaar legging'}
+                  </button>
+                )
               )}
               <button onClick={reset} style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.rand}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
                 Nieuwe lezing

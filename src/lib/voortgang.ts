@@ -1,5 +1,5 @@
 // Voortgang per account (opgeslagen op de server)
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface VoortgangItem<T = Record<string, unknown>> {
   onderdeel: string;
@@ -133,4 +133,73 @@ export function useCursusQuizOpslaan(
     const score = lijst.filter((a) => a.goed).length;
     slaRondeOp(`cursus-${module}`, score, vragen.length, lijst);
   }, [ingediend]); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
+export async function verwijderVoortgang(onderdeel: string, item: string): Promise<boolean> {
+  try {
+    const r = await fetch(`/api/voortgang?onderdeel=${encodeURIComponent(onderdeel)}&item=${encodeURIComponent(item)}`, { method: 'DELETE' });
+    return r.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Alle items van één onderdeel (bv. 'tarot-lessen' → per les { voltooid: true }),
+ * met functies om een item te zetten of te verwijderen. Wijzigingen worden direct getoond.
+ */
+export function useOnderdeelVoortgang<T = Record<string, unknown>>(onderdeel: string) {
+  const [items, setItems] = useState<Map<string, T>>(new Map());
+  const [laden, setLaden] = useState(true);
+
+  useEffect(() => {
+    let actief = true;
+    haalAlleVoortgang().then((lijst) => {
+      if (!actief) return;
+      setItems(new Map(lijst.filter((v) => v.onderdeel === onderdeel).map((v) => [v.item, v.data as T])));
+      setLaden(false);
+    });
+    return () => { actief = false; };
+  }, [onderdeel]);
+
+  const zet = useCallback((item: string, data: T) => {
+    setItems((m) => new Map(m).set(item, data));
+    return slaVoortgangOp(onderdeel, item, data);
+  }, [onderdeel]);
+
+  const verwijder = useCallback((item: string) => {
+    setItems((m) => { const n = new Map(m); n.delete(item); return n; });
+    return verwijderVoortgang(onderdeel, item);
+  }, [onderdeel]);
+
+  return { items, laden, zet, verwijder };
+}
+
+// ── Opgeslagen leggingen ──
+export interface OpgeslagenKaart { id: number; naam: string; positie: string; omgekeerd?: boolean }
+export interface OpgeslagenLegging {
+  soort: 'tarot' | 'lenormand';
+  legging: string;          // naam van de legging, bv. 'Keltisch Kruis'
+  vraag: string;
+  kaarten: OpgeslagenKaart[];
+  duiding?: string;         // samenvattende duiding (tekst)
+  duidingPerKaart?: string[];
+  /** Lenormand: uitleg van de buur-duo's (kaart 1+2, 2+3, …) */
+  verbindingen?: string[];
+  datum: string;
+}
+
+/** Bewaart een legging bij het account en geeft het item-id terug (of null bij een fout). */
+export async function bewaarLegging(legging: Omit<OpgeslagenLegging, 'datum'>): Promise<string | null> {
+  const item = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  const ok = await slaVoortgangOp('leggingen', item, { ...legging, datum: new Date().toISOString() });
+  return ok ? item : null;
+}
+
+/** Schudt met gewichten: zwaardere items komen vaker vooraan (Efraimidis–Spirakis). */
+export function gewogenSchud<T>(lijst: T[], gewicht: (x: T) => number): T[] {
+  return lijst
+    .map((x) => ({ x, k: Math.pow(Math.random(), 1 / Math.max(0.01, gewicht(x))) }))
+    .sort((a, b) => b.k - a.k)
+    .map((e) => e.x);
 }

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useOnderdeelVoortgang } from '../lib/voortgang';
 
 interface Lesson {
   id: string;
@@ -618,10 +620,16 @@ const CATEGORIES = [
   { value: 'gevorderd', label: 'Gevorderd' },
 ] as const;
 
+/** Lijst van lessen (id + titel) voor het voortgangsoverzicht. */
+export const tarotLesTitels = lessons.map(l => ({ id: l.id, titel: l.title }));
+
 export const LessenPage: React.FC = () => {
   const [open, setOpen] = useState<string | null>(null);
   const [category, setCategory] = useState<'all' | 'basis' | 'interpretatie' | 'leggingen' | 'gevorderd'>('all');
   const [level, setLevel] = useState<'all' | 'beginner' | 'gevorderd'>('all');
+  // Welke lessen gelezen zijn, per account
+  const gelezen = useOnderdeelVoortgang<{ voltooid: boolean; titel?: string; datum?: string }>('tarot-lessen');
+  const aantalGelezen = lessons.filter(l => gelezen.items.has(l.id)).length;
 
   const filtered = lessons.filter(l =>
     (category === 'all' || l.category === category) &&
@@ -668,6 +676,17 @@ export const LessenPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Voortgang */}
+        <div className="mb-5">
+          <div className="flex justify-between text-sm text-gray-500 mb-1">
+            <span>{aantalGelezen} van {lessons.length} lessen gelezen</span>
+            <Link to="/voortgang" className="text-purple-600 hover:underline">Mijn voortgang</Link>
+          </div>
+          <div className="h-1.5 bg-gray-200 rounded-full">
+            <div className="h-full bg-purple-600 rounded-full transition-all" style={{ width: `${Math.round((aantalGelezen / lessons.length) * 100)}%` }} />
+          </div>
+        </div>
+
         <div className="space-y-3">
           {filtered.map(lesson => (
             <div key={lesson.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -685,6 +704,7 @@ export const LessenPage: React.FC = () => {
                     {lesson.category}
                   </span>
                   <h3 className="font-semibold text-gray-800">{lesson.title}</h3>
+                  {gelezen.items.has(lesson.id) && <CheckCircle2 className="w-4 h-4 text-green-600" aria-label="Gelezen" />}
                 </div>
                 {open === lesson.id
                   ? <ChevronUp className="w-5 h-5 text-gray-400 shrink-0 ml-2" />
@@ -693,6 +713,18 @@ export const LessenPage: React.FC = () => {
               {open === lesson.id && (
                 <div className="px-6 pb-6 border-t border-gray-100">
                   <div className="pt-4">{lesson.content}</div>
+                  <div className="mt-5 pt-4 border-t border-gray-100 flex justify-end">
+                    {gelezen.items.has(lesson.id) ? (
+                      <span className="flex items-center gap-1 text-sm text-green-700"><CheckCircle2 className="w-4 h-4" /> Gelezen</span>
+                    ) : (
+                      <button
+                        onClick={() => gelezen.zet(lesson.id, { voltooid: true, titel: lesson.title, datum: new Date().toISOString() })}
+                        className="bg-purple-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                      >
+                        ✓ Markeer als gelezen
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

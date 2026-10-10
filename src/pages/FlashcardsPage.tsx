@@ -1,4 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { haalQuizStats, slaRondeOp, maakGewicht, gewogenSchud, QuizStat } from '../lib/voortgang';
 import { allCards } from '../data/cards';
 import { TarotCard as TarotCardType } from '../types/cards';
 import { RotateCcw, ThumbsUp, ThumbsDown, Shuffle } from 'lucide-react';
@@ -19,6 +21,14 @@ function shuffle<T>(arr: T[]): T[] {
 export const FlashcardsPage: React.FC = () => {
   const [suit, setSuit] = useState('all');
   const [deck, setDeck] = useState<TarotCardType[]>(() => shuffle(allCards));
+  const stats = useRef<QuizStat[]>([]);
+  // Kaarten die je nog oefent (of nooit gezien hebt) komen vooraan in de stapel
+  const schudGewogen = (kaarten: TarotCardType[]) =>
+    gewogenSchud(kaarten, (c) => maakGewicht(stats.current)(`kaart:${c.id}`));
+
+  useEffect(() => {
+    haalQuizStats('tarot-flashcards').then((s) => { stats.current = s; setDeck(schudGewogen(allCards)); });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [isReversed] = useState(() => Math.random() > 0.5);
@@ -32,13 +42,15 @@ export const FlashcardsPage: React.FC = () => {
 
   const nextCard = useCallback((didKnow: boolean) => {
     if (didKnow) setKnown(k => k + 1); else setPractice(p => p + 1);
+    // Per kaart bewaren of je hem kende (bij het account)
+    if (card) slaRondeOp('tarot-flashcards', didKnow ? 1 : 0, 1, [{ sleutel: `kaart:${card.id}`, label: card.nameNL, goed: didKnow }], { ronde: false });
     setFlipped(false);
     setCardReversed(Math.random() > 0.5);
     setIndex(i => i + 1);
-  }, []);
+  }, [card]);
 
   const reset = () => {
-    setDeck(shuffle(suit === 'all' ? allCards : allCards.filter(c => c.suit === suit)));
+    setDeck(schudGewogen(suit === 'all' ? allCards : allCards.filter(c => c.suit === suit)));
     setIndex(0);
     setFlipped(false);
     setKnown(0);
@@ -71,6 +83,7 @@ export const FlashcardsPage: React.FC = () => {
           <button onClick={reset} className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800">
             <Shuffle className="w-4 h-4" /> Opnieuw schudden
           </button>
+          <Link to="/voortgang" className="text-sm text-purple-600 hover:underline">Mijn voortgang</Link>
           <div className="ml-auto flex gap-4 text-sm">
             <span className="text-green-600 font-medium">✓ {known}</span>
             <span className="text-orange-500 font-medium">↺ {practice}</span>

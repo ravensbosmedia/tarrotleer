@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useOnderdeelVoortgang } from '../../lib/voortgang';
 import { pendelLessen, pendelVideos, PendelCategorie, PendelLes, PendelLesInhoud } from '../../data/pendel/lessen';
 import { PendelAnimatie, PendelMode, bewegingNaarMode } from '../../components/pendel/PendelAnimatie';
 
@@ -153,32 +154,39 @@ const HeroPendel: React.FC = () => (
 type CatFilter = PendelCategorie | 'alle';
 type NivFilter = 'alle' | 'beginner' | 'gevorderd';
 
-function getVoltooide(): string[] {
-  return pendelLessen
-    .filter(l => localStorage.getItem(STORAGE_KEY_PREFIX + l.id) === 'voltooid')
-    .map(l => l.id);
+// Voorheen alleen in de browser bewaard; nu bij het account (oude browserwaarden worden één keer overgenomen)
+function uitBrowser(prefix: string, waarde: string, ids: string[]): string[] {
+  try { return ids.filter(id => localStorage.getItem(prefix + id) === waarde); } catch { return []; }
 }
 
 export const LessenPage: React.FC = () => {
   const [catFilter, setCatFilter]   = useState<CatFilter>('alle');
   const [nivFilter, setNivFilter]   = useState<NivFilter>('alle');
   const [openLes, setOpenLes]       = useState<PendelLes | null>(null);
-  const [voltooide, setVoltooide]   = useState<string[]>(getVoltooide);
-  const [bekendeVideos, setBekendeVideos] = useState<Set<string>>(() => {
-    const s = new Set<string>();
-    pendelVideos.forEach(v => {
-      if (localStorage.getItem(STORAGE_VIDEO_PREFIX + v.id) === 'bekeken') s.add(v.id);
-    });
-    return s;
-  });
+  const lesVoortgang   = useOnderdeelVoortgang<{ voltooid: boolean; titel?: string; datum?: string }>('pendel-lessen');
+  const videoVoortgang = useOnderdeelVoortgang<{ bekeken: boolean; titel?: string; datum?: string }>('pendel-videos');
+  const voltooide = [...lesVoortgang.items.keys()];
+  const bekendeVideos = new Set(videoVoortgang.items.keys());
+
+  useEffect(() => {
+    if (lesVoortgang.laden) return;
+    for (const id of uitBrowser(STORAGE_KEY_PREFIX, 'voltooid', pendelLessen.map(l => l.id))) {
+      if (!lesVoortgang.items.has(id)) lesVoortgang.zet(id, { voltooid: true, titel: pendelLessen.find(l => l.id === id)?.titel });
+    }
+  }, [lesVoortgang.laden]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (videoVoortgang.laden) return;
+    for (const id of uitBrowser(STORAGE_VIDEO_PREFIX, 'bekeken', pendelVideos.map(v => v.id))) {
+      if (!videoVoortgang.items.has(id)) videoVoortgang.zet(id, { bekeken: true, titel: pendelVideos.find(v => v.id === id)?.titel });
+    }
+  }, [videoVoortgang.laden]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const markeerVoltooid = (lesId: string) => {
-    localStorage.setItem(STORAGE_KEY_PREFIX + lesId, 'voltooid');
-    setVoltooide(getVoltooide());
+    lesVoortgang.zet(lesId, { voltooid: true, titel: pendelLessen.find(l => l.id === lesId)?.titel, datum: new Date().toISOString() });
   };
   const markeerBekeken = (videoId: string) => {
-    localStorage.setItem(STORAGE_VIDEO_PREFIX + videoId, 'bekeken');
-    setBekendeVideos(prev => new Set([...prev, videoId]));
+    videoVoortgang.zet(videoId, { bekeken: true, titel: pendelVideos.find(v => v.id === videoId)?.titel, datum: new Date().toISOString() });
   };
 
   const aantalVoltooide = voltooide.length;

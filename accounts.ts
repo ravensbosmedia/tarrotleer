@@ -315,11 +315,20 @@ export function installeerAccounts(app: express.Express, root: string) {
     const item = String(req.body?.item || '').slice(0, 100);
     const data = JSON.stringify(req.body?.data ?? {});
     if (!onderdeel || !item) { res.status(400).json({ error: 'Geef onderdeel en item mee' }); return; }
-    if (data.length > 20000) { res.status(413).json({ error: 'Te veel data' }); return; }
+    if (data.length > 60000) { res.status(413).json({ error: 'Te veel data' }); return; }
     db.prepare(`INSERT INTO voortgang (lid_id, onderdeel, item, data, bijgewerkt) VALUES (?, ?, ?, ?, datetime('now'))
       ON CONFLICT (lid_id, onderdeel, item) DO UPDATE SET data = excluded.data, bijgewerkt = excluded.bijgewerkt`)
       .run(req.lid!.id, onderdeel, item, data);
     res.json({ ok: true });
+  });
+
+  // Eén voortgangsitem verwijderen (bv. een opgeslagen legging)
+  app.delete('/api/voortgang', (req, res) => {
+    const onderdeel = String(req.query.onderdeel || '');
+    const item = String(req.query.item || '');
+    if (!onderdeel || !item) { res.status(400).json({ error: 'Geef onderdeel en item mee' }); return; }
+    const r = db.prepare('DELETE FROM voortgang WHERE lid_id = ? AND onderdeel = ? AND item = ?').run(req.lid!.id, onderdeel, item);
+    res.json({ ok: true, verwijderd: r.changes });
   });
 }
 

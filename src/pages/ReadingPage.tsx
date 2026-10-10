@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { bewaarLegging } from '../lib/voortgang';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getCards } from '../config/localDB';
 import { TarotCard as TarotCardType } from '../types/cards';
 import { allCards as localCards } from '../data/cards';
@@ -112,6 +113,8 @@ const ReadingPage: React.FC = () => {
   const [vraagstelling, setVraagstelling] = useState('');
   const [showInterpretation, setShowInterpretation] = useState(false);
   const [reversedStates, setReversedStates] = useState<boolean[]>([]);
+  const [duidingPerKaart, setDuidingPerKaart] = useState<string[] | null>(null);
+  const [bewaard, setBewaard] = useState<'nee' | 'bezig' | 'ja' | 'fout'>('nee');
 
   const currentReading = type && READINGS[type as ReadingType];
 
@@ -133,6 +136,25 @@ const ReadingPage: React.FC = () => {
 
   const getCardById = (id: number): TarotCardType | undefined => {
     return allCards.find(card => card.id === id);
+  };
+
+  // Stabiele lijst: anders start de AI-duiding bij elke render opnieuw (en kost dat API-tegoed)
+  const gekozenKaarten = useMemo(
+    () => selectedCards.map(id => allCards.find(card => card.id === id)).filter((card): card is TarotCardType => card !== undefined),
+    [selectedCards, allCards]
+  );
+
+  const bewaar = async () => {
+    if (!currentReading) return;
+    setBewaard('bezig');
+    const id = await bewaarLegging({
+      soort: 'tarot',
+      legging: currentReading.title,
+      vraag: vraagstelling,
+      kaarten: gekozenKaarten.map((k, i) => ({ id: k.id, naam: k.nameNL, positie: currentReading.positions[i], omgekeerd: reversedStates[i] ?? false })),
+      duidingPerKaart: duidingPerKaart ?? undefined,
+    });
+    setBewaard(id ? 'ja' : 'fout');
   };
 
   const shuffleCards = () => {
@@ -185,6 +207,8 @@ const ReadingPage: React.FC = () => {
   };
 
   const resetReading = () => {
+    setDuidingPerKaart(null);
+    setBewaard('nee');
     setSelectedCards([]);
     setSelectedCardDetails(null);
     setVraagstelling('');
@@ -201,7 +225,7 @@ const ReadingPage: React.FC = () => {
     
     const readingData = {
       title: currentReading.title,
-      cards: selectedCards.map(id => getCardById(id)).filter((card): card is TarotCardType => card !== undefined),
+      cards: gekozenKaarten,
       positions: currentReading.positions,
       vraagstelling: vraagstelling
     };
@@ -347,7 +371,7 @@ const ReadingPage: React.FC = () => {
                   />
 
                   <CelticCrossBasicMeaning
-                    cards={selectedCards.map(id => getCardById(id)).filter((card): card is TarotCardType => card !== undefined)}
+                    cards={gekozenKaarten}
                     positions={currentReading.positions}
                   />
                 </>
@@ -394,18 +418,30 @@ const ReadingPage: React.FC = () => {
               )}
 
               <TarotAIInterpretation
-                cards={selectedCards.map(id => getCardById(id)).filter((card): card is TarotCardType => card !== undefined)}
+                cards={gekozenKaarten}
                 positions={currentReading.positions}
                 vraagstelling={vraagstelling}
                 readingType={type}
+                onInterpretatie={setDuidingPerKaart}
               />
               
               <TarotChat
-                cards={selectedCards.map(id => getCardById(id)).filter((card): card is TarotCardType => card !== undefined)}
+                cards={gekozenKaarten}
                 positions={currentReading.positions}
               />
 
-              <div className="mt-6 flex justify-center">
+              <div className="mt-6 flex justify-center items-center gap-3 flex-wrap">
+                {bewaard === 'ja' ? (
+                  <span className="text-green-700 text-sm">✓ Bewaard — terug te vinden bij <Link to="/voortgang#leggingen" className="underline">Mijn voortgang</Link></span>
+                ) : (
+                  <button
+                    onClick={bewaar}
+                    disabled={bewaard === 'bezig'}
+                    className="border border-purple-600 text-purple-700 py-2 px-4 rounded hover:bg-purple-50 transition-colors disabled:opacity-50"
+                  >
+                    {bewaard === 'bezig' ? 'Bewaren…' : bewaard === 'fout' ? 'Opnieuw proberen' : '💾 Bewaar legging'}
+                  </button>
+                )}
                 <button
                   onClick={resetReading}
                   className="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition-colors"

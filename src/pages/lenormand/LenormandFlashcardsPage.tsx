@@ -1,4 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { haalQuizStats, slaRondeOp, maakGewicht, gewogenSchud, QuizStat } from '../../lib/voortgang';
 import { lenormandKaarten } from '../../data/lenormand';
 import { LenormandKaart } from '../../types/lenormand';
 import { LenormandKaartVisueel } from '../../components/lenormand/LenormandKaartVisueel';
@@ -24,8 +26,23 @@ export const LenormandFlashcardsPage: React.FC = () => {
   const [index, setIndex] = useState(0);
   const [omgedraaid, setOmgedraaid] = useState(false);
   const [gezien, setGezien] = useState<Set<number>>(new Set());
+  const [telling, setTelling] = useState({ ken: 0, oefen: 0 });
+  const stats = useRef<QuizStat[]>([]);
+  // Kaarten die je nog oefent (of nooit gezien hebt) komen vooraan in de stapel
+  const schudGewogen = () => gewogenSchud(lenormandKaarten, (k) => maakGewicht(stats.current)(`kaart:${k.id}`));
+
+  useEffect(() => {
+    haalQuizStats('lenormand-flashcards').then((s) => { stats.current = s; setDeck(schudGewogen()); });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const kaart = deck[index];
+
+  /** Bewaart per kaart of je hem kende en gaat door naar de volgende. */
+  const beoordeel = (ken: boolean) => {
+    slaRondeOp('lenormand-flashcards', ken ? 1 : 0, 1, [{ sleutel: `kaart:${kaart.id}`, label: kaart.naam, goed: ken }], { ronde: false });
+    setTelling((t) => (ken ? { ...t, ken: t.ken + 1 } : { ...t, oefen: t.oefen + 1 }));
+    volgende();
+  };
 
   const volgende = () => {
     setGezien(prev => new Set([...prev, kaart.id]));
@@ -39,10 +56,11 @@ export const LenormandFlashcardsPage: React.FC = () => {
   };
 
   const herstart = () => {
-    setDeck(schud(lenormandKaarten));
+    setDeck(schudGewogen());
     setIndex(0);
     setOmgedraaid(false);
     setGezien(new Set());
+    setTelling({ ken: 0, oefen: 0 });
   };
 
   const voortgang = Math.round((gezien.size / deck.length) * 100);
@@ -134,15 +152,25 @@ export const LenormandFlashcardsPage: React.FC = () => {
             ← Vorige
           </button>
           <button
-            onClick={volgende}
-            style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 24px', borderRadius: 20, border: `0.5px solid ${G.goud}`, background: G.goudBleek, color: G.goudDonker, cursor: 'pointer' }}
+            onClick={() => beoordeel(false)}
+            style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 20px', borderRadius: 20, border: '0.5px solid #FDBA74', background: '#FFF7ED', color: '#C2410C', cursor: 'pointer' }}
           >
-            Volgende →
+            ↺ Nog oefenen
+          </button>
+          <button
+            onClick={() => beoordeel(true)}
+            style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 20px', borderRadius: 20, border: '0.5px solid #86EFAC', background: '#F0FDF4', color: '#15803D', cursor: 'pointer' }}
+          >
+            ✓ Ken ik
           </button>
           <button onClick={herstart} style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 18px', borderRadius: 20, border: `0.5px solid ${G.rand}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
             Herstarten
           </button>
         </div>
+        <p style={{ textAlign: 'center', fontSize: 13, color: G.tekst3, marginTop: '0.9rem' }}>
+          <span style={{ color: '#15803D' }}>✓ {telling.ken}</span> · <span style={{ color: '#C2410C' }}>↺ {telling.oefen}</span> deze ronde ·{' '}
+          <Link to="/voortgang" style={{ color: G.goudDonker }}>Mijn voortgang</Link>
+        </p>
 
         {/* Voortgang compleet */}
         {gezien.size === deck.length && (

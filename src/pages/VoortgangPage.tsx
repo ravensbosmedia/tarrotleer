@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { haalAlleVoortgang, haalQuizStats, pctGoed, QuizResultaat, QuizStat, VoortgangItem } from '../lib/voortgang';
+import { haalAlleVoortgang, haalQuizStats, pctGoed, verwijderVoortgang, QuizResultaat, QuizStat, VoortgangItem, OpgeslagenLegging } from '../lib/voortgang';
+import { tarotLesTitels } from './LessenPage';
+import { pendelLessen, pendelVideos } from '../data/pendel/lessen';
 import { lenormandKaarten } from '../data/lenormand/kaarten';
 import { useAccount } from '../lib/account';
 import { VragenTabel } from '../components/VragenTabel';
@@ -118,6 +120,114 @@ const Lijst: React.FC<{ titel: string; items: QuizStat[]; leeg: string }> = ({ t
 const pct = (r: QuizResultaat | undefined) =>
   r && r.totaal_vragen ? `${Math.round((r.totaal_goed / r.totaal_vragen) * 100)}%` : '—';
 
+/** Eén opgeslagen legging: inklapbaar, met kaarten, duiding en verwijderknop. */
+const LeggingRij: React.FC<{ legging: OpgeslagenLegging; onVerwijder: () => void }> = ({ legging, onVerwijder }) => {
+  const [open, setOpen] = useState(false);
+  const datum = new Date(legging.datum).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return (
+    <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '0.8rem 0' }}>
+      <button onClick={() => setOpen(!open)} style={{ width: '100%', background: 'none', border: 'none', color: G.goudBleek, textAlign: 'left', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'baseline' }}>
+          <span style={{ fontSize: 17 }}>
+            <span style={{ color: G.goud, marginRight: 8 }}>{open ? '▾' : '▸'}</span>
+            {legging.legging} <span style={{ color: G.tekst3, fontSize: 13 }}>· {legging.soort === 'tarot' ? 'Tarot' : 'Lenormand'}</span>
+          </span>
+          <span style={{ fontSize: 13, color: G.tekst3 }}>{datum}</span>
+        </div>
+        <div style={{ fontSize: 14, color: G.tekst2, marginTop: 3, paddingLeft: 20 }}>
+          {legging.vraag ? <>„{legging.vraag}” · </> : null}{legging.kaarten.map((k) => k.naam).join(', ')}
+        </div>
+      </button>
+      {open && (
+        <div style={{ paddingLeft: 20, marginTop: '0.8rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 6, marginBottom: '0.8rem' }}>
+            {legging.kaarten.map((k, i) => (
+              <div key={i} style={{ background: G.bg3, borderRadius: 8, padding: '6px 10px', fontSize: 14 }}>
+                <div style={{ color: G.tekst3, fontSize: 12 }}>{i + 1}. {k.positie}</div>
+                <div>{k.naam}{k.omgekeerd ? ' (omgekeerd)' : ''}</div>
+              </div>
+            ))}
+          </div>
+          {legging.duidingPerKaart?.length ? (
+            <div style={{ marginBottom: '0.8rem' }}>
+              {legging.duidingPerKaart.map((t, i) => (
+                <p key={i} style={{ fontSize: 15, lineHeight: 1.65, color: G.tekst2, margin: '0 0 0.6rem', whiteSpace: 'pre-wrap' }}>{t}</p>
+              ))}
+            </div>
+          ) : null}
+          {legging.verbindingen?.length ? (
+            <div style={{ marginBottom: '0.8rem' }}>
+              <div style={{ fontSize: 13, color: G.tekst3, marginBottom: 4 }}>Verbindingen</div>
+              {legging.verbindingen.map((t, i) => (
+                <p key={i} style={{ fontSize: 14, lineHeight: 1.6, color: G.tekst2, margin: '0 0 0.4rem' }}>
+                  {legging.kaarten[i]?.naam} + {legging.kaarten[i + 1]?.naam}: {t}
+                </p>
+              ))}
+            </div>
+          ) : null}
+          {legging.duiding && (
+            <p style={{ fontSize: 15, lineHeight: 1.7, color: G.goudBleek, margin: '0 0 0.8rem', whiteSpace: 'pre-wrap' }}>{legging.duiding}</p>
+          )}
+          <button
+            onClick={() => { if (window.confirm('Deze legging verwijderen?')) onVerwijder(); }}
+            style={{ background: 'none', border: `0.5px solid ${G.rand}`, color: G.tekst3, borderRadius: 8, padding: '5px 12px', cursor: 'pointer', fontSize: 13 }}
+          >
+            Verwijderen
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/** Flashcards: hoeveel kaarten geoefend, hoeveel je kent, en welke nog oefenen. */
+const FlashcardBlok: React.FC<{ titel: string; stats: QuizStat[]; totaal: number; link: string }> = ({ titel, stats, totaal, link }) => {
+  const kaarten = stats.filter((s) => s.sleutel.startsWith('kaart:'));
+  const bekend = kaarten.filter((s) => (pctGoed(s) ?? 0) >= 80).length;
+  const oefenen = kaarten.filter((s) => (pctGoed(s) ?? 100) < 50)
+    .sort((a, b) => (pctGoed(a) ?? 0) - (pctGoed(b) ?? 0) || b.fout - a.fout).slice(0, 8);
+  return (
+    <div>
+      <div style={{ fontSize: 15, color: G.goudBleek, marginBottom: 6 }}>{titel}</div>
+      <Tegels>
+        <Tegel waarde={`${kaarten.length}/${totaal}`} label="kaarten geoefend" />
+        <Tegel waarde={String(bekend)} label="ken je goed" sub="80% of vaker ‘ken ik’" />
+        <Tegel waarde={String(kaarten.reduce((n, s) => n + s.goed + s.fout, 0))} label="keer geoefend" />
+      </Tegels>
+      {oefenen.length > 0 && (
+        <p style={{ fontSize: 14, color: G.tekst2, margin: '0 0 0.4rem' }}>
+          <span style={{ color: G.tekst3 }}>Nog oefenen:</span> {oefenen.map((s) => s.label).join(', ')}
+        </p>
+      )}
+      <p style={{ margin: '0 0 1.2rem', fontSize: 14 }}><Link to={link} style={{ color: G.goud }}>Naar de flashcards →</Link></p>
+    </div>
+  );
+};
+
+/** Lessen: x van y gelezen, met de nog niet gelezen lessen inklapbaar. */
+const LessenBlok: React.FC<{ titel: string; lessen: { id: string; titel: string }[]; klaar: Set<string>; link: string; woord?: string }> = ({ titel, lessen, klaar, link, woord = 'gelezen' }) => {
+  const aantal = lessen.filter((l) => klaar.has(l.id)).length;
+  const open = lessen.filter((l) => !klaar.has(l.id));
+  const p = lessen.length ? Math.round((aantal / lessen.length) * 100) : 0;
+  return (
+    <div style={{ marginBottom: '1.1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, marginBottom: 4 }}>
+        <Link to={link} style={{ color: G.goudBleek, textDecoration: 'none' }}>{titel}</Link>
+        <span style={{ color: G.tekst2 }}>{aantal} van {lessen.length} {woord} · <span style={{ color: G.goudBleek }}>{p}%</span></span>
+      </div>
+      <div style={{ height: 6, background: G.bg3, borderRadius: 4 }}>
+        <div style={{ width: `${p}%`, height: '100%', background: G.goud, borderRadius: 4 }} />
+      </div>
+      {open.length > 0 && aantal > 0 && (
+        <details style={{ marginTop: 6 }}>
+          <summary style={{ cursor: 'pointer', fontSize: 13, color: G.tekst3 }}>Nog te doen ({open.length})</summary>
+          <div style={{ fontSize: 14, color: G.tekst2, marginTop: 4, lineHeight: 1.6 }}>{open.map((l) => l.titel).join(' · ')}</div>
+        </details>
+      )}
+    </div>
+  );
+};
+
 export const VoortgangPage: React.FC = () => {
   const { lid } = useAccount();
   const [items, setItems] = useState<VoortgangItem[] | null>(null);
@@ -140,6 +250,22 @@ export const VoortgangPage: React.FC = () => {
   const tarot = per('tarot-quiz');
   const pendel = per('pendel-quiz');
   const lenKaart = new Map(lenormand.filter((s) => s.sleutel.startsWith('kaart:')).map((s) => [s.sleutel, s]));
+  const klaarIn = (onderdeel: string) => new Set((items || []).filter((i) => i.onderdeel === onderdeel).map((i) => i.item));
+  const leggingen = (items || [])
+    .filter((i) => i.onderdeel === 'leggingen')
+    .map((i) => ({ id: i.item, legging: i.data as unknown as OpgeslagenLegging }))
+    .sort((a, b) => b.legging.datum.localeCompare(a.legging.datum));
+  const lessenGelezen = klaarIn('tarot-lessen').size + klaarIn('pendel-lessen').size;
+
+  const verwijderLegging = async (id: string) => {
+    setItems((l) => (l || []).filter((i) => !(i.onderdeel === 'leggingen' && i.item === id)));
+    await verwijderVoortgang('leggingen', id);
+  };
+
+  // Link "Mijn voortgang#leggingen" springt naar de leggingen zodra de pagina geladen is
+  useEffect(() => {
+    if (items && window.location.hash === '#leggingen') document.getElementById('leggingen')?.scrollIntoView({ behavior: 'smooth' });
+  }, [items]);
 
   const alleRes = Object.values(res);
   const totaalVragen = alleRes.reduce((a, r) => a + (r.totaal_vragen || 0), 0);
@@ -166,6 +292,8 @@ export const VoortgangPage: React.FC = () => {
               <Tegel waarde={totaalVragen ? `${Math.round((totaalGoed / totaalVragen) * 100)}%` : '—'} label="goed beantwoord" />
               <Tegel waarde={`${modulesAf}/${MODULES.length}`} label="cursusmodules afgerond" sub={`vanaf ${AFGEROND_PCT}% in de quiz`} />
               <Tegel waarde={`${lenGeoefend}/36`} label="Lenormand-kaarten geoefend" />
+              <Tegel waarde={String(lessenGelezen)} label="lessen afgerond" sub="tarot + pendel" />
+              <Tegel waarde={String(leggingen.length)} label="leggingen bewaard" />
             </Tegels>
 
             {/* ── Cursus ── */}
@@ -296,6 +424,34 @@ export const VoortgangPage: React.FC = () => {
               </Tegels>
               <VragenTabel vragen={pendel.filter((x) => x.sleutel.startsWith('vraag:'))} totaalMogelijk={pendelQuizVragen.length} />
               <p style={{ margin: '1rem 0 0', fontSize: 14 }}><Link to="/pendel/quiz" style={{ color: G.goud }}>Naar de pendelquiz →</Link></p>
+            </div>
+
+            {/* ── Flashcards ── */}
+            <div style={kaart}>
+              <h2 style={kop}>FLASHCARDS</h2>
+              <FlashcardBlok titel="Tarot" stats={per('tarot-flashcards')} totaal={78} link="/flashcards" />
+              <FlashcardBlok titel="Lenormand" stats={per('lenormand-flashcards')} totaal={36} link="/lenormand/flashcards" />
+            </div>
+
+            {/* ── Lessen ── */}
+            <div style={kaart}>
+              <h2 style={kop}>LESSEN</h2>
+              <LessenBlok titel="Tarotlessen" lessen={tarotLesTitels} klaar={klaarIn('tarot-lessen')} link="/lessen" />
+              <LessenBlok titel="Pendellessen" lessen={pendelLessen.map((l) => ({ id: l.id, titel: l.titel }))} klaar={klaarIn('pendel-lessen')} link="/pendel/lessen" woord="voltooid" />
+              <LessenBlok titel="Pendelvideo's" lessen={pendelVideos.map((v) => ({ id: v.id, titel: v.titel }))} klaar={klaarIn('pendel-videos')} link="/pendel/lessen" woord="bekeken" />
+            </div>
+
+            {/* ── Opgeslagen leggingen ── */}
+            <div style={kaart} id="leggingen">
+              <h2 style={kop}>MIJN LEGGINGEN</h2>
+              {leggingen.length === 0 ? (
+                <p style={{ fontSize: 15, color: G.tekst3, fontStyle: 'italic', margin: 0 }}>
+                  Nog geen leggingen bewaard. Leg een <Link to="/tarot" style={{ color: G.goud }}>tarotlegging</Link> of{' '}
+                  <Link to="/lenormand/leggingen" style={{ color: G.goud }}>Lenormand-legging</Link> en klik op „Bewaar legging”.
+                </p>
+              ) : leggingen.map((l) => (
+                <LeggingRij key={l.id} legging={l.legging} onVerwijder={() => verwijderLegging(l.id)} />
+              ))}
             </div>
           </>
         )}

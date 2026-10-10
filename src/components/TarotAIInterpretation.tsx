@@ -10,6 +10,8 @@ interface Props {
   error?: string;
   vraagstelling?: string;
   readingType?: string;
+  /** krijgt de duiding per kaart zodra die binnen is (bv. om de legging te bewaren) */
+  onInterpretatie?: (teksten: string[]) => void;
 }
 
 export const TarotAIInterpretation: React.FC<Props> = ({ 
@@ -18,7 +20,8 @@ export const TarotAIInterpretation: React.FC<Props> = ({
   isLoading, 
   error,
   vraagstelling,
-  readingType = 'three'
+  readingType = 'three',
+  onInterpretatie,
 }) => {
   const [interpretation, setInterpretation] = React.useState<string[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -64,6 +67,7 @@ export const TarotAIInterpretation: React.FC<Props> = ({
 
         const data = await resp.json() as { interpretaties: string[] };
         setInterpretation(data.interpretaties);
+        onInterpretatie?.(data.interpretaties);
         await QuotaManager.incrementInterpretation(quotaCheck.isPaid);
       } catch (err) {
         console.error('Error generating interpretation:', err);
