@@ -27,7 +27,8 @@ const kaartNaam = (id: number) => lenormandKaarten.find((k) => k.id === id)?.naa
 function antwoordSleutels(v: QuizVraag, goed: boolean): QuizAntwoord[] {
   const lijst: QuizAntwoord[] = v.kaarten.map((id) => ({ sleutel: `kaart:${id}`, label: kaartNaam(id), goed }));
   lijst.push({ sleutel: `soort:${v.soort}`, label: v.soort, goed });
-  if (v.sleutel) lijst.push({ sleutel: v.sleutel, label: v.sleutel.startsWith('combi:') ? v.kaarten.map(kaartNaam).join(' + ') : v.vraag, goed });
+  lijst.push({ sleutel: v.vraagId, label: v.vraagLabel, goed });   // elke afzonderlijke vraag
+  if (v.soort === 'combinatie') lijst.push({ sleutel: `combi:${v.kaarten.join('-')}`, label: v.kaarten.map(kaartNaam).join(' + '), goed });
   return lijst;
 }
 

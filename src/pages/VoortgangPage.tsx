@@ -3,6 +3,21 @@ import { Link } from 'react-router-dom';
 import { haalAlleVoortgang, haalQuizStats, pctGoed, QuizResultaat, QuizStat, VoortgangItem } from '../lib/voortgang';
 import { lenormandKaarten } from '../data/lenormand/kaarten';
 import { useAccount } from '../lib/account';
+import { VragenTabel } from '../components/VragenTabel';
+import { laadCombinaties } from '../data/lenormand/combinaties';
+import { aantalMogelijkeVragen } from '../data/lenormand/quizGenerator';
+import { pendelQuizVragen } from '../data/pendel/quiz';
+
+/** Soort vraag uit de vaste vraagcode, bv. 'vraag:combi-paar:14-34' → 'Combinaties'. */
+function lenormandGroep(sleutel: string): string {
+  const soort = sleutel.split(':')[1] || '';
+  if (soort.startsWith('combi')) return 'Combinaties';
+  if (soort.includes('nummer')) return 'Nummers';
+  if (soort.includes('woord')) return 'Sleutelwoorden';
+  if (soort.startsWith('omschrijving')) return 'Omschrijvingen';
+  if (soort === 'basis') return 'Basiskennis';
+  return 'Liefde, werk, gezondheid';
+}
 
 const G = {
   goud: '#B8860B', goudBleek: '#F5EDD8',
@@ -104,9 +119,11 @@ export const VoortgangPage: React.FC = () => {
   const { lid } = useAccount();
   const [items, setItems] = useState<VoortgangItem[] | null>(null);
   const [stats, setStats] = useState<QuizStat[]>([]);
+  const [lenormandTotaal, setLenormandTotaal] = useState<number | undefined>();
 
   useEffect(() => {
     Promise.all([haalAlleVoortgang(), haalQuizStats()]).then(([v, s]) => { setItems(v); setStats(s); });
+    laadCombinaties().then((c) => setLenormandTotaal(aantalMogelijkeVragen(c.length))).catch(() => {});
   }, []);
 
   const res = useMemo(() => {
@@ -174,6 +191,16 @@ export const VoortgangPage: React.FC = () => {
                   </div>
                 );
               })}
+              <details style={{ marginTop: '1rem' }}>
+                <summary style={{ cursor: 'pointer', color: G.goud, fontSize: 15 }}>Alle cursusvragen bekijken</summary>
+                <div style={{ marginTop: '0.8rem' }}>
+                  <VragenTabel
+                    vragen={stats.filter((x) => x.onderdeel.startsWith('cursus-') && x.sleutel.startsWith('vraag:'))
+                      .map((x) => ({ ...x, sleutel: `${x.onderdeel}|${x.sleutel}` }))}
+                    groep={(k) => { const i = MODULES.findIndex((m) => k.startsWith(`cursus-${m.id}|`)); return i >= 0 ? `Module ${i + 1}: ${MODULES[i].naam}` : 'Overig'; }}
+                  />
+                </div>
+              </details>
             </div>
 
             {/* ── Lenormand ── */}
@@ -224,6 +251,10 @@ export const VoortgangPage: React.FC = () => {
                   <Lijst titel="Combinaties die lastig zijn" items={topLijst(lenormand, 'combi:', 'zwak', 4).length ? topLijst(lenormand, 'combi:', 'zwak', 4) : lenormand.filter((s) => s.sleutel.startsWith('combi:') && s.fout > 0).slice(0, 4)} leeg="Nog geen lastige combinaties." />
                 </div>
               </div>
+              <div style={{ marginTop: '1.6rem' }}>
+                <div style={{ fontSize: 13, color: G.tekst3, marginBottom: 8 }}>Alle vragen</div>
+                <VragenTabel vragen={lenormand.filter((x) => x.sleutel.startsWith('vraag:'))} totaalMogelijk={lenormandTotaal} groep={lenormandGroep} />
+              </div>
               <p style={{ margin: '1rem 0 0', fontSize: 14 }}><Link to="/lenormand/quiz" style={{ color: G.goud }}>Naar de Lenormand-quiz →</Link></p>
             </div>
 
@@ -250,7 +281,7 @@ export const VoortgangPage: React.FC = () => {
                 <Tegel waarde={res['pendel-quiz'] ? `${res['pendel-quiz'].beste_pct}%` : '—'} label="beste ronde" />
                 <Tegel waarde={pct(res['pendel-quiz'])} label="gemiddeld goed" />
               </Tegels>
-              <Lijst titel="Vragen die vaak fout gaan" items={topLijst(pendel, 'vraag:', 'zwak')} leeg="Nog geen lastige vragen." />
+              <VragenTabel vragen={pendel.filter((x) => x.sleutel.startsWith('vraag:'))} totaalMogelijk={pendelQuizVragen.length} />
               <p style={{ margin: '1rem 0 0', fontSize: 14 }}><Link to="/pendel/quiz" style={{ color: G.goud }}>Naar de pendelquiz →</Link></p>
             </div>
           </>
