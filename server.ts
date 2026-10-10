@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
 import { allCards } from './src/data/cards/index.js';
+import { installeerAccounts } from './accounts.js';
 
 // Laad .env als die aanwezig is (voor lokale dev en PM2 zonder ecosystem config)
 try {
@@ -17,66 +18,9 @@ const CACHE_DIR = join(__dirname, 'cache');
 
 app.use(express.json());
 
-// ─── Pincode-beveiliging ─────────────────────────────────────────
-// Pincode komt uit .env (ACCESS_PIN). Zonder pincode blijft alles dicht.
-const ACCESS_PIN = process.env.ACCESS_PIN || '';
-if (!ACCESS_PIN) console.warn('[pin] ACCESS_PIN ontbreekt in .env — platform is niet toegankelijk');
-const PIN_COOKIE = 'tl_auth';
-const PIN_TOKEN = 'ok-' + ACCESS_PIN;
-
-function hasValidPin(req: express.Request): boolean {
-  const cookie = req.headers.cookie || '';
-  return cookie.split(';').some((c) => c.trim() === `${PIN_COOKIE}=${PIN_TOKEN}`);
-}
-
-const PIN_PAGE = `<!doctype html><html lang="nl"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mystieke Kaarten — Toegang</title>
-<style>
-  *{box-sizing:border-box}body{margin:0;height:100vh;display:flex;align-items:center;justify-content:center;
-  font-family:system-ui,sans-serif;background:radial-gradient(circle at 50% 30%,#2a1a4a,#0d0a1a)}
-  .box{background:rgba(20,14,40,.85);border:1px solid #4a3a7a;border-radius:18px;padding:38px 34px;
-  width:300px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.5)}
-  h1{color:#e6d8ff;font-size:20px;margin:0 0 4px}p{color:#9a8ac0;font-size:13px;margin:0 0 22px}
-  input{width:100%;padding:13px;font-size:22px;letter-spacing:8px;text-align:center;border-radius:10px;
-  border:1px solid #5a4a8a;background:#171028;color:#fff;outline:none}
-  input:focus{border-color:#a98bff}
-  button{margin-top:16px;width:100%;padding:12px;font-size:15px;border:0;border-radius:10px;cursor:pointer;
-  background:linear-gradient(135deg,#7a5cff,#a98bff);color:#fff;font-weight:600}
-  .err{color:#ff8a8a;font-size:12px;height:16px;margin-top:10px}
-</style></head><body>
-<form class="box" onsubmit="return go(event)">
-  <h1>🔮 Mystieke Kaarten</h1><p>Voer de pincode in</p>
-  <input id="pin" type="password" inputmode="numeric" autocomplete="off" autofocus maxlength="12" placeholder="••••">
-  <button type="submit">Toegang</button>
-  <div class="err" id="err"></div>
-</form>
-<script>
-async function go(e){e.preventDefault();
-  const pin=document.getElementById('pin').value;
-  const r=await fetch('/__pin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin})});
-  if(r.ok){location.reload()}else{document.getElementById('err').textContent='Onjuiste pincode';
-  document.getElementById('pin').value='';document.getElementById('pin').focus()}
-  return false}
-</script></body></html>`;
-
-app.post('/__pin', (req, res) => {
-  const pin = (req.body && req.body.pin) || '';
-  if (ACCESS_PIN && pin === ACCESS_PIN) {
-    res.setHeader(
-      'Set-Cookie',
-      `${PIN_COOKIE}=${PIN_TOKEN}; HttpOnly; Path=/; Max-Age=2592000; SameSite=Lax`
-    );
-    return res.json({ ok: true });
-  }
-  return res.status(401).json({ ok: false });
-});
-
-app.use((req, res, next) => {
-  if (req.path === '/__pin') return next();
-  if (ACCESS_PIN && hasValidPin(req)) return next();
-  return res.status(401).type('html').send(PIN_PAGE);
-});
+// ─── Accounts: zonder geldige sessie alleen de inlog-/aanmeldpagina ───
+app.set('trust proxy', 'loopback'); // nginx ervoor → echte IP voor de inlogrem
+installeerAccounts(app, __dirname);
 
 app.use(express.static(join(__dirname, 'dist')));
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, User } from 'lucide-react';
+import { useAccount, uitloggen, ABONNEMENT_LABEL } from '../lib/account';
 
 interface NavLink { to: string; label: string }
 interface Sectie {
@@ -104,6 +105,7 @@ export const Navbar: React.FC = () => {
   const [mobiel, setMobiel] = useState(false);             // mobiel menu open?
   const [mobielSectie, setMobielSectie] = useState<string | null>(null);
   const navRef = useRef<HTMLDivElement>(null);
+  const { lid } = useAccount();
   const sluitTimer = useRef<number | null>(null);   // vertraagd sluiten bij mouseleave
   const hoverOpenTijd = useRef(0);                  // moment waarop hover het menu opende
 
@@ -227,6 +229,58 @@ export const Navbar: React.FC = () => {
           })}
         </div>
 
+        {/* Desktop: accountmenu */}
+        {lid && (
+          <div
+            className="hidden md:block"
+            style={{ position: 'relative', marginLeft: 'auto' }}
+            onMouseEnter={() => openSectie('__account')}
+            onMouseLeave={() => sluitVertraagd('__account')}
+          >
+            <button
+              onClick={() => klikSectie('__account')}
+              aria-expanded={open === '__account'}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 8, border: 'none',
+                background: open === '__account' ? G.bg2 : 'transparent', color: 'rgba(245,237,216,0.85)',
+                fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', cursor: 'pointer', whiteSpace: 'nowrap',
+              }}
+            >
+              <User size={15} /> {lid.naam.split(' ')[0]}
+              <ChevronDown size={13} style={{ opacity: 0.6 }} />
+            </button>
+            {open === '__account' && (
+              <div style={{ position: 'absolute', top: '100%', right: 0, paddingTop: 4, zIndex: 60 }}>
+                <div style={{
+                  minWidth: 210, background: G.bg2, border: '0.5px solid rgba(184,134,11,0.30)', borderRadius: 10,
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.45)', padding: 6,
+                }}>
+                  <div style={{ padding: '8px 12px 10px', borderBottom: '0.5px solid rgba(184,134,11,0.2)', marginBottom: 4 }}>
+                    <div style={{ color: G.goudBleek, fontSize: 14 }}>{lid.naam}</div>
+                    <div style={{ color: G.goud, fontSize: 11, fontFamily: "'Cinzel', serif", letterSpacing: '0.06em', marginTop: 2 }}>
+                      {ABONNEMENT_LABEL[lid.abonnement_actief].toUpperCase()}
+                    </div>
+                  </div>
+                  {[
+                    { to: '/account', label: 'Mijn account' },
+                    ...(lid.rol === 'admin' ? [{ to: '/admin/leden', label: 'Leden beheren' }] : []),
+                  ].map((l) => (
+                    <Link key={l.to} to={l.to} style={{
+                      display: 'block', fontFamily: "'Cinzel', serif", fontSize: 12.5, letterSpacing: '0.04em',
+                      padding: '9px 12px', borderRadius: 7, color: 'rgba(245,237,216,0.8)', textDecoration: 'none',
+                    }}>{l.label}</Link>
+                  ))}
+                  <button onClick={uitloggen} style={{
+                    display: 'block', width: '100%', textAlign: 'left', fontFamily: "'Cinzel', serif", fontSize: 12.5,
+                    letterSpacing: '0.04em', padding: '9px 12px', borderRadius: 7, border: 'none', background: 'transparent',
+                    color: 'rgba(245,237,216,0.6)', cursor: 'pointer',
+                  }}>Uitloggen</button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Mobile hamburger */}
         <button
           className="md:hidden"
@@ -282,6 +336,18 @@ export const Navbar: React.FC = () => {
               </div>
             );
           })}
+          {lid && (
+            <div style={{ padding: '0.6rem 1.5rem 0.4rem', display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <div style={{ color: G.goud, fontSize: 11, fontFamily: "'Cinzel', serif", letterSpacing: '0.06em', padding: '6px 0' }}>
+                {lid.naam} · {ABONNEMENT_LABEL[lid.abonnement_actief]}
+              </div>
+              <Link to="/account" style={{ color: G.goudBleek, fontFamily: "'Cinzel', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Mijn account</Link>
+              {lid.rol === 'admin' && (
+                <Link to="/admin/leden" style={{ color: G.goudBleek, fontFamily: "'Cinzel', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Leden beheren</Link>
+              )}
+              <button onClick={uitloggen} style={{ textAlign: 'left', background: 'none', border: 'none', color: 'rgba(245,237,216,0.6)', fontFamily: "'Cinzel', serif", fontSize: 13, padding: '8px 0', cursor: 'pointer' }}>Uitloggen</button>
+            </div>
+          )}
         </div>
       )}
     </nav>

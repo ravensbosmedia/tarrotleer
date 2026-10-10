@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AdminLogin } from './components/admin/AdminLogin';
 import { CardEditor } from './components/admin/CardEditor';
-import { isLoggedIn } from './config/localAuth';
+import { useAccount } from './lib/account';
+import { AccountPage } from './pages/AccountPage';
+import { LedenPage } from './pages/admin/LedenPage';
 import { Navbar } from './components/Navbar';
 import ReadingPage from './pages/ReadingPage';
 import { HomePage } from './pages/HomePage';
@@ -46,8 +47,11 @@ import { CursusModule06Page } from './pages/cursus/CursusModule06Page';
 import { CursusModule07Page } from './pages/cursus/CursusModule07Page';
 import { CursusModule08Page } from './pages/cursus/CursusModule08Page';
 
+// Alleen voor accounts met rol 'admin' (inloggen zelf regelt de server)
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  if (!isLoggedIn()) return <Navigate to="/admin" replace />;
+  const { lid, laden } = useAccount();
+  if (laden) return null;
+  if (lid?.rol !== 'admin') return <Navigate to="/" replace />;
   return <>{children}</>;
 };
 
@@ -62,7 +66,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin" element={<Navigate to="/admin/leden" replace />} />
+        <Route path="/admin/leden" element={<ProtectedRoute><Layout><LedenPage /></Layout></ProtectedRoute>} />
+        <Route path="/account" element={<Layout><AccountPage /></Layout>} />
         <Route
           path="/admin/cards"
           element={

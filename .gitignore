@@ -28,3 +28,6 @@ dist-ssr
 .cache/
 cache/
 *.log
+
+# Database (accounts, voortgang)
+data/
