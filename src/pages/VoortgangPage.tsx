@@ -123,7 +123,7 @@ export const VoortgangPage: React.FC = () => {
 
   useEffect(() => {
     Promise.all([haalAlleVoortgang(), haalQuizStats()]).then(([v, s]) => { setItems(v); setStats(s); });
-    laadCombinaties().then((c) => setLenormandTotaal(aantalMogelijkeVragen(c.length))).catch(() => {});
+    laadCombinaties().then((c) => setLenormandTotaal(aantalMogelijkeVragen(c))).catch(() => {});
   }, []);
 
   const res = useMemo(() => {

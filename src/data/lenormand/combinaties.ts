@@ -13,6 +13,12 @@ export interface Combinatie {
   t: string[];
   /** drie kernwoorden */
   k?: string[];
+  /** betekenis in de liefde */
+  l?: string;
+  /** betekenis in werk */
+  w?: string;
+  /** advies */
+  ad?: string;
   /** bronnen waarop de duiding steunt (naam + link) */
   bronnen?: { n: string; u: string }[];
   /** oud veld (betrouwbaarheid), niet meer gebruikt */

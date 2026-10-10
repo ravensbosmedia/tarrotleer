@@ -121,7 +121,19 @@ const kaartVragen: KaartVraagMaker[] = [
 ];
 
 // ── Vraagsoorten over combinaties ──
-function combinatieVraag(c: Combinatie, alle: Combinatie[], richting: 'betekenis' | 'paar'): QuizVraag {
+type CombiRichting = 'betekenis' | 'paar' | 'liefde' | 'werk' | 'advies';
+const VERDIEPING = {
+  liefde: { veld: 'l', vraag: 'in de liefde', label: 'in de liefde' },
+  werk: { veld: 'w', vraag: 'in werk', label: 'in werk' },
+  advies: { veld: 'ad', vraag: '', label: 'advies' },
+} as const;
+
+/** Welke vraagrichtingen kunnen voor dit paar (liefde/werk/advies alleen als de verdieping er is). */
+function combiRichtingen(c: Combinatie): CombiRichting[] {
+  return ['betekenis', 'paar', ...(['liefde', 'werk', 'advies'] as const).filter((r) => c[VERDIEPING[r].veld])];
+}
+
+function combinatieVraag(c: Combinatie, alle: Combinatie[], richting: CombiRichting): QuizVraag {
   // Afleiders bij voorkeur met één gedeelde kaart: dat maakt het echt nadenken
   const verwant = schud(alle.filter((x) => x !== c && (x.a === c.a || x.b === c.b)));
   const afleiders = [...verwant, ...schud(alle)].filter((x, i, arr) => x !== c && arr.indexOf(x) === i).slice(0, 3);
@@ -129,6 +141,18 @@ function combinatieVraag(c: Combinatie, alle: Combinatie[], richting: 'betekenis
   const k2 = kaart(c.b);
   const uitleg = `${k1.naam} ${k1.symbool} + ${k2.naam} ${k2.symbool}: ${c.m}`;
   const basis = { kaarten: [c.a, c.b] };
+
+  if (richting === 'liefde' || richting === 'werk' || richting === 'advies') {
+    const { veld, vraag, label } = VERDIEPING[richting];
+    const tekst = (x: Combinatie) => x[veld] as string | undefined;
+    const fout = [...verwant, ...schud(alle)].filter((x, i, arr) => x !== c && tekst(x) && arr.indexOf(x) === i).slice(0, 3).map((x) => tekst(x)!);
+    const titel = richting === 'advies'
+      ? `Welk advies hoort bij ${k1.naam} ${k1.symbool} + ${k2.naam} ${k2.symbool}?`
+      : `Wat betekent ${k1.naam} ${k1.symbool} + ${k2.naam} ${k2.symbool} ${vraag}?`;
+    return { ...maakVraag('combinatie', titel, tekst(c)!, fout, `${uitleg}\n${label[0].toUpperCase()}${label.slice(1)}: ${tekst(c)}`), ...basis,
+      vraagId: `vraag:combi-${richting}:${c.a}-${c.b}`,
+      vraagLabel: richting === 'advies' ? `Welk advies hoort bij ${k1.naam} + ${k2.naam}?` : `Wat betekent ${k1.naam} + ${k2.naam} ${vraag}?` };
+  }
 
   if (richting === 'betekenis') {
     return { ...maakVraag('combinatie', `Wat betekent de combinatie ${k1.naam} ${k1.symbool} + ${k2.naam} ${k2.symbool}?`,
@@ -141,9 +165,10 @@ function combinatieVraag(c: Combinatie, alle: Combinatie[], richting: 'betekenis
 }
 
 /** Hoeveel verschillende vragen de quiz kan stellen (voor "x van y gedaan"). */
-export function aantalMogelijkeVragen(aantalCombinaties: number): number {
+export function aantalMogelijkeVragen(combinaties: Combinatie[]): number {
   const perKaart = lenormandKaarten.reduce((n, k) => n + kaartVragen.reduce((m, maker) => m + maker(k).length, 0), 0);
-  return perKaart + aantalCombinaties * 2 + lenormandQuizVragen.length;
+  const perCombi = combinaties.reduce((n, c) => n + combiRichtingen(c).length, 0);
+  return perKaart + perCombi + lenormandQuizVragen.length;
 }
 
 /** Gewicht per voortgangssleutel ('kaart:14'): hoger = vaker vragen. Zonder voortgang: alles gelijk. */
@@ -181,7 +206,7 @@ export function maakRonde(aantal: number, onderwerp: QuizOnderwerp, combinaties:
   if (metCombinaties) {
     const paarGewicht = (c: Combinatie) => (gewicht(`kaart:${c.a}`) + gewicht(`kaart:${c.b}`)) / 2;
     for (const c of gewogenSchud(combinaties!, paarGewicht).slice(0, aantalCombi)) {
-      const richting = gewogenSchud(['betekenis', 'paar'] as const, (r) => gewicht(`vraag:combi-${r}:${c.a}-${c.b}`))[0];
+      const richting = gewogenSchud(combiRichtingen(c), (r) => gewicht(`vraag:combi-${r}:${c.a}-${c.b}`))[0];
       vragen.push(combinatieVraag(c, combinaties!, richting));
     }
   }

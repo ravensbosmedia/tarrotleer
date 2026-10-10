@@ -15,9 +15,6 @@ const G = {
   rand: 'rgba(184,134,11,0.20)', rand2: 'rgba(184,134,11,0.35)',
 };
 
-const themaLabel = (t: string) =>
-  t.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-
 const Slot: React.FC<{
   kaart: LenormandKaart | null;
   label: string;
@@ -137,12 +134,20 @@ export const LenormandCombinatiesPage: React.FC = () => {
               </p>
             )}
 
-            {resultaat.heen?.t?.length ? (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: resultaat.terug && resultaat.terug.m !== resultaat.heen?.m ? '1.4rem' : 0 }}>
-                {resultaat.heen.t.map((t) => (
-                  <span key={t} style={{ fontSize: 11, padding: '3px 10px', borderRadius: 10, background: `${G.goud}14`, color: G.goudDonker, border: `0.5px solid ${G.goud}33` }}>
-                    {themaLabel(t)}
-                  </span>
+            {/* Per levensgebied: liefde, werk en advies */}
+            {resultaat.heen && (resultaat.heen.l || resultaat.heen.w || resultaat.heen.ad) ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.7rem', margin: '0 0 1.2rem' }}>
+                {([
+                  ['❤️', 'In de liefde', resultaat.heen.l],
+                  ['💼', 'In werk', resultaat.heen.w],
+                  ['✦', 'Advies', resultaat.heen.ad],
+                ] as const).filter(([, , tekst]) => tekst).map(([icoon, titel, tekst]) => (
+                  <div key={titel} style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 10, padding: '0.8rem 1rem' }}>
+                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em', color: G.goudDonker, textTransform: 'uppercase', marginBottom: 4 }}>
+                      {icoon} {titel}
+                    </div>
+                    <p style={{ fontSize: 15, color: G.tekst, lineHeight: 1.6, margin: 0 }}>{tekst}</p>
+                  </div>
                 ))}
               </div>
             ) : null}
