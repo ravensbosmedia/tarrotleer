@@ -130,8 +130,13 @@ function kaleInhoud(md: string): { titel: string; inhoud: string } {
   const titel = (md.match(/^#\s+(?:Hoofdstuk\s+\d+\s+[—-]\s+)?(.+)$/m)?.[1] || '').trim();
   let inhoud = md.replace(/^\uFEFF/, '');
   const start = inhoud.search(/^##\s/m);
-  if (start > 0) inhoud = inhoud.slice(start);
-  else if (start < 0) inhoud = inhoud.replace(/^#\s+.+\n?/, '');
+  if (start >= 0) {
+    // Kop vóór het eerste ##-kopje: titelregel en **Cursus:**/**Duur:**-gegevens eruit,
+    // maar wat er verder staat (bv. een hoofdstukafbeelding of inleiding) blijft behouden
+    const kop = inhoud.slice(0, start).split('\n')
+      .filter((r) => !/^#\s/.test(r) && !/^\*\*[^*]+:\*\*/.test(r.trim()) && r.trim() !== '');
+    inhoud = (kop.length ? kop.join('\n\n') + '\n\n' : '') + inhoud.slice(start);
+  } else inhoud = inhoud.replace(/^#\s+.+\n?/, '');
   inhoud = inhoud.replace(/\n\*\*Vorige:\*\*[\s\S]*$/, '').trim();
   return { titel, inhoud };
 }
