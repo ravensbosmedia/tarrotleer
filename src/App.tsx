@@ -5,6 +5,7 @@ import { useAccount } from './lib/account';
 import { AccountPage } from './pages/AccountPage';
 import { VoortgangPage } from './pages/VoortgangPage';
 import { LedenPage } from './pages/admin/LedenPage';
+import { CursussenPage } from './pages/admin/CursussenPage';
 import { Navbar } from './components/Navbar';
 import ReadingPage from './pages/ReadingPage';
 import { HomePage } from './pages/HomePage';
@@ -69,6 +70,7 @@ function App() {
       <Routes>
         <Route path="/admin" element={<Navigate to="/admin/leden" replace />} />
         <Route path="/admin/leden" element={<ProtectedRoute><Layout><LedenPage /></Layout></ProtectedRoute>} />
+        <Route path="/admin/cursussen" element={<ProtectedRoute><Layout><CursussenPage /></Layout></ProtectedRoute>} />
         <Route path="/account" element={<Layout><AccountPage /></Layout>} />
         <Route path="/voortgang" element={<Layout><VoortgangPage /></Layout>} />
         <Route
