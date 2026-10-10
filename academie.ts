@@ -499,6 +499,7 @@ export function installeerAcademie(app: express.Express, root: string) {
       `# Beoordeling en advies — Cursus ${c.nr}: ${c.titel}`,
       '',
       'Dit advies hoort bij de opdracht in 00-OPDRACHT.md. Gebruik het als startpunt voor je analyse; het vervangt je eigen kritische analyse niet.',
+      'Schrijf alles in makkelijke taal en maak het makkelijk te onthouden, zoals beschreven in 02-TAAL-EN-ONTHOUDEN.md.',
       '',
       '## De cursus als geheel',
       '',
@@ -511,7 +512,8 @@ export function installeerAcademie(app: express.Express, root: string) {
     const bestanden = [
       { naam: '00-OPDRACHT.md', tekst: readFileSync(join(map, '00-OPDRACHT.md'), 'utf-8') },
       { naam: '01-TECHNISCHE-EISEN.md', tekst: readFileSync(join(map, '01-TECHNISCHE-EISEN.md'), 'utf-8') },
-      { naam: '02-ADVIES-PER-HOOFDSTUK.md', tekst: advies },
+      { naam: '02-TAAL-EN-ONTHOUDEN.md', tekst: readFileSync(join(map, '02-TAAL-EN-ONTHOUDEN.md'), 'utf-8') },
+      { naam: '03-ADVIES-PER-HOOFDSTUK.md', tekst: advies },
       ...hoofdstukken.map((h) => ({ naam: `${c.slug}/${bestandsnaam(c.nr, h.nr, h.slug)}`, tekst: alsBestand(h.nr, h.titel, h.inhoud) })),
     ];
     const zip = execFileSync('python3', ['-c', ZIP_MAKER], { input: JSON.stringify(bestanden), maxBuffer: 50 * 1024 * 1024 });

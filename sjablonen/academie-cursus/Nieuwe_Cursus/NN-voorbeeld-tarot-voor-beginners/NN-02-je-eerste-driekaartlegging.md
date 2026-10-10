@@ -9,6 +9,11 @@
 
 De driekaartlegging is de bekendste legging voor beginners: eenvoudig, maar verrassend rijk. In dit hoofdstuk leg je je eerste legging en leer je de kaarten met elkaar te verbinden.
 
+**In het kort:**
+- Begin met een open vraag.
+- Kies de betekenis van de drie plekken vóór je trekt.
+- Lees de drie kaarten samen als één verhaal.
+
 ## Leerdoelen
 
 Na dit hoofdstuk kun je:
@@ -82,3 +87,8 @@ Kies een vraag uit je eigen leven en leg een driekaartlegging met de indeling si
 ## Afronden
 
 Je hebt je eerste driekaartlegging gelegd en geleerd de kaarten als één verhaal te lezen. Bewaar je aantekeningen, zodat je later kunt terugkijken.
+
+**Onthoud dit:**
+- Ezelsbruggetje: **V-P-V** — eerst de **V**raag, dan de **P**lekken, dan het **V**erhaal.
+- Een open vraag werkt beter dan een ja-neevraag.
+- Schrijf je legging op met datum, zodat je later kunt terugkijken.

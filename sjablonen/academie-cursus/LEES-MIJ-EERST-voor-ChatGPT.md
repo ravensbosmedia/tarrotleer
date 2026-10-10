@@ -64,6 +64,8 @@ Daarna volgen deze kopjes, in deze volgorde:
 </details>
 ```
 
+- **Makkelijke taal (B1):** korte zinnen (10–15 woorden, nooit meer dan 20), gewone woorden, moeilijke begrippen meteen in één zin uitgelegd, je/jij, lijstjes waar mogelijk. Zou iemand van 14 het begrijpen? Zo niet: eenvoudiger.
+- **Makkelijk te onthouden:** begin elk hoofdstuk onder `## Welkom` met **In het kort:** (3 kernpunten) en eindig onder `## Afronden` met **Onthoud dit:** (3–5 korte zinnen). Gebruik waar het kan een ezelsbruggetje of beeld, herhaal de kernbegrippen in oefening en toets, en laat de toets de kernpunten toetsen.
 - **Toon:** warm, helder, spreek de lezer aan met je/jij.
 - **Verantwoord:** behandel spirituele begrippen als traditie of overtuiging. Beloof geen genezing en geef geen medische, juridische of financiële adviezen. Noem grenzen en wanneer iemand beter naar een arts of andere deskundige kan gaan.
 - **Opmaak:** gebruik alleen `## kopjes`, `**vet**`, `*cursief*`, lijsten met `-` of `1.` en het `<details>`-blok. Geen tabellen, afbeeldingen of andere HTML.

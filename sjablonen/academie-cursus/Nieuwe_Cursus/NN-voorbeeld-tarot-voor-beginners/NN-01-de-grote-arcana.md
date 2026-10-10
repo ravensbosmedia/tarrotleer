@@ -9,6 +9,11 @@
 
 In dit hoofdstuk maak je kennis met de 22 kaarten van de Grote Arcana: de kaarten die in tarot vaak worden gezien als de grote thema's en levenslessen. Je leert hoe ze zijn opgebouwd en hoe je ze kunt herkennen in een legging.
 
+**In het kort:**
+- De Grote Arcana zijn 22 kaarten, genummerd van 0 tot en met 21.
+- Samen vertellen ze de reis van De Dwaas: van begin (0) tot voltooiing (21).
+- In een legging wijzen ze vaak op een belangrijk thema.
+
 ## Leerdoelen
 
 Na dit hoofdstuk kun je:
@@ -79,3 +84,8 @@ Leg de 22 kaarten van de Grote Arcana op volgorde voor je neer, of bekijk ze in 
 ## Afronden
 
 Je kent nu de opbouw van de Grote Arcana en de reis van De Dwaas. In het volgende hoofdstuk gebruik je deze kennis in je eerste driekaartlegging.
+
+**Onthoud dit:**
+- 22 grote kaarten, van 0 tot 21.
+- Ezelsbruggetje: *"De Dwaas vertrekt, De Wereld komt aan."*
+- Een grote kaart in je legging = een groot thema.
