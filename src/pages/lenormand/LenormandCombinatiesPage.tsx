@@ -18,9 +18,6 @@ const G = {
 const themaLabel = (t: string) =>
   t.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
-const confidenceKleur = (c: string): { bg: string; tekst: string } => {
-  const v = c.toLowerCase();
-  if (v.includes('zeer hoog')) return { bg: '#DCFCE7', tekst: '#15803D' };
   if (v.includes('hoog')) return { bg: '#ECFCCB', tekst: '#4D7C0F' };
   if (v.includes('middel')) return { bg: '#FEF9C3', tekst: '#A16207' };
   return { bg: '#F1F5F9', tekst: '#64748B' };
@@ -102,7 +99,7 @@ export const LenormandCombinatiesPage: React.FC = () => {
           </h1>
           <p style={{ fontSize: 18, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, maxWidth: 620 }}>
             De kern van het Lenormand-lezen: kaarten krijgen pas betekenis in combinatie.
-            Kies twee kaarten en lees hoe ze samen spreken — 1260 paren uit een meertalige bronnen-database.
+            Kies twee kaarten en lees hoe ze samen spreken — alle 1260 paren, gebaseerd op onze kaartbetekenissen en Nederlandse en Engelse bronnen.
           </p>
         </div>
       </div>
@@ -127,12 +124,13 @@ export const LenormandCombinatiesPage: React.FC = () => {
               <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 400, color: G.tekst, margin: 0 }}>
                 {a!.naam} <span style={{ color: G.goud }}>+</span> {b!.naam}
               </h2>
-              {resultaat.heen && (
-                <span style={{ fontSize: 10, padding: '3px 10px', borderRadius: 10, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: "'Cinzel', serif", ...((c) => ({ background: c.bg, color: c.tekst }))(confidenceKleur(resultaat.heen.c)) }}>
-                  {resultaat.heen.c}
-                </span>
-              )}
             </div>
+
+            {resultaat.heen?.k?.length ? (
+              <p style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.06em', color: G.goudDonker, margin: '0 0 0.8rem' }}>
+                {resultaat.heen.k.join(' · ')}
+              </p>
+            ) : null}
 
             {resultaat.heen ? (
               <p style={{ fontSize: 17, color: G.tekst, lineHeight: 1.8, margin: '0 0 1.2rem' }}>
@@ -152,6 +150,18 @@ export const LenormandCombinatiesPage: React.FC = () => {
                   </span>
                 ))}
               </div>
+            ) : null}
+
+            {resultaat.heen?.bronnen?.length ? (
+              <p style={{ fontSize: 12, color: G.tekst3, margin: '0 0 1.2rem' }}>
+                Gebaseerd op onze kaartbetekenissen en o.a.{' '}
+                {resultaat.heen.bronnen.map((b, i) => (
+                  <React.Fragment key={b.u}>
+                    {i > 0 && ', '}
+                    <a href={b.u} target="_blank" rel="noopener noreferrer" style={{ color: G.tekst2 }}>{b.n}</a>
+                  </React.Fragment>
+                ))}
+              </p>
             ) : null}
 
             {/* Omgekeerde leesrichting, als die anders luidt */}

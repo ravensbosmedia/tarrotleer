@@ -30,4 +30,4 @@ cache/
 *.log
 
 # Database (accounts, voortgang)
-data/
+/data/

@@ -1,4 +1,5 @@
-// Lenormand 2-kaart combinaties — afgeleid van AuraLine's combinations-database.
+// Lenormand 2-kaart combinaties — eigen synthese (gpt-5.5) op basis van onze kaartbetekenissen
+// en de opgehaalde bronnen (online-orakels.nl, labyrinthos.co); zie scripts/combinaties-genereren.mjs.
 // Het JSON-bestand staat in public/lenormand/combinaties.json (lazy fetch).
 
 export interface Combinatie {
@@ -10,8 +11,12 @@ export interface Combinatie {
   m: string;
   /** thema's */
   t: string[];
-  /** betrouwbaarheid (bijv. 'hoog', 'zeer hoog') */
-  c: string;
+  /** drie kernwoorden */
+  k?: string[];
+  /** bronnen waarop de duiding steunt (naam + link) */
+  bronnen?: { n: string; u: string }[];
+  /** oud veld (betrouwbaarheid), niet meer gebruikt */
+  c?: string;
 }
 
 let cache: Combinatie[] | null = null;
