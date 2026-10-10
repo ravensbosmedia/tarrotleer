@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { laadCombinaties, Combinatie } from '../../data/lenormand/combinaties';
 import { Link } from 'react-router-dom';
-import { maakRonde, QuizVraag, QuizOnderwerp } from '../../data/lenormand/quizGenerator';
+import { maakRonde, QuizVraag, QuizOnderwerp, Niveau, niveauVan } from '../../data/lenormand/quizGenerator';
 import { lenormandKaarten } from '../../data/lenormand/kaarten';
 import { haalVoortgang, haalQuizStats, slaRondeOp, maakGewicht, QuizAntwoord, QuizResultaat, QuizStat } from '../../lib/voortgang';
 
@@ -21,12 +21,20 @@ const ONDERWERPEN: { id: QuizOnderwerp; label: string; uitleg: string }[] = [
 ];
 const AANTALLEN = [10, 20, 30];
 
+const NIVEAUS: { id: Niveau | 'alles'; label: string; uitleg: string }[] = [
+  { id: 'beginner', label: 'Beginner', uitleg: 'Nummers, sleutelwoorden en basiskennis' },
+  { id: 'gevorderd', label: 'Gevorderd', uitleg: 'Omschrijvingen, levensgebieden en combinaties' },
+  { id: 'pro', label: 'Pro', uitleg: 'Combinaties in liefde, werk en advies' },
+  { id: 'alles', label: 'Alle niveaus', uitleg: 'Alles door elkaar' },
+];
+
 const kaartNaam = (id: number) => lenormandKaarten.find((k) => k.id === id)?.naam ?? `Kaart ${id}`;
 
 /** Voortgangssleutels voor één beantwoorde vraag: per kaart, per vraagsoort en eventueel per combinatie/basisvraag. */
 function antwoordSleutels(v: QuizVraag, goed: boolean): QuizAntwoord[] {
   const lijst: QuizAntwoord[] = v.kaarten.map((id) => ({ sleutel: `kaart:${id}`, label: kaartNaam(id), goed }));
   lijst.push({ sleutel: `soort:${v.soort}`, label: v.soort, goed });
+  lijst.push({ sleutel: `niveau:${niveauVan(v.vraagId)}`, label: niveauVan(v.vraagId), goed });
   lijst.push({ sleutel: v.vraagId, label: v.vraagLabel, goed });   // elke afzonderlijke vraag
   if (v.soort === 'combinatie') lijst.push({ sleutel: `combi:${v.kaarten.join('-')}`, label: v.kaarten.map(kaartNaam).join(' + '), goed });
   return lijst;
@@ -60,6 +68,7 @@ export const LenormandQuizPage: React.FC = () => {
   const [combinaties, setCombinaties] = useState<Combinatie[] | null>(null);
   const [onderwerp, setOnderwerp] = useState<QuizOnderwerp>('mix');
   const [aantal, setAantal] = useState(20);
+  const [niveau, setNiveau] = useState<Niveau | 'alles'>('beginner');
   const [vragen, setVragen] = useState<QuizVraag[] | null>(null);  // null = keuzescherm
   const [vraagIndex, setVraagIndex] = useState(0);
   const [gekozen, setGekozen] = useState<number | null>(null);
@@ -72,13 +81,19 @@ export const LenormandQuizPage: React.FC = () => {
 
   useEffect(() => {
     laadCombinaties().then(setCombinaties).catch(() => setCombinaties([]));
-    haalVoortgang<QuizResultaat>('lenormand-quiz', 'resultaat').then(setResultaat);
+    haalVoortgang<QuizResultaat>('lenormand-quiz', 'resultaat').then((r) => {
+      setResultaat(r);
+      // Verder op het niveau van de vorige ronde
+      const vorig = r?.laatste?.niveau as Niveau | 'alles' | undefined;
+      if (vorig && NIVEAUS.some((n) => n.id === vorig)) setNiveau(vorig);
+    });
     haalQuizStats('lenormand-quiz').then(setStats);
   }, []);
 
   const start = () => {
     // Kaarten die vaak fout gaan (of nog nooit gevraagd zijn) komen vaker voorbij
-    setVragen(maakRonde(aantal, onderwerp, combinaties, maakGewicht(stats)));
+    const o = niveau === 'beginner' && onderwerp === 'combinaties' ? 'kaarten' : onderwerp;
+    setVragen(maakRonde(aantal, o, combinaties, maakGewicht(stats), niveau === 'alles' ? undefined : niveau));
     setAntwoorden([]);
     setVraagIndex(0);
     setGekozen(null);
@@ -105,7 +120,7 @@ export const LenormandQuizPage: React.FC = () => {
     // Ronde klaar: score en goed/fout per kaart bewaren bij het account
     setKlaar(true);
     const lijst = antwoorden.flatMap((a) => antwoordSleutels(a.vraag, a.goed));
-    slaRondeOp('lenormand-quiz', score, vragen.length, lijst, { extra: { onderwerp } }).then((r) => {
+    slaRondeOp('lenormand-quiz', score, vragen.length, lijst, { extra: { onderwerp, niveau } }).then((r) => {
       if (!r) return;
       setResultaat(r);
       setNieuwRecord(!!r.nieuw_record);
@@ -120,18 +135,36 @@ export const LenormandQuizPage: React.FC = () => {
       <div className="pendel-pagina">
         <Hero titel="Quiz" ondertitel="Elke ronde nieuwe vragen — uit de 36 kaarten en 1260 combinaties." />
         <div style={{ maxWidth: 640, margin: '0 auto', padding: '2.5rem 1rem' }}>
+          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, marginBottom: '0.7rem' }}>NIVEAU</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.6rem', marginBottom: '1.8rem' }}>
+            {NIVEAUS.map((n) => (
+              <button key={n.id} onClick={() => setNiveau(n.id)} style={{
+                textAlign: 'left', padding: '0.8rem 0.9rem', borderRadius: 10, cursor: 'pointer',
+                border: `0.5px solid ${niveau === n.id ? G.goud : G.rand2}`,
+                background: niveau === n.id ? G.goudBleek : G.bg,
+              }}>
+                <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: niveau === n.id ? G.goudDonker : G.tekst }}>{n.label}</div>
+                <div style={{ fontSize: 13, color: G.tekst3, marginTop: 3, lineHeight: 1.35 }}>{n.uitleg}</div>
+              </button>
+            ))}
+          </div>
+
           <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, marginBottom: '0.7rem' }}>WAAROVER?</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '0.6rem', marginBottom: '1.8rem' }}>
-            {ONDERWERPEN.map((o) => (
-              <button key={o.id} onClick={() => setOnderwerp(o.id)} style={{
-                textAlign: 'left', padding: '0.9rem 1rem', borderRadius: 10, cursor: 'pointer',
+            {ONDERWERPEN.map((o) => {
+              const uit = niveau === 'beginner' && o.id === 'combinaties';
+              return (
+              <button key={o.id} onClick={() => !uit && setOnderwerp(o.id)} disabled={uit} title={uit ? 'Combinaties komen vanaf Gevorderd' : undefined} style={{
+                opacity: uit ? 0.45 : 1,
+                textAlign: 'left', padding: '0.9rem 1rem', borderRadius: 10, cursor: uit ? 'not-allowed' : 'pointer',
                 border: `0.5px solid ${onderwerp === o.id ? G.goud : G.rand2}`,
                 background: onderwerp === o.id ? G.goudBleek : G.bg,
               }}>
                 <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: onderwerp === o.id ? G.goudDonker : G.tekst }}>{o.label}</div>
-                <div style={{ fontSize: 14, color: G.tekst3, marginTop: 3 }}>{o.uitleg}</div>
+                <div style={{ fontSize: 14, color: G.tekst3, marginTop: 3 }}>{uit ? 'Vanaf Gevorderd' : o.uitleg}</div>
               </button>
-            ))}
+              );
+            })}
           </div>
 
           <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, marginBottom: '0.7rem' }}>HOEVEEL VRAGEN?</p>
@@ -210,7 +243,7 @@ export const LenormandQuizPage: React.FC = () => {
 
   return (
     <div className="pendel-pagina">
-      <Hero titel="Quiz" ondertitel={ONDERWERPEN.find((o) => o.id === onderwerp)?.label} />
+      <Hero titel="Quiz" ondertitel={`${NIVEAUS.find((n) => n.id === niveau)?.label} · ${ONDERWERPEN.find((o) => o.id === onderwerp)?.label}`} />
 
       <div style={{ maxWidth: 640, margin: '0 auto', padding: '2.5rem 1rem' }}>
         <div style={{ marginBottom: '1.5rem' }}>

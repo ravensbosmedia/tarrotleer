@@ -5,18 +5,21 @@ import { lenormandKaarten } from '../data/lenormand/kaarten';
 import { useAccount } from '../lib/account';
 import { VragenTabel } from '../components/VragenTabel';
 import { laadCombinaties } from '../data/lenormand/combinaties';
-import { aantalMogelijkeVragen } from '../data/lenormand/quizGenerator';
+import { aantalMogelijkeVragen, niveauVan } from '../data/lenormand/quizGenerator';
 import { pendelQuizVragen } from '../data/pendel/quiz';
 
-/** Soort vraag uit de vaste vraagcode, bv. 'vraag:combi-paar:14-34' → 'Combinaties'. */
+const NIVEAU_LABEL = { beginner: '1 Beginner', gevorderd: '2 Gevorderd', pro: '3 Pro' } as const;
+
+/** Niveau + soort vraag uit de vaste vraagcode, bv. 'vraag:combi-paar:14-34' → '2 Gevorderd · Combinaties'. */
 function lenormandGroep(sleutel: string): string {
   const soort = sleutel.split(':')[1] || '';
-  if (soort.startsWith('combi')) return 'Combinaties';
-  if (soort.includes('nummer')) return 'Nummers';
-  if (soort.includes('woord')) return 'Sleutelwoorden';
-  if (soort.startsWith('omschrijving')) return 'Omschrijvingen';
-  if (soort === 'basis') return 'Basiskennis';
-  return 'Liefde, werk, gezondheid';
+  const naam = soort.startsWith('combi') ? 'Combinaties'
+    : soort.includes('nummer') ? 'Nummers'
+    : soort.includes('woord') ? 'Sleutelwoorden'
+    : soort.startsWith('omschrijving') ? 'Omschrijvingen'
+    : soort === 'basis' ? 'Basiskennis'
+    : 'Liefde, werk, gezondheid';
+  return `${NIVEAU_LABEL[niveauVan(sleutel)]} · ${naam}`;
 }
 
 const G = {
@@ -240,6 +243,16 @@ export const VoortgangPage: React.FC = () => {
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.4rem' }}>
                 <div>
+                  {lenormand.some((x) => x.sleutel.startsWith('niveau:')) && (
+                    <>
+                      <div style={{ fontSize: 13, color: G.tekst3, marginBottom: 8 }}>Per niveau</div>
+                      {(['beginner', 'gevorderd', 'pro'] as const).map((n) => {
+                        const st = lenormand.find((x) => x.sleutel === `niveau:${n}`);
+                        return st ? <Balk key={n} label={NIVEAU_LABEL[n].slice(2)} stat={st} /> : null;
+                      })}
+                      <div style={{ height: 12 }} />
+                    </>
+                  )}
                   <div style={{ fontSize: 13, color: G.tekst3, marginBottom: 8 }}>Per soort vraag</div>
                   {lenormand.filter((s) => s.sleutel.startsWith('soort:')).sort((a, b) => (pctGoed(b) ?? 0) - (pctGoed(a) ?? 0)).map((s) => (
                     <Balk key={s.sleutel} label={SOORT_LABEL[s.label] || s.label} stat={s} />

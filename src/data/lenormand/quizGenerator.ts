@@ -23,6 +23,20 @@ export interface QuizVraag {
 }
 
 export type QuizOnderwerp = 'mix' | 'kaarten' | 'combinaties';
+export type Niveau = 'beginner' | 'gevorderd' | 'pro';
+
+// Niveau per vraagsoort (het deel na 'vraag:' in de vraagcode)
+const NIVEAU_PER_SOORT: Record<string, Niveau> = {
+  'nummer-kaart': 'beginner', 'kaart-nummer': 'beginner', 'woord-kaart': 'beginner', 'kaart-woorden': 'beginner', basis: 'beginner',
+  'omschrijving-kaart': 'gevorderd', 'liefde-kaart': 'gevorderd', 'werk-kaart': 'gevorderd', 'gezondheid-kaart': 'gevorderd',
+  'combi-betekenis': 'gevorderd', 'combi-paar': 'gevorderd',
+  'kaart-liefde': 'pro', 'kaart-werk': 'pro', 'combi-liefde': 'pro', 'combi-werk': 'pro', 'combi-advies': 'pro',
+};
+
+/** Niveau van een vraag op basis van zijn vaste code, bv. 'vraag:combi-advies:14-29' → 'pro'. */
+export function niveauVan(vraagId: string): Niveau {
+  return NIVEAU_PER_SOORT[vraagId.split(':')[1]] ?? 'gevorderd';
+}
 
 function schud<T>(arr: T[]): T[] {
   const k = [...arr];
@@ -165,10 +179,11 @@ function combinatieVraag(c: Combinatie, alle: Combinatie[], richting: CombiRicht
 }
 
 /** Hoeveel verschillende vragen de quiz kan stellen (voor "x van y gedaan"). */
-export function aantalMogelijkeVragen(combinaties: Combinatie[]): number {
-  const perKaart = lenormandKaarten.reduce((n, k) => n + kaartVragen.reduce((m, maker) => m + maker(k).length, 0), 0);
-  const perCombi = combinaties.reduce((n, c) => n + combiRichtingen(c).length, 0);
-  return perKaart + perCombi + lenormandQuizVragen.length;
+export function aantalMogelijkeVragen(combinaties: Combinatie[], niveau?: Niveau): number {
+  const telt = (id: string) => !niveau || niveauVan(id) === niveau;
+  const perKaart = lenormandKaarten.reduce((n, k) => n + kaartVragen.reduce((m, maker) => m + maker(k).filter((v) => telt(v.vraagId)).length, 0), 0);
+  const perCombi = combinaties.reduce((n, c) => n + combiRichtingen(c).filter((r) => telt(`vraag:combi-${r}:`)).length, 0);
+  return perKaart + perCombi + (telt('vraag:basis:') ? lenormandQuizVragen.length : 0);
 }
 
 /** Gewicht per voortgangssleutel ('kaart:14'): hoger = vaker vragen. Zonder voortgang: alles gelijk. */
@@ -186,10 +201,16 @@ function gewogenSchud<T>(lijst: T[], gewicht: (x: T) => number): T[] {
  * Stelt een ronde samen van `aantal` vragen. Combinaties zijn optioneel (lazy geladen).
  * Met `gewicht` komen kaarten die vaak fout gaan (of nog nooit gevraagd zijn) vaker voorbij.
  */
-export function maakRonde(aantal: number, onderwerp: QuizOnderwerp, combinaties: Combinatie[] | null, gewicht: Gewicht = () => 1): QuizVraag[] {
-  const metCombinaties = onderwerp !== 'kaarten' && combinaties && combinaties.length > 0;
-  const aantalCombi = !metCombinaties ? 0 : onderwerp === 'combinaties' ? aantal : Math.round(aantal * 0.35);
-  const aantalBasis = onderwerp === 'mix' ? Math.min(3, aantal - aantalCombi) : 0;
+export function maakRonde(
+  aantal: number, onderwerp: QuizOnderwerp, combinaties: Combinatie[] | null,
+  gewicht: Gewicht = () => 1, niveau?: Niveau,
+): QuizVraag[] {
+  const past = (vraagId: string) => !niveau || niveauVan(vraagId) === niveau;
+  // Beginners krijgen nog geen combinaties; pro-rondes bestaan vooral uit combinaties
+  const metCombinaties = onderwerp !== 'kaarten' && niveau !== 'beginner' && combinaties && combinaties.length > 0;
+  const aandeelCombi = niveau === 'pro' ? 0.6 : 0.35;
+  const aantalCombi = !metCombinaties ? 0 : onderwerp === 'combinaties' ? aantal : Math.round(aantal * aandeelCombi);
+  const aantalBasis = onderwerp !== 'combinaties' && past('vraag:basis:') ? Math.min(3, aantal - aantalCombi) : 0;
   const aantalKaart = aantal - aantalCombi - aantalBasis;
 
   const vragen: QuizVraag[] = [];
@@ -198,7 +219,7 @@ export function maakRonde(aantal: number, onderwerp: QuizOnderwerp, combinaties:
   // krijgen vragen die nog nooit gesteld zijn of vaak fout gaan voorrang.
   for (const k of gewogenSchud(lenormandKaarten, (x) => gewicht(`kaart:${x.id}`))) {
     if (vragen.length >= aantalKaart) break;
-    const kandidaten = kaartVragen.flatMap((maker) => maker(k));
+    const kandidaten = kaartVragen.flatMap((maker) => maker(k)).filter((v) => past(v.vraagId));
     if (kandidaten.length) vragen.push(gewogenSchud(kandidaten, (v) => gewicht(v.vraagId))[0]);
   }
 
@@ -206,7 +227,9 @@ export function maakRonde(aantal: number, onderwerp: QuizOnderwerp, combinaties:
   if (metCombinaties) {
     const paarGewicht = (c: Combinatie) => (gewicht(`kaart:${c.a}`) + gewicht(`kaart:${c.b}`)) / 2;
     for (const c of gewogenSchud(combinaties!, paarGewicht).slice(0, aantalCombi)) {
-      const richting = gewogenSchud(combiRichtingen(c), (r) => gewicht(`vraag:combi-${r}:${c.a}-${c.b}`))[0];
+      const richtingen = combiRichtingen(c).filter((r) => past(`vraag:combi-${r}:`));
+      if (!richtingen.length) continue;
+      const richting = gewogenSchud(richtingen, (r) => gewicht(`vraag:combi-${r}:${c.a}-${c.b}`))[0];
       vragen.push(combinatieVraag(c, combinaties!, richting));
     }
   }
