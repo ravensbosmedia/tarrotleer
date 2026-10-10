@@ -1,7 +1,7 @@
 import { TarotCard } from '../../types/cards';
 
 const img = (name: string) =>
-  `https://commons.wikimedia.org/wiki/Special:FilePath/${name}?width=400`;
+  `/cards/${name.replace('.jpg', '.webp')}`;
 
 export const majorArcana: TarotCard[] = [
   {
