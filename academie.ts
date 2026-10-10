@@ -9,7 +9,7 @@ import { execFileSync, execFile } from 'child_process';
 import { promisify } from 'util';
 import { posix } from 'path';
 import { join } from 'path';
-import { unlinkSync, mkdirSync, readdirSync, readFileSync, statSync, createWriteStream, openSync, readSync, closeSync } from 'fs';
+import { unlinkSync, mkdirSync, readdirSync, readFileSync, statSync, createWriteStream, openSync, readSync, closeSync, writeFileSync } from 'fs';
 
 type HoofdstukStatus = 'te_beoordelen' | 'aangepast' | 'goedgekeurd';
 type CursusStatus = 'concept' | 'in_beoordeling' | 'goedgekeurd';
@@ -402,10 +402,28 @@ export function installeerAcademie(app: express.Express, root: string) {
     res.send(alsBestand(h.nr, h.titel, h.inhoud));
   });
 
-  app.post('/api/admin/academie/hoofdstuk/:id/upload', alleenAdmin, express.raw({ type: () => true, limit: '2mb' }), (req, res) => {
+  app.post('/api/admin/academie/hoofdstuk/:id/upload', alleenAdmin, express.raw({ type: () => true, limit: '20mb' }), async (req, res) => {
     const h = hoofdstukVan.get(Number(req.params.id));
     if (!h) { res.status(404).json({ error: 'Hoofdstuk niet gevonden' }); return; }
-    const md = Buffer.isBuffer(req.body) ? req.body.toString('utf-8') : '';
+    const buf = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
+    let md = buf.toString('utf-8');
+    // Ook een zip (bv. van ChatGPT): neem het .md-bestand met dit hoofdstuknummer, of het enige hoofdstukbestand
+    if (buf.length >= 4 && buf.readUInt32LE(0) === 0x04034b50) {
+      const c = cursusVanId.get(h.cursus_id)!;
+      const tmp = join(tmpMap, `hoofdstuk-${Date.now()}.zip`);
+      try {
+        writeFileSync(tmp, buf);
+        const z = await leesZip(tmp);
+        const kandidaten = z.md.filter((b) => b.pad.endsWith('.md') && !/(^|\/)0\d-[A-Z]/.test(b.pad));
+        const juist = kandidaten.find((b) => (b.pad.split('/').pop() || '').startsWith(`${String(c.nr).padStart(2, '0')}-${String(h.nr).padStart(2, '0')}-`));
+        md = (juist || (kandidaten.length === 1 ? kandidaten[0] : undefined))?.tekst || '';
+        if (!md) { res.status(400).json({ error: `Geen hoofdstukbestand gevonden in de zip (verwacht: ${bestandsnaam(c.nr, h.nr, h.slug)})` }); return; }
+      } catch {
+        res.status(400).json({ error: 'Zip kon niet gelezen worden' }); return;
+      } finally {
+        try { unlinkSync(tmp); } catch { /* weg */ }
+      }
+    }
     if (!md.trim()) { res.status(400).json({ error: 'Leeg bestand' }); return; }
     const gewijzigd = db.transaction(() => nieuweVersie(h, md, req.lid!.email, 'nieuwe versie geüpload'))();
     res.json({ gewijzigd, hoofdstuk: hoofdstukVan.get(h.id) });
@@ -519,6 +537,54 @@ export function installeerAcademie(app: express.Express, root: string) {
     const zip = execFileSync('python3', ['-c', ZIP_MAKER], { input: JSON.stringify(bestanden), maxBuffer: 50 * 1024 * 1024 });
     res.setHeader('Content-Type', 'application/zip');
     res.setHeader('Content-Disposition', `attachment; filename="chatgpt-pakket-${c.slug}.zip"`);
+    res.send(zip);
+  });
+
+  // ── Pakket voor ChatGPT voor één hoofdstuk: zelfde opdracht/eisen, advies van dit hoofdstuk + context van de cursus ──
+  app.get('/api/admin/academie/hoofdstuk/:id/chatgpt-pakket', alleenAdmin, (req, res) => {
+    const h = hoofdstukVan.get(Number(req.params.id)) as (HoofdstukRij & { advies: string }) | undefined;
+    if (!h) { res.status(404).json({ error: 'Hoofdstuk niet gevonden' }); return; }
+    const c = cursusVanId.get(h.cursus_id) as CursusRij & { advies: string };
+    const alle = db.prepare<[number], { nr: number; titel: string }>('SELECT nr, titel FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(c.id);
+    const map = join(root, 'sjablonen', 'academie-herwerken');
+    const naam = bestandsnaam(c.nr, h.nr, h.slug);
+    const leesEerst = [
+      `# Lees eerst: dit pakket bevat één hoofdstuk`,
+      '',
+      `Dit pakket bevat **alleen hoofdstuk ${h.nr} — ${h.titel}** van de cursus **${c.nr}. ${c.titel}**.`,
+      '',
+      'Voer de opdracht uit 00-OPDRACHT.md uit voor **alleen dit hoofdstuk**. Waar de opdracht over "de volledige cursus" spreekt, geldt dat hier voor dit ene hoofdstuk. De andere hoofdstukken van de cursus staan hieronder, zodat je weet wat elders al behandeld wordt en herhaling kunt voorkomen.',
+      '',
+      `**Lever één bestand op met precies dezelfde naam: \`${naam}\`** (los, of in een zip). Een korte rapportage mag erbij.`,
+      '',
+      '## Alle hoofdstukken van deze cursus',
+      '',
+      ...alle.map((x) => `- ${x.nr}. ${x.titel}${x.nr === h.nr ? '  ← dit hoofdstuk' : ''}`),
+    ].join('\n');
+    const advies = [
+      `# Advies — Hoofdstuk ${h.nr}: ${h.titel}`,
+      '',
+      'Schrijf alles in makkelijke taal en maak het makkelijk te onthouden, zoals beschreven in 02-TAAL-EN-ONTHOUDEN.md.',
+      '',
+      '## Advies voor dit hoofdstuk',
+      '',
+      h.advies || '(nog geen advies)',
+      '',
+      `## Achtergrond: advies voor de hele cursus "${c.titel}"`,
+      '',
+      c.advies || '(nog geen cursusadvies)',
+    ].join('\n');
+    const bestanden = [
+      { naam: '00-LEES-EERST.md', tekst: leesEerst },
+      { naam: '00-OPDRACHT.md', tekst: readFileSync(join(map, '00-OPDRACHT.md'), 'utf-8') },
+      { naam: '01-TECHNISCHE-EISEN.md', tekst: readFileSync(join(map, '01-TECHNISCHE-EISEN.md'), 'utf-8') },
+      { naam: '02-TAAL-EN-ONTHOUDEN.md', tekst: readFileSync(join(map, '02-TAAL-EN-ONTHOUDEN.md'), 'utf-8') },
+      { naam: '03-ADVIES-DIT-HOOFDSTUK.md', tekst: advies },
+      { naam: naam, tekst: alsBestand(h.nr, h.titel, h.inhoud) },
+    ];
+    const zip = execFileSync('python3', ['-c', ZIP_MAKER], { input: JSON.stringify(bestanden), maxBuffer: 20 * 1024 * 1024 });
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="chatgpt-pakket-${naam.replace(/\.md$/, '')}.zip"`);
     res.send(zip);
   });
 }

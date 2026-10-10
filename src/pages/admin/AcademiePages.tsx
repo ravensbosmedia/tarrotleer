@@ -398,10 +398,10 @@ ${inhoud}`;
 
   async function uploadMd(f: File) {
     if (!h) return;
-    if (!/\.(md|markdown|txt)$/i.test(f.name)) { setMelding('Kies een .md-bestand'); return; }
+    if (!/\.(md|markdown|txt|zip)$/i.test(f.name)) { setMelding('Kies een .md-bestand of een zip met het hoofdstuk'); return; }
     if (gewijzigd && !window.confirm('Je hebt niet-opgeslagen wijzigingen in de editor. Die gaan verloren als je een nieuwe versie uploadt. Doorgaan?')) return;
     try {
-      const d = await uploadBestand<{ gewijzigd: boolean }>(`/api/admin/academie/hoofdstuk/${h.id}/upload`, f, 'text/markdown');
+      const d = await uploadBestand<{ gewijzigd: boolean }>(`/api/admin/academie/hoofdstuk/${h.id}/upload`, f, /\.zip$/i.test(f.name) ? 'application/zip' : 'text/markdown');
       setMelding(d.gewijzigd ? 'Nieuwe versie geüpload ✓ (vorige versie bewaard)' : 'Het bestand is gelijk aan de huidige tekst — niets veranderd');
       laad();
     } catch (e) { setMelding((e as Error).message); }
@@ -479,8 +479,9 @@ ${inhoud}`;
             <button key={w} onClick={() => setWeergave(w)} style={{ ...knopLicht, ...(weergave === w ? { background: G.bg3, borderColor: G.goud } : {}) }}>{l}</button>
           ))}
           <span style={{ marginLeft: 'auto', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            <a href={`/api/admin/academie/hoofdstuk/${h.id}/download`} style={{ ...knopLicht, textDecoration: 'none' }} title="Laatst opgeslagen versie als .md">⬇ Download (.md)</a>
-            <BestandKnop label="⬆ Upload nieuwe versie (.md)" accept=".md,.markdown,.txt,text/markdown,text/plain" onKies={uploadMd} />
+            <a href={`/api/admin/academie/hoofdstuk/${h.id}/chatgpt-pakket`} style={{ ...knop, textDecoration: 'none' }} title="Opdracht, eisen, taaleis, advies en dit hoofdstuk in één zip">⬇ Pakket voor ChatGPT (.zip)</a>
+            <a href={`/api/admin/academie/hoofdstuk/${h.id}/download`} style={{ ...knopLicht, textDecoration: 'none' }} title="Alleen de tekst, laatst opgeslagen versie">⬇ Alleen tekst (.md)</a>
+            <BestandKnop label="⬆ Upload nieuwe versie (.md of .zip)" accept=".md,.markdown,.txt,.zip,text/markdown,text/plain,application/zip" onKies={uploadMd} />
             <button onClick={() => setToon(toon === 'origineel' ? 'niets' : 'origineel')} style={knopLicht}>Origineel</button>
             <button onClick={() => setToon(toon === 'versies' ? 'niets' : 'versies')} style={knopLicht}>Versies ({h.versies.length})</button>
           </span>
