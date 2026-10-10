@@ -870,7 +870,10 @@ app.use((_req, res) => {
   res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Tarot server draait op http://localhost:${PORT}`);
   console.log(`API beschikbaar op http://localhost:${PORT}/api/cards`);
 });
+// Node breekt een verzoek standaard na 5 minuten af (408). Grote cursus-zips (honderden MB's)
+// hebben bij een gewone thuisverbinding meer tijd nodig om te uploaden.
+server.requestTimeout = 2 * 60 * 60 * 1000;
