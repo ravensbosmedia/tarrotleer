@@ -3,10 +3,11 @@
 // als concept. Beheerders beoordelen en bewerken elk hoofdstuk; elke opslag bewaart een versie.
 // Bewust GEEN AI-aanroep op de server (kost tegoed); verbeteren gebeurt via ChatGPT in de browser.
 // Niets hiervan is zichtbaar voor gewone leden.
-import type express from 'express';
+import express from 'express';
 import Database from 'better-sqlite3';
 import { execFileSync } from 'child_process';
 import { join } from 'path';
+import { writeFileSync, unlinkSync, mkdirSync, readdirSync, readFileSync, statSync } from 'fs';
 
 type HoofdstukStatus = 'te_beoordelen' | 'aangepast' | 'goedgekeurd';
 type CursusStatus = 'concept' | 'in_beoordeling' | 'goedgekeurd';
@@ -30,12 +31,31 @@ for n in z.namelist():
 print(json.dumps(uit))
 `;
 
+// Maakt een zip van de meegegeven bestanden (JSON via stdin) en schrijft die naar stdout
+const ZIP_MAKER = `
+import io, json, sys, zipfile
+bestanden = json.load(sys.stdin)
+buf = io.BytesIO()
+with zipfile.ZipFile(buf, 'w', zipfile.ZIP_DEFLATED) as z:
+    for b in bestanden:
+        z.writestr(b['naam'], b['tekst'])
+sys.stdout.buffer.write(buf.getvalue())
+`;
+
+/** Bestandsnaam voor een hoofdstuk, zelfde patroon als in de oorspronkelijke zip: 06-03-amethist.md */
+const bestandsnaam = (cursusNr: number, nr: number, slug: string) =>
+  `${String(cursusNr).padStart(2, '0')}-${String(nr).padStart(2, '0')}-${slug}.md`;
+
+/** Hoofdstuk als los Markdown-bestand, met de titel bovenaan zodat die mee terug kan komen. */
+const alsBestand = (nr: number, titel: string, inhoud: string) => `# Hoofdstuk ${nr} — ${titel}\n\n${inhoud}\n`;
+
 /** Haalt de kop (titel + gegevens) en de navigatie onderaan uit een hoofdstuk. */
 function kaleInhoud(md: string): { titel: string; inhoud: string } {
   const titel = (md.match(/^#\s+(?:Hoofdstuk\s+\d+\s+[—-]\s+)?(.+)$/m)?.[1] || '').trim();
-  let inhoud = md;
+  let inhoud = md.replace(/^\uFEFF/, '');
   const start = inhoud.search(/^##\s/m);
   if (start > 0) inhoud = inhoud.slice(start);
+  else if (start < 0) inhoud = inhoud.replace(/^#\s+.+\n?/, '');
   inhoud = inhoud.replace(/\n\*\*Vorige:\*\*[\s\S]*$/, '').trim();
   return { titel, inhoud };
 }
@@ -200,5 +220,109 @@ export function installeerAcademie(app: express.Express, root: string) {
     const v = db.prepare('SELECT * FROM academie_versies WHERE id = ?').get(Number(req.params.id));
     if (!v) { res.status(404).json({ error: 'Versie niet gevonden' }); return; }
     res.json(v);
+  });
+
+  // ── Downloaden en nieuwe versies uploaden (per hoofdstuk .md, per cursus .zip) ──
+  const tmpMap = join(root, 'data', 'uploads', 'tmp');
+  mkdirSync(tmpMap, { recursive: true });
+  const cursusVanId = db.prepare<[number], CursusRij>('SELECT * FROM academie_cursussen WHERE id = ?');
+
+  /** Slaat nieuwe inhoud op als die anders is, met versie; geeft true terug als er iets veranderde. */
+  function nieuweVersie(h: HoofdstukRij, md: string, door: string, reden: string): boolean {
+    const { titel: nieuweTitel, inhoud } = kaleInhoud(md.replace(/\r\n/g, '\n'));
+    const titel = nieuweTitel || h.titel;
+    if (!inhoud.trim() || (inhoud === h.inhoud && titel === h.titel)) return false;
+    db.prepare('INSERT INTO academie_versies (hoofdstuk_id, titel, inhoud, door, reden) VALUES (?, ?, ?, ?, ?)')
+      .run(h.id, h.titel, h.inhoud, door, reden);
+    db.prepare(`UPDATE academie_hoofdstukken SET titel = ?, inhoud = ?,
+      status = CASE WHEN status = 'te_beoordelen' THEN 'aangepast' ELSE status END,
+      bijgewerkt = datetime('now'), bijgewerkt_door = ? WHERE id = ?`).run(titel, inhoud.slice(0, 100000), door, h.id);
+    return true;
+  }
+
+  app.get('/api/admin/academie/hoofdstuk/:id/download', alleenAdmin, (req, res) => {
+    const h = hoofdstukVan.get(Number(req.params.id));
+    if (!h) { res.status(404).json({ error: 'Hoofdstuk niet gevonden' }); return; }
+    const c = cursusVanId.get(h.cursus_id)!;
+    res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${bestandsnaam(c.nr, h.nr, h.slug)}"`);
+    res.send(alsBestand(h.nr, h.titel, h.inhoud));
+  });
+
+  app.post('/api/admin/academie/hoofdstuk/:id/upload', alleenAdmin, express.raw({ type: () => true, limit: '2mb' }), (req, res) => {
+    const h = hoofdstukVan.get(Number(req.params.id));
+    if (!h) { res.status(404).json({ error: 'Hoofdstuk niet gevonden' }); return; }
+    const md = Buffer.isBuffer(req.body) ? req.body.toString('utf-8') : '';
+    if (!md.trim()) { res.status(400).json({ error: 'Leeg bestand' }); return; }
+    const gewijzigd = db.transaction(() => nieuweVersie(h, md, req.lid!.email, 'nieuwe versie geüpload'))();
+    res.json({ gewijzigd, hoofdstuk: hoofdstukVan.get(h.id) });
+  });
+
+  app.get('/api/admin/academie/:slug/download', alleenAdmin, (req, res) => {
+    const c = cursusVan.get(String(req.params.slug));
+    if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
+    const hoofdstukken = db.prepare<[number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(c.id);
+    const bestanden = hoofdstukken.map((h) => ({ naam: `${c.slug}/${bestandsnaam(c.nr, h.nr, h.slug)}`, tekst: alsBestand(h.nr, h.titel, h.inhoud) }));
+    const zip = execFileSync('python3', ['-c', ZIP_MAKER], { input: JSON.stringify(bestanden), maxBuffer: 100 * 1024 * 1024 });
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${c.slug}.zip"`);
+    res.send(zip);
+  });
+
+  // Zip met .md-bestanden; hoofdstukken worden herkend aan het nummer in de bestandsnaam (NN-MM-… of MM-…)
+  app.post('/api/admin/academie/:slug/upload', alleenAdmin, express.raw({ type: () => true, limit: '30mb' }), (req, res) => {
+    const c = cursusVan.get(String(req.params.slug));
+    if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
+    const buf = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
+    if (buf.length < 22 || buf.readUInt32LE(0) !== 0x04034b50) { res.status(400).json({ error: 'Dit is geen zip-bestand' }); return; }
+    const tmp = join(tmpMap, `cursus-${Date.now()}.zip`);
+    let bestanden: { pad: string; tekst: string }[];
+    try {
+      writeFileSync(tmp, buf);
+      bestanden = JSON.parse(execFileSync('python3', ['-c', ZIP_LEZER, tmp], { maxBuffer: 100 * 1024 * 1024 }).toString('utf-8'));
+    } catch {
+      res.status(400).json({ error: 'Zip kon niet gelezen worden' }); return;
+    } finally {
+      try { unlinkSync(tmp); } catch { /* al weg */ }
+    }
+    const perNr = new Map(db.prepare<[number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ?').all(c.id).map((h) => [h.nr, h]));
+    const resultaat = { gewijzigd: [] as string[], ongewijzigd: 0, onbekend: [] as string[] };
+    db.transaction(() => {
+      for (const b of bestanden) {
+        const naam = b.pad.split('/').pop() || '';
+        const m = naam.match(/^(\d+)-(\d+)-/) || naam.match(/^(\d+)-/);
+        const nr = m ? Number(m[2] ?? m[1]) : NaN;
+        if (m && m[2] !== undefined && Number(m[1]) !== c.nr) { resultaat.onbekend.push(`${naam} (hoort bij cursus ${Number(m[1])})`); continue; }
+        const h = perNr.get(nr);
+        if (!h) { resultaat.onbekend.push(naam); continue; }
+        if (nieuweVersie(h, b.tekst, req.lid!.email, 'nieuwe versie geüpload (cursus-zip)')) resultaat.gewijzigd.push(`${h.nr}. ${h.titel}`);
+        else resultaat.ongewijzigd++;
+      }
+    })();
+    res.json(resultaat);
+  });
+
+  // ── Sjabloon voor ChatGPT: uitleg + voorbeeldcursus, aangevuld met de bestaande cursussen en een vrij nummer ──
+  app.get('/api/admin/academie-sjabloon', alleenAdmin, (_req, res) => {
+    const bron = join(root, 'sjablonen', 'academie-cursus');
+    const bestaand = db.prepare<[], { nr: number; titel: string }>('SELECT nr, titel FROM academie_cursussen ORDER BY nr').all();
+    const vrij = Math.max(0, ...bestaand.map((c) => c.nr)) + 1;
+    const twee = (n: number) => String(n).padStart(2, '0');
+    const vervang = (t: string) => t
+      .replace(/\{\{NR\}\}/g, twee(vrij)).replace(/\{\{NR2\}\}/g, twee(vrij + 1))
+      .replace(/\{\{BESTAAND\}\}/g, bestaand.length ? bestaand.map((c) => `- ${twee(c.nr)}. ${c.titel}`).join('\n') : '- (nog geen)');
+    const bestanden: { naam: string; tekst: string }[] = [];
+    const lees = (map: string, rel: string) => {
+      for (const naam of readdirSync(map).sort()) {
+        const pad = join(map, naam);
+        if (statSync(pad).isDirectory()) lees(pad, `${rel}${naam}/`);
+        else bestanden.push({ naam: `Academie_sjabloon/${rel}${naam}`, tekst: vervang(readFileSync(pad, 'utf-8')) });
+      }
+    };
+    lees(bron, '');
+    const zip = execFileSync('python3', ['-c', ZIP_MAKER], { input: JSON.stringify(bestanden), maxBuffer: 20 * 1024 * 1024 });
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename="academie-sjabloon-voor-chatgpt.zip"');
+    res.send(zip);
   });
 }

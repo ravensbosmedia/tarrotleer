@@ -57,13 +57,49 @@ async function api<T>(pad: string, opties?: RequestInit): Promise<T> {
   return d as T;
 }
 
+/** Stuurt een gekozen bestand als ruwe body naar de server en geeft het JSON-antwoord terug. */
+async function uploadBestand<T>(pad: string, bestand: File, type: string): Promise<T> {
+  const r = await fetch(pad, { method: 'POST', headers: { 'Content-Type': type }, body: bestand });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || `Upload mislukt (${r.status})`);
+  return d as T;
+}
+
+/** Knop die een verborgen bestandskiezer opent. */
+const BestandKnop: React.FC<{ label: string; accept: string; onKies: (f: File) => void; stijl?: React.CSSProperties }> = ({ label, accept, onKies, stijl }) => {
+  const ref = useRef<HTMLInputElement>(null);
+  return (
+    <>
+      <input ref={ref} type="file" accept={accept} style={{ display: 'none' }}
+        onChange={(e) => { const f = e.target.files?.[0]; if (f) onKies(f); e.target.value = ''; }} />
+      <button style={stijl ?? knopLicht} onClick={() => ref.current?.click()}>{label}</button>
+    </>
+  );
+};
+
 // ═════════════ Overzicht van alle cursussen ═════════════
 interface CursusRij { id: number; slug: string; nr: number; titel: string; status: CStatus; hoofdstukken: number; goedgekeurd: number; aangepast: number; bijgewerkt: string }
 
 export const AcademieOverzichtPage: React.FC = () => {
   const [cursussen, setCursussen] = useState<CursusRij[] | null>(null);
   const [fout, setFout] = useState<string | null>(null);
-  useEffect(() => { api<CursusRij[]>('/api/admin/academie').then(setCursussen).catch((e) => setFout(e.message)); }, []);
+  const [verslag, setVerslag] = useState<string | null>(null);
+  const laadOverzicht = useCallback(() => { api<CursusRij[]>('/api/admin/academie').then(setCursussen).catch((e) => setFout(e.message)); }, []);
+  useEffect(() => { laadOverzicht(); }, [laadOverzicht]);
+
+  // Nieuwe cursus(sen): eerst als upload bewaren, daarna meteen importeren
+  async function nieuweCursus(f: File) {
+    if (!f.name.toLowerCase().endsWith('.zip')) { setVerslag('Kies een .zip-bestand.'); return; }
+    setVerslag('Bezig met uploaden en importeren…');
+    try {
+      const upload = await uploadBestand<{ id: number }>(`/api/admin/cursus-upload?naam=${encodeURIComponent(f.name)}`, f, 'application/zip');
+      const d = await api<{ nieuweCursussen: number; nieuweHoofdstukken: number; overgeslagen: number }>(`/api/admin/academie/importeer/${upload.id}`, { method: 'POST' });
+      setVerslag(d.nieuweCursussen || d.nieuweHoofdstukken
+        ? `✓ ${d.nieuweCursussen} nieuwe cursus(sen) en ${d.nieuweHoofdstukken} hoofdstukken toegevoegd${d.overgeslagen ? ` · ${d.overgeslagen} bestonden al en zijn niet overschreven` : ''}.`
+        : 'Er is niets nieuws gevonden. Controleer of de mappen en bestanden de opbouw uit het sjabloon volgen (bijv. 21-naam/21-01-titel.md).');
+      laadOverzicht();
+    } catch (e) { setVerslag((e as Error).message); }
+  }
 
   const totaal = (cursussen || []).reduce((s, c) => s + c.hoofdstukken, 0);
   const goed = (cursussen || []).reduce((s, c) => s + (c.goedgekeurd || 0), 0);
@@ -75,8 +111,16 @@ export const AcademieOverzichtPage: React.FC = () => {
         <h1 style={titelStijl}>ACADEMIE — BEHEER</h1>
         <p style={{ color: G.tekst3, margin: '0 0 1.5rem', fontSize: 15 }}>
           Alleen zichtbaar voor beheerders. Beoordeel en verbeter elke cursus hoofdstuk voor hoofdstuk.{' '}
-          <Link to="/admin/cursussen" style={{ color: G.goud }}>Uploads →</Link>
+          <Link to="/admin/cursussen" style={{ color: G.goud }}>Alle uploads →</Link>
         </p>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: '0.6rem' }}>
+          <BestandKnop label="⬆ Nieuwe cursus uploaden (.zip)" accept=".zip,application/zip" onKies={nieuweCursus} stijl={knop} />
+          <a href="/api/admin/academie-sjabloon" style={{ ...knopLicht, textDecoration: 'none' }}>⬇ Sjabloon voor ChatGPT (.zip)</a>
+        </div>
+        <p style={{ fontSize: 13, color: G.tekst3, margin: '0 0 1.2rem' }}>
+          Geef het sjabloon aan ChatGPT: daarin staat precies hoe een cursus moet zijn opgebouwd, met een voorbeeld en het eerstvolgende vrije cursusnummer. De zip die ChatGPT maakt, upload je hier.
+        </p>
+        {verslag && <p style={{ fontSize: 14, margin: '0 0 1.2rem', color: verslag.startsWith('✓') ? '#9bd49b' : G.tekst2 }}>{verslag}</p>}
         {fout && <p style={{ color: '#ff9a8a' }}>{fout}</p>}
         {cursussen && cursussen.length === 0 && (
           <p style={{ color: G.tekst3, fontStyle: 'italic' }}>Nog geen cursussen. Importeer eerst een zip via <Link to="/admin/cursussen" style={{ color: G.goud }}>Uploads</Link>.</p>
@@ -119,8 +163,21 @@ export const AcademieCursusPage: React.FC = () => {
   const [c, setC] = useState<CursusDetail | null>(null);
   const [fout, setFout] = useState<string | null>(null);
   const [opgeslagen, setOpgeslagen] = useState<string | null>(null);
+  const [uploadVerslag, setUploadVerslag] = useState<string | null>(null);
 
-  useEffect(() => { api<CursusDetail>(`/api/admin/academie/${slug}`).then(setC).catch((e) => setFout(e.message)); }, [slug]);
+  const laadCursus = useCallback(() => { api<CursusDetail>(`/api/admin/academie/${slug}`).then(setC).catch((e) => setFout(e.message)); }, [slug]);
+  useEffect(() => { laadCursus(); }, [laadCursus]);
+
+  async function uploadZip(f: File) {
+    if (!f.name.toLowerCase().endsWith('.zip')) { setUploadVerslag('Kies een .zip-bestand.'); return; }
+    setUploadVerslag('Bezig met uploaden…');
+    try {
+      const d = await uploadBestand<{ gewijzigd: string[]; ongewijzigd: number; onbekend: string[] }>(`/api/admin/academie/${slug}/upload`, f, 'application/zip');
+      setUploadVerslag(`✓ ${d.gewijzigd.length} hoofdstuk(ken) bijgewerkt${d.gewijzigd.length ? `: ${d.gewijzigd.join(', ')}` : ''} · ${d.ongewijzigd} ongewijzigd` +
+        (d.onbekend.length ? ` · niet herkend: ${d.onbekend.join(', ')}` : ''));
+      laadCursus();
+    } catch (e) { setUploadVerslag((e as Error).message); }
+  }
 
   async function wijzig(w: Partial<Pick<CursusDetail, 'titel' | 'beschrijving' | 'status'>>) {
     const d = await api<CursusDetail>(`/api/admin/academie/${slug}`, { method: 'PATCH', body: JSON.stringify(w) });
@@ -153,6 +210,12 @@ export const AcademieCursusPage: React.FC = () => {
           {opgeslagen && <span style={{ fontSize: 13, color: '#9bd49b' }}>{opgeslagen}</span>}
           <span style={{ marginLeft: 'auto', fontSize: 14, color: G.tekst2 }}>{goed}/{c.hoofdstukken.length} goedgekeurd</span>
         </div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
+          <a href={`/api/admin/academie/${c.slug}/download`} style={{ ...knopLicht, textDecoration: 'none' }}>⬇ Download cursus (.zip)</a>
+          <BestandKnop label="⬆ Upload nieuwe versie (.zip)" accept=".zip,application/zip" onKies={uploadZip} />
+          <span style={{ fontSize: 12, color: G.tekst3 }}>Hoofdstukken worden herkend aan het nummer in de bestandsnaam (bijv. 06-03-amethist.md). Vorige versies blijven bewaard.</span>
+        </div>
+        {uploadVerslag && <p style={{ fontSize: 14, margin: '0 0 1rem', color: uploadVerslag.startsWith('✓') ? '#9bd49b' : G.tekst2 }}>{uploadVerslag}</p>}
         <Balk goed={goed} aangepast={aangepast} totaal={c.hoofdstukken.length} />
 
         <div style={{ marginTop: '1.2rem' }}>
@@ -300,6 +363,17 @@ ${inhoud}`;
     }
   }
 
+  async function uploadMd(f: File) {
+    if (!h) return;
+    if (!/\.(md|markdown|txt)$/i.test(f.name)) { setMelding('Kies een .md-bestand'); return; }
+    if (gewijzigd && !window.confirm('Je hebt niet-opgeslagen wijzigingen in de editor. Die gaan verloren als je een nieuwe versie uploadt. Doorgaan?')) return;
+    try {
+      const d = await uploadBestand<{ gewijzigd: boolean }>(`/api/admin/academie/hoofdstuk/${h.id}/upload`, f, 'text/markdown');
+      setMelding(d.gewijzigd ? 'Nieuwe versie geüpload ✓ (vorige versie bewaard)' : 'Het bestand is gelijk aan de huidige tekst — niets veranderd');
+      laad();
+    } catch (e) { setMelding((e as Error).message); }
+  }
+
   async function bekijkVersie(v: Versie) {
     const d = await api<{ id: number; titel: string; inhoud: string }>(`/api/admin/academie/versie/${v.id}`);
     setVersieTekst(d);
@@ -363,7 +437,9 @@ ${inhoud}`;
           {([['naast', 'Naast elkaar'], ['bewerken', 'Bewerken'], ['voorbeeld', 'Voorbeeld']] as [Weergave, string][]).map(([w, l]) => (
             <button key={w} onClick={() => setWeergave(w)} style={{ ...knopLicht, ...(weergave === w ? { background: G.bg3, borderColor: G.goud } : {}) }}>{l}</button>
           ))}
-          <span style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
+          <span style={{ marginLeft: 'auto', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            <a href={`/api/admin/academie/hoofdstuk/${h.id}/download`} style={{ ...knopLicht, textDecoration: 'none' }} title="Laatst opgeslagen versie als .md">⬇ Download (.md)</a>
+            <BestandKnop label="⬆ Upload nieuwe versie (.md)" accept=".md,.markdown,.txt,text/markdown,text/plain" onKies={uploadMd} />
             <button onClick={() => setToon(toon === 'origineel' ? 'niets' : 'origineel')} style={knopLicht}>Origineel</button>
             <button onClick={() => setToon(toon === 'versies' ? 'niets' : 'versies')} style={knopLicht}>Versies ({h.versies.length})</button>
           </span>

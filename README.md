@@ -83,6 +83,9 @@ Nieuwe, losse cursussen (los van de bestaande cursus numerologie/astrologie) kom
 2. **Importeren:** knop *Importeren in Academie* (`academie.ts`). Mappen `NN-naam/NN-MM-hoofdstuk.md` worden cursussen en hoofdstukken; titels komen uit `00-START-HIER.md`. Opnieuw importeren overschrijft geen bewerkte hoofdstukken.
 3. **Beoordelen:** `/admin/academie` (voortgang over alle cursussen) → `/admin/academie/:slug` (hoofdstukken met status) → `/admin/academie/h/:id` (editor: Markdown met voorbeeldweergave, status *te beoordelen / aangepast / goedgekeurd*, notitie, origineel, versiegeschiedenis met terugzetten, Ctrl+S). Verbeteren gebeurt **met ChatGPT in de browser** (abonnement), niet via de API: *Kopieer opdracht* zet een schrijfopdracht met de huidige tekst op het klembord, *Plak in editor* zet het antwoord terug. De server doet hier bewust geen AI-aanroepen (kosten).
 
+4. **Download en upload:** per hoofdstuk *Download (.md)* en *Upload nieuwe versie (.md)*, per cursus *Download cursus (.zip)* en *Upload nieuwe versie (.zip)*. Hoofdstukken worden herkend aan het nummer in de bestandsnaam (`06-03-amethist.md`). Alleen gewijzigde hoofdstukken worden bijgewerkt, en de vorige versie blijft bewaard.
+5. **Nieuwe cursussen:** op `/admin/academie` staan *Sjabloon voor ChatGPT (.zip)* (uitleg plus voorbeeldcursus uit `sjablonen/academie-cursus/`, aangevuld met de bestaande cursussen en het eerstvolgende vrije nummer) en *Nieuwe cursus uploaden (.zip)* (upload en import in één keer). Een onveranderd sjabloon importeert niets, omdat de voorbeeldmap `NN-…` heet.
+
 Tabellen: `academie_cursussen`, `academie_hoofdstukken`, `academie_versies` (elke opslag bewaart de vorige versie), `cursus_uploads`. De weergave van Markdown (`src/components/Markdown.tsx`) bouwt React-elementen en voert nooit HTML uit.
 
 ## Lenormand-quiz
