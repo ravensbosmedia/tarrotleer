@@ -1,4 +1,6 @@
 # Mystieke Kaarten — Platform Plan
+
+> **Let op (stand 2026-10-10):** dit plan beschrijft de oude testomgeving (tarot.ownyourdot.me, PM2). Het platform draait nu op **https://leren.fb-techlabs.com** (VPS, systemd) met accounts, voortgang, AstroAPI-horoscoop en vernieuwde Lenormand-combinaties. Zie **README.md** voor de actuele situatie. Dit document blijft staan als historisch plan.
 **Versie:** 1.0 | **Datum:** 2026-05-27 | **Omgeving:** https://tarot.ownyourdot.me
 
 ---
