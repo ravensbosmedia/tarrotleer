@@ -6,6 +6,7 @@ import { AccountPage } from './pages/AccountPage';
 import { VoortgangPage } from './pages/VoortgangPage';
 import { LedenPage } from './pages/admin/LedenPage';
 import { CursussenPage } from './pages/admin/CursussenPage';
+import { AcademieOverzichtPage, AcademieCursusPage, AcademieHoofdstukPage } from './pages/admin/AcademiePages';
 import { Navbar } from './components/Navbar';
 import ReadingPage from './pages/ReadingPage';
 import { HomePage } from './pages/HomePage';
@@ -71,6 +72,9 @@ function App() {
         <Route path="/admin" element={<Navigate to="/admin/leden" replace />} />
         <Route path="/admin/leden" element={<ProtectedRoute><Layout><LedenPage /></Layout></ProtectedRoute>} />
         <Route path="/admin/cursussen" element={<ProtectedRoute><Layout><CursussenPage /></Layout></ProtectedRoute>} />
+        <Route path="/admin/academie" element={<ProtectedRoute><Layout><AcademieOverzichtPage /></Layout></ProtectedRoute>} />
+        <Route path="/admin/academie/h/:id" element={<ProtectedRoute><Layout><AcademieHoofdstukPage /></Layout></ProtectedRoute>} />
+        <Route path="/admin/academie/:slug" element={<ProtectedRoute><Layout><AcademieCursusPage /></Layout></ProtectedRoute>} />
         <Route path="/account" element={<Layout><AccountPage /></Layout>} />
         <Route path="/voortgang" element={<Layout><VoortgangPage /></Layout>} />
         <Route

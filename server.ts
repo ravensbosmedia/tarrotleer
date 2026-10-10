@@ -5,6 +5,7 @@ import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
 import { allCards } from './src/data/cards/index.js';
 import { installeerAccounts } from './accounts.js';
 import { installeerCursusUploads } from './cursussen.js';
+import { installeerAcademie } from './academie.js';
 
 // Laad .env als die aanwezig is (voor lokale dev en PM2 zonder ecosystem config)
 try {
@@ -23,6 +24,7 @@ app.use(express.json());
 app.set('trust proxy', 'loopback'); // nginx ervoor → echte IP voor de inlogrem
 installeerAccounts(app, __dirname);
 installeerCursusUploads(app, __dirname);
+installeerAcademie(app, __dirname);
 
 app.use(express.static(join(__dirname, 'dist')));
 

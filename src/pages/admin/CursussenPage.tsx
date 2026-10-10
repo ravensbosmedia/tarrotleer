@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { datumNL } from '../../lib/account';
 
 const G = {
@@ -38,6 +39,17 @@ export const CursussenPage: React.FC = () => {
   const [melding, setMelding] = useState<string | null>(null);
   const [sleep, setSleep] = useState(false);
   const [notities, setNotities] = useState<Record<number, string>>({});
+  const [importMelding, setImportMelding] = useState<Record<number, string>>({});
+
+  async function importeer(u: Upload) {
+    setImportMelding((m) => ({ ...m, [u.id]: 'Bezig met importeren…' }));
+    const r = await fetch(`/api/admin/academie/importeer/${u.id}`, { method: 'POST' });
+    const d = await r.json().catch(() => ({}));
+    setImportMelding((m) => ({ ...m, [u.id]: r.ok
+      ? `✓ ${d.nieuweCursussen} nieuwe cursussen, ${d.nieuweHoofdstukken} hoofdstukken${d.overgeslagen ? ` (${d.overgeslagen} bestonden al en zijn niet overschreven)` : ''}`
+      : (d.error || 'Importeren mislukt') }));
+    if (r.ok) laad();
+  }
   const invoerRef = useRef<HTMLInputElement>(null);
 
   const laad = () =>
@@ -78,7 +90,7 @@ export const CursussenPage: React.FC = () => {
     <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'Crimson Pro', serif" }}>
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '2.5rem 1rem' }}>
         <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 24, letterSpacing: '0.15em', color: G.goud, textAlign: 'center', margin: '0 0 0.4rem' }}>
-          CURSUSSEN
+          CURSUS-UPLOADS
         </h1>
         <p style={{ textAlign: 'center', color: G.tekst3, margin: '0 0 2rem', fontSize: 15 }}>
           Upload cursusmateriaal als zip. Het wordt omgezet naar een cursus en verschijnt pas na jouw goedkeuring.
@@ -136,7 +148,10 @@ export const CursussenPage: React.FC = () => {
                 <strong style={{ fontSize: 17, wordBreak: 'break-all' }}>{u.origineel}</strong>
                 <div style={{ fontSize: 13, color: G.tekst3 }}>#{u.id} · {mb(u.grootte)} · {datumNL(u.datum)} · door {u.geupload_door}</div>
               </div>
-              <a href={`/api/admin/cursus-uploads/${u.id}/download`} style={{ fontSize: 14, color: G.goud }}>Downloaden</a>
+              <span style={{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 14 }}>
+                <button onClick={() => importeer(u)} style={{ ...invoer, cursor: 'pointer', borderColor: G.goud }}>Importeren in Academie</button>
+                <a href={`/api/admin/cursus-uploads/${u.id}/download`} style={{ color: G.goud }}>Downloaden</a>
+              </span>
             </div>
             <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', alignItems: 'flex-end', marginTop: '0.8rem' }}>
               <label style={{ fontSize: 12, color: G.tekst3 }}>Status<br />
@@ -155,6 +170,11 @@ export const CursussenPage: React.FC = () => {
               </label>
             </div>
             <div style={{ fontSize: 13, color: G.tekst3, marginTop: 6 }}>{STATUS[u.status].uitleg}</div>
+            {importMelding[u.id] && (
+              <div style={{ fontSize: 14, marginTop: 6, color: importMelding[u.id].startsWith('✓') ? '#9bd49b' : G.tekst2 }}>
+                {importMelding[u.id]} {importMelding[u.id].startsWith('✓') && <Link to="/admin/academie" style={{ color: G.goud }}>Naar Academie-beheer →</Link>}
+              </div>
+            )}
           </div>
         ))}
       </div>

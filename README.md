@@ -75,6 +75,16 @@ Kaarten en vragen die vaak fout gaan, of nog nooit gevraagd zijn, krijgen een ho
 
 **API:** `GET/PUT/DELETE /api/voortgang`, `POST /api/quiz/ronde`, `GET /api/quiz/stats`, `GET /api/auth/ik`.
 
+## Academie (losse cursussen — alleen beheerders)
+
+Nieuwe, losse cursussen (los van de bestaande cursus numerologie/astrologie) komen binnen als zip en worden door beheerders beoordeeld en verbeterd. **Niets hiervan is zichtbaar voor gewone leden.**
+
+1. **Uploaden:** `/admin/cursussen` (zip tot 300 MB → `data/uploads/cursussen/`, `cursussen.ts`; nginx heeft een eigen location met 300 MB voor deze route).
+2. **Importeren:** knop *Importeren in Academie* (`academie.ts`). Mappen `NN-naam/NN-MM-hoofdstuk.md` worden cursussen en hoofdstukken; titels komen uit `00-START-HIER.md`. Opnieuw importeren overschrijft geen bewerkte hoofdstukken.
+3. **Beoordelen:** `/admin/academie` (voortgang over alle cursussen) → `/admin/academie/:slug` (hoofdstukken met status) → `/admin/academie/h/:id` (editor: Markdown met voorbeeldweergave, status *te beoordelen / aangepast / goedgekeurd*, notitie, origineel, versiegeschiedenis met terugzetten, Ctrl+S). De knop **AI-voorstel** laat gpt-5.5 een verbeterde versie schrijven; er verandert pas iets na *Overnemen* en *Opslaan*.
+
+Tabellen: `academie_cursussen`, `academie_hoofdstukken`, `academie_versies` (elke opslag bewaart de vorige versie), `cursus_uploads`. De weergave van Markdown (`src/components/Markdown.tsx`) bouwt React-elementen en voert nooit HTML uit.
+
 ## Lenormand-quiz
 
 `src/data/lenormand/quizGenerator.ts` maakt elke ronde nieuwe vragen. Elke vraag heeft een vaste **vraagcode**, los van de geschudde antwoorden, zodat de voortgang per vraag klopt.

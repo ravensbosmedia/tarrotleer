@@ -264,7 +264,7 @@ export const Navbar: React.FC = () => {
                   {[
                     { to: '/voortgang', label: 'Mijn voortgang' },
                     { to: '/account', label: 'Mijn account' },
-                    ...(lid.rol === 'admin' ? [{ to: '/admin/leden', label: 'Leden beheren' }, { to: '/admin/cursussen', label: 'Cursussen' }] : []),
+                    ...(lid.rol === 'admin' ? [{ to: '/admin/leden', label: 'Leden beheren' }, { to: '/admin/academie', label: 'Academie (beheer)' }, { to: '/admin/cursussen', label: 'Cursus-uploads' }] : []),
                   ].map((l) => (
                     <Link key={l.to} to={l.to} style={{
                       display: 'block', fontFamily: "'Cinzel', serif", fontSize: 12.5, letterSpacing: '0.04em',
@@ -347,7 +347,8 @@ export const Navbar: React.FC = () => {
               {lid.rol === 'admin' && (
                 <>
                   <Link to="/admin/leden" style={{ color: G.goudBleek, fontFamily: "'Cinzel', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Leden beheren</Link>
-                  <Link to="/admin/cursussen" style={{ color: G.goudBleek, fontFamily: "'Cinzel', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Cursussen</Link>
+                  <Link to="/admin/academie" style={{ color: G.goudBleek, fontFamily: "'Cinzel', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Academie (beheer)</Link>
+                  <Link to="/admin/cursussen" style={{ color: G.goudBleek, fontFamily: "'Cinzel', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Cursus-uploads</Link>
                 </>
               )}
               <button onClick={uitloggen} style={{ textAlign: 'left', background: 'none', border: 'none', color: 'rgba(245,237,216,0.6)', fontFamily: "'Cinzel', serif", fontSize: 13, padding: '8px 0', cursor: 'pointer' }}>Uitloggen</button>
