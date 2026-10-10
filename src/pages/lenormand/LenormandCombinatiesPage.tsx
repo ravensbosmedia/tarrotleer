@@ -18,11 +18,6 @@ const G = {
 const themaLabel = (t: string) =>
   t.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
-  if (v.includes('hoog')) return { bg: '#ECFCCB', tekst: '#4D7C0F' };
-  if (v.includes('middel')) return { bg: '#FEF9C3', tekst: '#A16207' };
-  return { bg: '#F1F5F9', tekst: '#64748B' };
-};
-
 const Slot: React.FC<{
   kaart: LenormandKaart | null;
   label: string;
