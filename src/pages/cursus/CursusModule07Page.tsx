@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCursusQuizOpslaan } from '../../lib/voortgang';
 import { Link } from 'react-router-dom';
 import { MATRIX, MODULE07_QUIZ } from '../../data/cursus/module07';
 
@@ -32,6 +33,7 @@ export const CursusModule07Page: React.FC = () => {
   const [quizAntwoorden, setQuizAntwoorden] = useState<Record<number, number>>({});
   const [quizIngediend, setQuizIngediend] = useState(false);
   const score = quizIngediend ? MODULE07_QUIZ.filter((v, i) => quizAntwoorden[i] === v.juist).length : 0;
+  useCursusQuizOpslaan('module-07', MODULE07_QUIZ, quizAntwoorden, quizIngediend);
 
   const oefenResultaat = zoekCombinatie(lp1, lp2);
 

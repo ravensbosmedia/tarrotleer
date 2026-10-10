@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCursusQuizOpslaan } from '../../lib/voortgang';
 import { Link } from 'react-router-dom';
 import { MAANFASEN, MODULE05_QUIZ } from '../../data/cursus/module05';
 
@@ -11,6 +12,7 @@ export const CursusModule05Page: React.FC = () => {
   const [quizAntwoorden, setQuizAntwoorden] = useState<Record<number, number>>({});
   const [quizIngediend, setQuizIngediend] = useState(false);
   const score = quizIngediend ? MODULE05_QUIZ.filter((v, i) => quizAntwoorden[i] === v.juist).length : 0;
+  useCursusQuizOpslaan('module-05', MODULE05_QUIZ, quizAntwoorden, quizIngediend);
 
   const TABS = [
     { id: 'fasen' as Tab, label: '8 Fasen' },

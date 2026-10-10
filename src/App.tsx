@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { CardEditor } from './components/admin/CardEditor';
 import { useAccount } from './lib/account';
 import { AccountPage } from './pages/AccountPage';
+import { VoortgangPage } from './pages/VoortgangPage';
 import { LedenPage } from './pages/admin/LedenPage';
 import { Navbar } from './components/Navbar';
 import ReadingPage from './pages/ReadingPage';
@@ -69,6 +70,7 @@ function App() {
         <Route path="/admin" element={<Navigate to="/admin/leden" replace />} />
         <Route path="/admin/leden" element={<ProtectedRoute><Layout><LedenPage /></Layout></ProtectedRoute>} />
         <Route path="/account" element={<Layout><AccountPage /></Layout>} />
+        <Route path="/voortgang" element={<Layout><VoortgangPage /></Layout>} />
         <Route
           path="/admin/cards"
           element={

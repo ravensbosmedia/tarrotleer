@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCursusQuizOpslaan } from '../../lib/voortgang';
 import {
   BEREKENING_LESSEN, GETAL_BETEKENISSEN, QUIZ_VRAGEN, VOORBEELD_PERSOON,
   type QuizVraag,
@@ -82,6 +83,7 @@ export function CursusModule01Page() {
   ];
 
   const quizScore = quizAntwoorden.filter((a, i) => a === QUIZ_VRAGEN[i].juist).length;
+  useCursusQuizOpslaan('module-01', QUIZ_VRAGEN, quizAntwoorden, quizKlaar);
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0a1628 100%)', padding: '2rem 1rem' }}>

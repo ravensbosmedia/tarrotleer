@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCursusQuizOpslaan } from '../../lib/voortgang';
 import { Link } from 'react-router-dom';
 import { SYNTHESE_STAPPEN, AI_PROMPT_TEKST, WANNEER_GEEN_AI, WANNEER_WEL_AI, GOEDE_SYNTHESE_KENMERKEN, MODULE08_QUIZ } from '../../data/cursus/module08';
 
@@ -11,6 +12,7 @@ export const CursusModule08Page: React.FC = () => {
   const [quizAntwoorden, setQuizAntwoorden] = useState<Record<number, number>>({});
   const [quizIngediend, setQuizIngediend] = useState(false);
   const score = quizIngediend ? MODULE08_QUIZ.filter((v, i) => quizAntwoorden[i] === v.juist).length : 0;
+  useCursusQuizOpslaan('module-08', MODULE08_QUIZ, quizAntwoorden, quizIngediend);
 
   const TABS = [
     { id: 'methode' as Tab, label: '4 Stappen' },

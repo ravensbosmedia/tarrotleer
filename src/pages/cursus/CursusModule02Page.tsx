@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCursusQuizOpslaan } from '../../lib/voortgang';
 import { Link } from 'react-router-dom';
 import { NAAM_LESSEN, MODULE02_QUIZ, MODULE02_VOORBEELD, LETTERWAARDEN, KLINKERS } from '../../data/cursus/module02';
 
@@ -51,6 +52,7 @@ export const CursusModule02Page: React.FC = () => {
   const [quizIngediend, setQuizIngediend] = useState(false);
 
   const score = quizIngediend ? MODULE02_QUIZ.filter((v, i) => quizAntwoorden[i] === v.juist).length : 0;
+  useCursusQuizOpslaan('module-02', MODULE02_QUIZ, quizAntwoorden, quizIngediend);
 
   return (
     <div style={{ background: G.bg, minHeight: '100vh', color: G.goudBleek, fontFamily: "'Crimson Pro', Georgia, serif" }}>

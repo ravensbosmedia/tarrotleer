@@ -116,6 +116,16 @@ export function installeerAccounts(app: express.Express, root: string) {
       bijgewerkt TEXT NOT NULL DEFAULT (datetime('now')),
       PRIMARY KEY (lid_id, onderdeel, item)
     );
+    CREATE TABLE IF NOT EXISTS quiz_stats (
+      lid_id INTEGER NOT NULL REFERENCES leden(id) ON DELETE CASCADE,
+      onderdeel TEXT NOT NULL,
+      sleutel TEXT NOT NULL,
+      label TEXT NOT NULL DEFAULT '',
+      goed INTEGER NOT NULL DEFAULT 0,
+      fout INTEGER NOT NULL DEFAULT 0,
+      laatst TEXT NOT NULL DEFAULT (datetime('now')),
+      PRIMARY KEY (lid_id, onderdeel, sleutel)
+    );
   `);
   db.prepare(`DELETE FROM sessies WHERE verloopt < datetime('now')`).run();
 
@@ -247,6 +257,57 @@ export function installeerAccounts(app: express.Express, root: string) {
     const rijen = db.prepare<[number], { onderdeel: string; item: string; data: string; bijgewerkt: string }>(
       'SELECT onderdeel, item, data, bijgewerkt FROM voortgang WHERE lid_id = ? ORDER BY bijgewerkt DESC').all(req.lid!.id);
     res.json(rijen.map((r) => ({ ...r, data: JSON.parse(r.data) })));
+  });
+
+  // ── Quizresultaten: per vraag/kaart goed-fout tellen + rondes per quiz ──
+  // antwoorden: [{ sleutel: 'kaart:14', label: 'De Vos', goed: true }, ...]
+  // ronde=false (bv. de doorlopende tarotquiz) telt alleen de antwoorden, geen ronde/beste score.
+  const telAntwoord = db.prepare(`
+    INSERT INTO quiz_stats (lid_id, onderdeel, sleutel, label, goed, fout, laatst) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
+    ON CONFLICT (lid_id, onderdeel, sleutel) DO UPDATE SET
+      goed = goed + excluded.goed, fout = fout + excluded.fout, label = excluded.label, laatst = excluded.laatst`);
+  const leesResultaat = db.prepare<[number, string], { data: string }>(
+    `SELECT data FROM voortgang WHERE lid_id = ? AND onderdeel = ? AND item = 'resultaat'`);
+  const schrijfResultaat = db.prepare(`INSERT INTO voortgang (lid_id, onderdeel, item, data, bijgewerkt) VALUES (?, ?, 'resultaat', ?, datetime('now'))
+    ON CONFLICT (lid_id, onderdeel, item) DO UPDATE SET data = excluded.data, bijgewerkt = excluded.bijgewerkt`);
+
+  app.post('/api/quiz/ronde', (req, res) => {
+    const onderdeel = String(req.body?.onderdeel || '').slice(0, 50);
+    const antwoorden = Array.isArray(req.body?.antwoorden) ? req.body.antwoorden.slice(0, 200) : [];
+    const score = Math.max(0, Number(req.body?.score) || 0);
+    const totaal = Math.max(0, Number(req.body?.totaal) || 0);
+    const ronde = req.body?.ronde !== false;
+    if (!/^[a-z0-9-]+$/.test(onderdeel) || score > totaal) { res.status(400).json({ error: 'Ongeldige quizronde' }); return; }
+    const lid = req.lid!.id;
+    const resultaat = db.transaction(() => {
+      // Zelfde sleutel kan meerdere keren in één ronde voorkomen (bv. kaart in twee vragen)
+      for (const a of antwoorden as { sleutel?: unknown; label?: unknown; goed?: unknown }[]) {
+        const sleutel = String(a.sleutel || '').slice(0, 120);
+        if (!sleutel) continue;
+        telAntwoord.run(lid, onderdeel, sleutel, String(a.label || '').slice(0, 300), a.goed ? 1 : 0, a.goed ? 0 : 1);
+      }
+      const oud = leesResultaat.get(lid, onderdeel);
+      const r = oud ? JSON.parse(oud.data) : {};
+      const pct = totaal ? Math.round((score / totaal) * 100) : 0;
+      const nieuw = {
+        rondes: (r.rondes || 0) + (ronde ? 1 : 0),
+        beste_pct: ronde ? Math.max(r.beste_pct || 0, pct) : (r.beste_pct || 0),
+        beste_score: ronde && pct >= (r.beste_pct || 0) ? { score, totaal } : (r.beste_score || null),
+        laatste: ronde ? { score, totaal, datum: new Date().toISOString(), ...(req.body?.extra && typeof req.body.extra === 'object' ? req.body.extra : {}) } : (r.laatste || null),
+        totaal_goed: (r.totaal_goed || 0) + score,
+        totaal_vragen: (r.totaal_vragen || 0) + totaal,
+        nieuw_record: ronde && !!oud && pct > (r.beste_pct || 0),
+      };
+      schrijfResultaat.run(lid, onderdeel, JSON.stringify(nieuw));
+      return nieuw;
+    })();
+    res.json(resultaat);
+  });
+
+  app.get('/api/quiz/stats', (req, res) => {
+    const rijen = db.prepare<[number], { onderdeel: string; sleutel: string; label: string; goed: number; fout: number; laatst: string }>(
+      'SELECT onderdeel, sleutel, label, goed, fout, laatst FROM quiz_stats WHERE lid_id = ?').all(req.lid!.id);
+    res.json(rijen);
   });
 
   app.put('/api/voortgang', (req, res) => {

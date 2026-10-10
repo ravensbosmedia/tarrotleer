@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { laadCombinaties, Combinatie } from '../../data/lenormand/combinaties';
+import { Link } from 'react-router-dom';
 import { maakRonde, QuizVraag, QuizOnderwerp } from '../../data/lenormand/quizGenerator';
-import { haalVoortgang, slaVoortgangOp } from '../../lib/voortgang';
+import { lenormandKaarten } from '../../data/lenormand/kaarten';
+import { haalVoortgang, haalQuizStats, slaRondeOp, maakGewicht, QuizAntwoord, QuizResultaat, QuizStat } from '../../lib/voortgang';
 
 const G = {
   goud: '#B8860B', goudBleek: '#F5EDD8', goudDonker: '#7A5C00',
@@ -19,12 +21,14 @@ const ONDERWERPEN: { id: QuizOnderwerp; label: string; uitleg: string }[] = [
 ];
 const AANTALLEN = [10, 20, 30];
 
-interface QuizResultaat {
-  rondes: number;
-  beste_pct: number;
-  laatste: { score: number; totaal: number; onderwerp: QuizOnderwerp; datum: string } | null;
-  totaal_goed: number;
-  totaal_vragen: number;
+const kaartNaam = (id: number) => lenormandKaarten.find((k) => k.id === id)?.naam ?? `Kaart ${id}`;
+
+/** Voortgangssleutels voor één beantwoorde vraag: per kaart, per vraagsoort en eventueel per combinatie/basisvraag. */
+function antwoordSleutels(v: QuizVraag, goed: boolean): QuizAntwoord[] {
+  const lijst: QuizAntwoord[] = v.kaarten.map((id) => ({ sleutel: `kaart:${id}`, label: kaartNaam(id), goed }));
+  lijst.push({ sleutel: `soort:${v.soort}`, label: v.soort, goed });
+  if (v.sleutel) lijst.push({ sleutel: v.sleutel, label: v.sleutel.startsWith('combi:') ? v.kaarten.map(kaartNaam).join(' + ') : v.vraag, goed });
+  return lijst;
 }
 
 const knopStijl: React.CSSProperties = {
@@ -62,14 +66,19 @@ export const LenormandQuizPage: React.FC = () => {
   const [klaar, setKlaar] = useState(false);
   const [resultaat, setResultaat] = useState<QuizResultaat | null>(null);
   const [nieuwRecord, setNieuwRecord] = useState(false);
+  const [stats, setStats] = useState<QuizStat[]>([]);
+  const [antwoorden, setAntwoorden] = useState<{ vraag: QuizVraag; goed: boolean }[]>([]);
 
   useEffect(() => {
     laadCombinaties().then(setCombinaties).catch(() => setCombinaties([]));
     haalVoortgang<QuizResultaat>('lenormand-quiz', 'resultaat').then(setResultaat);
+    haalQuizStats('lenormand-quiz').then(setStats);
   }, []);
 
   const start = () => {
-    setVragen(maakRonde(aantal, onderwerp, combinaties));
+    // Kaarten die vaak fout gaan (of nog nooit gevraagd zijn) komen vaker voorbij
+    setVragen(maakRonde(aantal, onderwerp, combinaties, maakGewicht(stats)));
+    setAntwoorden([]);
     setVraagIndex(0);
     setGekozen(null);
     setScore(0);
@@ -80,7 +89,9 @@ export const LenormandQuizPage: React.FC = () => {
   const kiesOptie = (i: number) => {
     if (gekozen !== null || !vragen) return;
     setGekozen(i);
-    if (i === vragen[vraagIndex].correct) setScore((s) => s + 1);
+    const goed = i === vragen[vraagIndex].correct;
+    if (goed) setScore((s) => s + 1);
+    setAntwoorden((a) => [...a, { vraag: vragen[vraagIndex], goed }]);
   };
 
   const volgende = () => {
@@ -90,21 +101,15 @@ export const LenormandQuizPage: React.FC = () => {
       setGekozen(null);
       return;
     }
-    // Ronde klaar: score bewaren bij het account
-    const totaal = vragen.length;
-    const pct = Math.round((score / totaal) * 100);
-    const oud = resultaat;
-    const nieuw: QuizResultaat = {
-      rondes: (oud?.rondes || 0) + 1,
-      beste_pct: Math.max(oud?.beste_pct || 0, pct),
-      laatste: { score, totaal, onderwerp, datum: new Date().toISOString() },
-      totaal_goed: (oud?.totaal_goed || 0) + score,
-      totaal_vragen: (oud?.totaal_vragen || 0) + totaal,
-    };
-    setNieuwRecord(!!oud && pct > (oud.beste_pct || 0));
-    setResultaat(nieuw);
-    slaVoortgangOp('lenormand-quiz', 'resultaat', nieuw);
+    // Ronde klaar: score en goed/fout per kaart bewaren bij het account
     setKlaar(true);
+    const lijst = antwoorden.flatMap((a) => antwoordSleutels(a.vraag, a.goed));
+    slaRondeOp('lenormand-quiz', score, vragen.length, lijst, { extra: { onderwerp } }).then((r) => {
+      if (!r) return;
+      setResultaat(r);
+      setNieuwRecord(!!r.nieuw_record);
+      haalQuizStats('lenormand-quiz').then(setStats);
+    });
   };
 
   // ── Keuzescherm ──
@@ -177,10 +182,22 @@ export const LenormandQuizPage: React.FC = () => {
               Beste score: <strong style={{ color: G.goudDonker }}>{resultaat.beste_pct}%</strong> · {resultaat.rondes} rondes gespeeld
             </div>
           )}
+          {(() => {
+            const fout = [...new Set(antwoorden.filter((a) => !a.goed).flatMap((a) => a.vraag.kaarten))];
+            return fout.length > 0 && (
+              <div style={{ textAlign: 'left', background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 8, padding: '1rem 1.2rem', marginBottom: '1.5rem', fontSize: 15, color: G.tekst2, lineHeight: 1.6 }}>
+                <strong style={{ color: G.tekst }}>Nog even oefenen:</strong> {fout.map(kaartNaam).join(', ')}.
+                <div style={{ fontSize: 13, color: G.tekst3, marginTop: 4 }}>Deze kaarten komen in je volgende rondes vaker terug.</div>
+              </div>
+            );
+          })()}
           <div style={{ display: 'flex', gap: '0.7rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={start} style={knopStijl}>Nieuwe ronde</button>
             <button onClick={() => setVragen(null)} style={{ ...knopStijl, background: 'transparent' }}>Ander onderwerp</button>
           </div>
+          <p style={{ marginTop: '1.5rem', fontSize: 14 }}>
+            <Link to="/voortgang" style={{ color: G.goudDonker }}>Bekijk je voortgang per kaart →</Link>
+          </p>
         </div>
       </div>
     );

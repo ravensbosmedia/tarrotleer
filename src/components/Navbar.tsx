@@ -262,6 +262,7 @@ export const Navbar: React.FC = () => {
                     </div>
                   </div>
                   {[
+                    { to: '/voortgang', label: 'Mijn voortgang' },
                     { to: '/account', label: 'Mijn account' },
                     ...(lid.rol === 'admin' ? [{ to: '/admin/leden', label: 'Leden beheren' }] : []),
                   ].map((l) => (
@@ -341,6 +342,7 @@ export const Navbar: React.FC = () => {
               <div style={{ color: G.goud, fontSize: 11, fontFamily: "'Cinzel', serif", letterSpacing: '0.06em', padding: '6px 0' }}>
                 {lid.naam} · {ABONNEMENT_LABEL[lid.abonnement_actief]}
               </div>
+              <Link to="/voortgang" style={{ color: G.goudBleek, fontFamily: "'Cinzel', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Mijn voortgang</Link>
               <Link to="/account" style={{ color: G.goudBleek, fontFamily: "'Cinzel', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Mijn account</Link>
               {lid.rol === 'admin' && (
                 <Link to="/admin/leden" style={{ color: G.goudBleek, fontFamily: "'Cinzel', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Leden beheren</Link>

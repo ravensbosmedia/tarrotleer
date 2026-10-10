@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCursusQuizOpslaan } from '../../lib/voortgang';
 import { Link } from 'react-router-dom';
 import { PLANETEN, MODULE06_QUIZ } from '../../data/cursus/module06';
 
@@ -17,6 +18,7 @@ export const CursusModule06Page: React.FC = () => {
   const [quizAntwoorden, setQuizAntwoorden] = useState<Record<number, number>>({});
   const [quizIngediend, setQuizIngediend] = useState(false);
   const score = quizIngediend ? MODULE06_QUIZ.filter((v, i) => quizAntwoorden[i] === v.juist).length : 0;
+  useCursusQuizOpslaan('module-06', MODULE06_QUIZ, quizAntwoorden, quizIngediend);
 
   const TABS = [
     { id: 'planeten' as Tab, label: '10 Planeten' },

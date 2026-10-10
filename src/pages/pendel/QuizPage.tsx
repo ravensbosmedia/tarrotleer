@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { pendelQuizVragen, QuizVraag } from '../../data/pendel/quiz';
+import { slaRondeOp, haalVoortgang, QuizAntwoord, QuizResultaat } from '../../lib/voortgang';
 
 const HIGHSCORE_KEY = 'pendel_quiz_highscore';
 
@@ -35,6 +36,7 @@ export const QuizPage: React.FC = () => {
   const [score, setScore]             = useState(0);
   const [isKlaar, setIsKlaar]         = useState(false);
   const [highscore, setHighscore]     = useState(0);
+  const [antwoorden, setAntwoorden]   = useState<QuizAntwoord[]>([]);
 
   const initialiseer = useCallback(() => {
     setVragen(schudVragen(pendelQuizVragen));
@@ -42,23 +44,30 @@ export const QuizPage: React.FC = () => {
     setGekozen(null);
     setScore(0);
     setIsKlaar(false);
+    setAntwoorden([]);
   }, []);
 
   useEffect(() => {
     initialiseer();
     const opgeslagen = localStorage.getItem(HIGHSCORE_KEY);
     if (opgeslagen) setHighscore(parseInt(opgeslagen, 10));
+    // Beste score van het account (geldt op elk apparaat)
+    haalVoortgang<QuizResultaat>('pendel-quiz', 'resultaat').then((r) => {
+      if (r) setHighscore((h) => Math.max(h, r.beste_pct || 0));
+    });
   }, [initialiseer]);
 
   const handleAntwoord = (idx: number) => {
     if (gekozen !== null) return;
     setGekozen(idx);
-    if (idx === vragen[huidigIndex].correct) setScore(s => s + 1);
+    const v = vragen[huidigIndex];
+    if (idx === v.correct) setScore(s => s + 1);
+    setAntwoorden(a => [...a, { sleutel: `vraag:${v.id}`, label: v.vraag, goed: idx === v.correct }]);
   };
 
   const volgende = () => {
     if (huidigIndex + 1 >= vragen.length) {
-      const finalScore = score + (gekozen === vragen[huidigIndex].correct ? 0 : 0);
+      slaRondeOp('pendel-quiz', score, vragen.length, antwoorden);
       const pct = Math.round((score / vragen.length) * 100);
       const saved = parseInt(localStorage.getItem(HIGHSCORE_KEY) ?? '0', 10);
       if (pct > saved) {

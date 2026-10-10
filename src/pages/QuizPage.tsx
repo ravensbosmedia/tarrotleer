@@ -1,4 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { haalQuizStats, slaRondeOp, maakGewicht, QuizStat } from '../lib/voortgang';
 import { allCards } from '../data/cards';
 import { TarotCard as TarotCardType } from '../types/cards';
 import { CheckCircle2, XCircle, RotateCcw } from 'lucide-react';
@@ -19,8 +21,17 @@ function pickRandom<T>(arr: T[], exclude?: T): T {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-function buildQuestion(pool: TarotCardType[], mode: Mode) {
-  const correct = pickRandom(pool);
+/** Kiest een kaart, met voorkeur voor kaarten die vaak fout gaan of nog niet gevraagd zijn. */
+function pickGewogen(pool: TarotCardType[], gewicht?: (sleutel: string) => number): TarotCardType {
+  if (!gewicht) return pickRandom(pool);
+  const g = pool.map((c) => gewicht(`kaart:${c.id}`));
+  let r = Math.random() * g.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < pool.length; i++) { r -= g[i]; if (r <= 0) return pool[i]; }
+  return pool[pool.length - 1];
+}
+
+function buildQuestion(pool: TarotCardType[], mode: Mode, gewicht?: (sleutel: string) => number) {
+  const correct = pickGewogen(pool, gewicht);
   const isReversed = Math.random() > 0.5;
 
   // 3 foute opties
@@ -45,9 +56,12 @@ export const QuizPage: React.FC = () => {
 
   const pool = allCards.filter(c => suit === 'all' || c.suit === suit);
   const [question, setQuestion] = useState(() => buildQuestion(allCards, mode));
+  const stats = useRef<QuizStat[]>([]);   // voortgang per kaart, voor de weging
+
+  useEffect(() => { haalQuizStats('tarot-quiz').then((s) => { stats.current = s; }); }, []);
 
   const next = useCallback(() => {
-    setQuestion(buildQuestion(pool.length >= 4 ? pool : allCards, mode));
+    setQuestion(buildQuestion(pool.length >= 4 ? pool : allCards, mode, maakGewicht(stats.current)));
     setAnswered(null);
   }, [pool, mode]);
 
@@ -55,14 +69,24 @@ export const QuizPage: React.FC = () => {
     if (answered !== null) return;
     setAnswered(cardId);
     setTotal(t => t + 1);
-    if (cardId === question.correct.id) setScore(s => s + 1);
+    const goed = cardId === question.correct.id;
+    if (goed) setScore(s => s + 1);
+    // Elk antwoord meteen bewaren (doorlopende quiz, dus geen 'ronde')
+    const sleutel = `kaart:${question.correct.id}`;
+    slaRondeOp('tarot-quiz', goed ? 1 : 0, 1, [
+      { sleutel, label: question.correct.nameNL, goed },
+      { sleutel: `modus:${mode}`, label: mode, goed },
+    ], { ronde: false });
+    const bestaand = stats.current.find((s) => s.sleutel === sleutel);
+    if (bestaand) { if (goed) bestaand.goed++; else bestaand.fout++; }
+    else stats.current.push({ onderdeel: 'tarot-quiz', sleutel, label: question.correct.nameNL, goed: goed ? 1 : 0, fout: goed ? 0 : 1, laatst: '' });
   };
 
   const reset = () => {
     setScore(0);
     setTotal(0);
     setAnswered(null);
-    setQuestion(buildQuestion(pool.length >= 4 ? pool : allCards, mode));
+    setQuestion(buildQuestion(pool.length >= 4 ? pool : allCards, mode, maakGewicht(stats.current)));
   };
 
   const { correct, isReversed, options } = question;
@@ -92,7 +116,8 @@ export const QuizPage: React.FC = () => {
               </button>
             ))}
           </div>
-          <button onClick={reset} className="ml-auto flex items-center gap-1 text-sm text-purple-600">
+          <Link to="/voortgang" className="ml-auto self-center text-sm text-purple-600 hover:underline">Mijn voortgang</Link>
+          <button onClick={reset} className="flex items-center gap-1 text-sm text-purple-600">
             <RotateCcw className="w-4 h-4" /> Reset
           </button>
         </div>
