@@ -491,13 +491,13 @@ async function haalDagHoroscopen(datum: string): Promise<Record<string, unknown>
     const systemPrompt = `Je bent een ervaren Nederlandse astroloog. Schrijf de dagelijkse horoscoop voor ${datum} voor alle 12 sterrenbeelden.
 Maanstand vandaag: ${maan.fase} (${maan.verlichtingspercentage}% verlicht). Laat die energie meeklinken.
 Toon: warm, reflectief en praktisch; geen angstaanjagende voorspellingen, geen aannames over geslacht.
-Antwoord als JSON: {"tekens": {"<slug>": {"thema": "1 zin", "score": 1-5, "gebieden": {${Object.keys(GEBIEDEN_NL).map(k => `"${k}": {"tekst": "1-2 zinnen", "score": 1-5}`).join(', ')}}, "tips": ["...","...","..."], "geluk": {"numbers": [4 getallen], "colors": [2-3 kleuren], "stones": [2 stenen]}}}}
+Antwoord als JSON: {"tekens": {"<slug>": {"thema": "1 korte kernzin", "tekst": "de horoscoop zelf: 4-6 zinnen, persoonlijk aangesproken met je/jij", "score": 1-5, "gebieden": {${Object.keys(GEBIEDEN_NL).map(k => `"${k}": {"tekst": "1-2 zinnen", "score": 1-5}`).join(', ')}}, "tips": ["...","...","..."], "geluk": {"numbers": [4 getallen], "colors": [2-3 kleuren], "stones": [2 stenen]}}}}
 Slugs: ${ALLE_TEKENS.join(', ')}. Varieer echt per teken (element, heerser); scores niet allemaal gelijk.`;
 
     const resp = await openai.chat.completions.create({
       model: 'gpt-5.5',
       messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: `Horoscopen voor ${datum}` }],
-      max_completion_tokens: 12000,
+      max_completion_tokens: 20000,
       response_format: { type: 'json_object' },
     });
     const ruw = JSON.parse(resp.choices[0].message.content || '{}').tekens || {};
@@ -506,7 +506,7 @@ Slugs: ${ALLE_TEKENS.join(', ')}. Varieer echt per teken (element, heerser); sco
       const x = ruw[t] || {};
       tekens[t] = {
         slug: t, naam: TEKEN_NL[t],
-        thema: x.thema ?? null, tekst_nl: x.thema ?? null, score: x.score ?? null,
+        thema: x.thema ?? null, tekst_nl: x.tekst ?? x.thema ?? null, score: x.score ?? null,
         gebieden: Object.entries(GEBIEDEN_NL)
           .filter(([k]) => x.gebieden?.[k]?.tekst)
           .map(([k, titel]) => ({ area: k, title: titel, prediction: x.gebieden[k].tekst, rating: x.gebieden[k].score ?? 3 })),

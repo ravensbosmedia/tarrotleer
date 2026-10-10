@@ -218,9 +218,12 @@ export const HoroscoopPage: React.FC = () => {
                       </div>
                     </div>
                     <div style={{ borderTop: `0.5px solid ${G.rand}`, paddingTop: '1.5rem' }}>
-                      <p style={{ fontSize: 19, lineHeight: 1.6, color: G.goudBleek, margin: 0, fontStyle: 'italic' }}>
+                      <p style={{ fontSize: 19, lineHeight: 1.6, color: G.goud, margin: 0, fontStyle: 'italic' }}>
                         {horoscoop.thema ?? horoscoop.tekst_nl ?? 'Geen horoscoop beschikbaar.'}
                       </p>
+                      {horoscoop.tekst_nl && horoscoop.tekst_nl !== horoscoop.thema && (
+                        <p style={{ fontSize: 17, lineHeight: 1.8, color: G.goudBleek, margin: '0.9rem 0 0' }}>{horoscoop.tekst_nl}</p>
+                      )}
                       {typeof horoscoop.score === 'number' && (
                         <div style={{ marginTop: '0.6rem', fontSize: 13, color: 'rgba(245,237,216,0.6)' }}>
                           {periode === 'maand' ? 'Maandenergie' : 'Dagenergie'} <Sterren n={horoscoop.score} />
