@@ -35,7 +35,7 @@ function vandaag(): string {
   return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Amsterdam' });
 }
 
-function hashWachtwoord(wachtwoord: string): string {
+export function hashWachtwoord(wachtwoord: string): string {
   const zout = randomBytes(16);
   return `scrypt$${zout.toString('base64')}$${scryptSync(wachtwoord, zout, 64).toString('base64')}`;
 }
