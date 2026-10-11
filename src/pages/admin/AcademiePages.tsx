@@ -242,10 +242,12 @@ export const AcademieCursusPage: React.FC = () => {
     if (!f.name.toLowerCase().endsWith('.zip')) { setUploadVerslag('Kies een .zip-bestand.'); return; }
     setUploadVerslag('Uploaden… 0%');
     try {
-      const d = await uploadBestand<{ gewijzigd: string[]; ongewijzigd: number; onbekend: string[] }>(`/api/admin/academie/${slug}/upload`, f, 'application/zip',
+      const d = await uploadBestand<{ gewijzigd: string[]; ongewijzigd: number; onbekend: string[]; genegeerd: string[]; dubbel: string[] }>(`/api/admin/academie/${slug}/upload`, f, 'application/zip',
         (pct) => setUploadVerslag(pct < 100 ? `Uploaden… ${pct}%` : 'Geüpload — bezig met verwerken…'));
-      setUploadVerslag(`✓ ${d.gewijzigd.length} hoofdstuk(ken) bijgewerkt${d.gewijzigd.length ? `: ${d.gewijzigd.join(', ')}` : ''} · ${d.ongewijzigd} ongewijzigd` +
-        (d.onbekend.length ? ` · niet herkend: ${d.onbekend.join(', ')}` : ''));
+      setUploadVerslag(`${d.dubbel.length ? '⚠' : '✓'} ${d.gewijzigd.length} hoofdstuk(ken) bijgewerkt${d.gewijzigd.length ? `: ${d.gewijzigd.join(', ')}` : ''} · ${d.ongewijzigd} ongewijzigd` +
+        (d.dubbel.length ? ` · ⚠ NIET aangepast omdat de zip twee verschillende versies bevat — haal de oude map uit de zip en upload opnieuw: ${d.dubbel.join(' | ')}` : '') +
+        (d.onbekend.length ? ` · niet herkend: ${d.onbekend.join(', ')}` : '') +
+        (d.genegeerd.length ? ` · genegeerd (geen hoofdstuk): ${d.genegeerd.join(', ')}` : ''));
       laadCursus();
     } catch (e) { setUploadVerslag((e as Error).message); }
   }

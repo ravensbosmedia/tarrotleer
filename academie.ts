@@ -487,8 +487,10 @@ export function installeerAcademie(app: express.Express, root: string) {
         writeFileSync(tmp, buf);
         const z = await leesZip(tmp);
         const kandidaten = z.md.filter((b) => b.pad.endsWith('.md') && !/(^|\/)0\d-[A-Z]/.test(b.pad));
-        const juist = kandidaten.find((b) => (b.pad.split('/').pop() || '').startsWith(`${String(c.nr).padStart(2, '0')}-${String(h.nr).padStart(2, '0')}-`));
-        md = (juist || (kandidaten.length === 1 ? kandidaten[0] : undefined))?.tekst || '';
+        const juist = kandidaten.filter((b) => (b.pad.split('/').pop() || '').startsWith(`${String(c.nr).padStart(2, '0')}-${String(h.nr).padStart(2, '0')}-`));
+        const versies = [...new Set(juist.map((b) => b.tekst.replace(/\r\n/g, '\n').trim()))];
+        if (versies.length > 1) { res.status(400).json({ error: `De zip bevat ${versies.length} verschillende versies van dit hoofdstuk (${juist.map((b) => b.pad).join(' en ')}). Haal de oude eruit en upload opnieuw.` }); return; }
+        md = (juist[0] || (kandidaten.length === 1 ? kandidaten[0] : undefined))?.tekst || '';
         if (!md) { res.status(400).json({ error: `Geen hoofdstukbestand gevonden in de zip (verwacht: ${bestandsnaam(c.nr, h.nr, h.slug)})` }); return; }
       } catch {
         res.status(400).json({ error: 'Zip kon niet gelezen worden' }); return;
@@ -512,7 +514,8 @@ export function installeerAcademie(app: express.Express, root: string) {
     res.send(zip);
   });
 
-  // Zip met .md-bestanden; hoofdstukken worden herkend aan het nummer in de bestandsnaam (NN-MM-… of MM-…)
+  // Zip met .md-bestanden; hoofdstukken worden herkend aan BEIDE nummers in de bestandsnaam (NN-MM-…).
+  // Andere bestanden (zoals 01-TECHNISCHE-EISEN.md of een rapport) worden genegeerd.
   app.post('/api/admin/academie/:slug/upload', alleenAdmin, async (req, res) => {
     const c = cursusVan.get(String(req.params.slug));
     if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
@@ -529,17 +532,33 @@ export function installeerAcademie(app: express.Express, root: string) {
     } finally {
       try { unlinkSync(tmp); } catch { /* al weg */ }
     }
-    const perNr = new Map(db.prepare<[number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ?').all(c.id).map((h) => [h.nr, h]));
-    const resultaat = { gewijzigd: [] as string[], ongewijzigd: 0, onbekend: [] as string[] };
+    const huidig = (nr: number) => db.prepare<[number, number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? AND nr = ?').get(c.id, nr);
+    const resultaat = { gewijzigd: [] as string[], ongewijzigd: 0, onbekend: [] as string[], genegeerd: [] as string[], dubbel: [] as string[] };
+
+    // 1) Bestanden per hoofdstuknummer verzamelen; alleen NN-MM-*.md van deze cursus telt als hoofdstuk
+    const perHoofdstuk = new Map<number, { naam: string; tekst: string }[]>();
+    for (const b of bestanden) {
+      const naam = b.pad.split('/').pop() || '';
+      const m = naam.match(/^(\d+)-(\d+)-.+\.md$/i);
+      if (!m) { resultaat.genegeerd.push(naam); continue; }
+      if (Number(m[1]) !== c.nr) { resultaat.onbekend.push(`${naam} (hoort bij cursus ${Number(m[1])})`); continue; }
+      const nr = Number(m[2]);
+      if (!huidig(nr)) { resultaat.onbekend.push(naam); continue; }
+      perHoofdstuk.set(nr, [...(perHoofdstuk.get(nr) || []), { naam: b.pad, tekst: b.tekst }]);
+    }
+
+    // 2) Per hoofdstuk: precies één versie in de zip → gebruiken. Twee verschillende versies (bv. een oude map
+    //    en een nieuwe map) → niets aanpassen en melden, want dan is niet te zeggen welke de goede is.
     db.transaction(() => {
-      for (const b of bestanden) {
-        const naam = b.pad.split('/').pop() || '';
-        const m = naam.match(/^(\d+)-(\d+)-/) || naam.match(/^(\d+)-/);
-        const nr = m ? Number(m[2] ?? m[1]) : NaN;
-        if (m && m[2] !== undefined && Number(m[1]) !== c.nr) { resultaat.onbekend.push(`${naam} (hoort bij cursus ${Number(m[1])})`); continue; }
-        const h = perNr.get(nr);
-        if (!h) { resultaat.onbekend.push(naam); continue; }
-        if (nieuweVersie(h, b.tekst, req.lid!.email, 'nieuwe versie geüpload (cursus-zip)')) resultaat.gewijzigd.push(`${h.nr}. ${h.titel}`);
+      for (const [nr, kandidaten] of [...perHoofdstuk].sort((a, b) => a[0] - b[0])) {
+        const h = huidig(nr)!;   // altijd de actuele tekst, nooit een verouderde kopie
+        const normaal = (t: string) => { const k = kaleInhoud(t.replace(/\r\n/g, '\n')); return `${k.titel || h.titel}\n${k.inhoud}`; };
+        const versies = [...new Map(kandidaten.map((k) => [normaal(k.tekst), k])).values()];
+        if (versies.length > 1) {
+          resultaat.dubbel.push(`${nr}. ${h.titel}: ${versies.map((k) => k.naam).join(' en ')}`);
+          continue;
+        }
+        if (nieuweVersie(h, versies[0].tekst, req.lid!.email, 'nieuwe versie geüpload (cursus-zip)')) resultaat.gewijzigd.push(`${h.nr}. ${h.titel}`);
         else resultaat.ongewijzigd++;
       }
     })();
