@@ -227,6 +227,49 @@ export function installeerAcademie(app: express.Express, root: string) {
     if (!kolommen.some((k) => k.name === kolom)) db.exec(`ALTER TABLE ${tabel} ADD COLUMN ${kolom} TEXT NOT NULL DEFAULT ''`);
   }
 
+  // Goedkeuringen per beheerder (hoofdstuk of cursus) en live-status van cursussen
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS academie_goedkeuringen (
+      soort TEXT NOT NULL CHECK (soort IN ('hoofdstuk','cursus')),
+      ref_id INTEGER NOT NULL,
+      lid_id INTEGER NOT NULL,
+      datum TEXT NOT NULL DEFAULT (datetime('now')),
+      PRIMARY KEY (soort, ref_id, lid_id)
+    );
+  `);
+  for (const [kolom, def] of [['live', 'INTEGER NOT NULL DEFAULT 0'], ['live_sinds', "TEXT NOT NULL DEFAULT ''"]]) {
+    const kolommen = db.prepare('PRAGMA table_info(academie_cursussen)').all() as { name: string }[];
+    if (!kolommen.some((k) => k.name === kolom)) db.exec(`ALTER TABLE academie_cursussen ADD COLUMN ${kolom} ${def}`);
+  }
+
+  /** Actieve beheerders: zij moeten allemaal goedkeuren. */
+  const beheerders = () => db.prepare<[], { id: number; naam: string; email: string }>(
+    "SELECT id, naam, email FROM leden WHERE rol = 'admin' AND actief = 1 ORDER BY id").all();
+  const goedkeuringenVan = (soort: 'hoofdstuk' | 'cursus', refId: number) => db.prepare<[string, number], { lid_id: number; naam: string; datum: string }>(
+    'SELECT g.lid_id, l.naam, g.datum FROM academie_goedkeuringen g JOIN leden l ON l.id = g.lid_id WHERE g.soort = ? AND g.ref_id = ? ORDER BY g.datum').all(soort, refId);
+
+  /** Status 'goedgekeurd' alleen als ALLE actieve beheerders het hoofdstuk hebben goedgekeurd. */
+  function zetStatusNaarGoedkeuring(hoofdstukId: number) {
+    const nodig = beheerders().map((b) => b.id);
+    const gedaan = new Set(goedkeuringenVan('hoofdstuk', hoofdstukId).map((g) => g.lid_id));
+    const allemaal = nodig.length > 0 && nodig.every((id) => gedaan.has(id));
+    if (allemaal) db.prepare(`UPDATE academie_hoofdstukken SET status = 'goedgekeurd' WHERE id = ?`).run(hoofdstukId);
+    else db.prepare(`UPDATE academie_hoofdstukken SET status = 'aangepast' WHERE id = ? AND status = 'goedgekeurd'`).run(hoofdstukId);
+  }
+
+  /**
+   * Tekst van een hoofdstuk is veranderd: goedkeuringen van dat hoofdstuk én van de cursus vervallen,
+   * en een live cursus gaat offline tot alle beheerders opnieuw hebben goedgekeurd.
+   */
+  function goedkeuringVervalt(hoofdstukId: number) {
+    const h = db.prepare<[number], { cursus_id: number }>('SELECT cursus_id FROM academie_hoofdstukken WHERE id = ?').get(hoofdstukId);
+    if (!h) return;
+    db.prepare(`DELETE FROM academie_goedkeuringen WHERE soort = 'hoofdstuk' AND ref_id = ?`).run(hoofdstukId);
+    db.prepare(`DELETE FROM academie_goedkeuringen WHERE soort = 'cursus' AND ref_id = ?`).run(h.cursus_id);
+    db.prepare(`UPDATE academie_cursussen SET live = 0 WHERE id = ?`).run(h.cursus_id);
+    zetStatusNaarGoedkeuring(hoofdstukId);
+  }
+
   const alleenAdmin: express.RequestHandler = (req, res, next) => {
     if (req.lid?.rol !== 'admin') { res.status(403).json({ error: 'Alleen voor beheerders' }); return; }
     next();
@@ -291,6 +334,7 @@ export function installeerAcademie(app: express.Express, root: string) {
               .run(bestaat.id, bestaat.titel, bestaat.inhoud, req.lid!.email, 'vervangen door nieuwe import');
             db.prepare(`UPDATE academie_hoofdstukken SET inhoud = ?, origineel = ?, titel = ?, bijgewerkt = datetime('now'), bijgewerkt_door = ? WHERE id = ?`)
               .run(inhoud, inhoud, titel || bestaat.titel, req.lid!.email, bestaat.id);
+            goedkeuringVervalt(bestaat.id);
             bijgewerkt++;
           } else {
             // Al bewerkt: niets overschrijven, alleen het origineel bijwerken zodat het met één knop over te nemen is
@@ -315,16 +359,36 @@ export function installeerAcademie(app: express.Express, root: string) {
       SELECT c.*, COUNT(h.id) AS hoofdstukken,
         SUM(h.status = 'goedgekeurd') AS goedgekeurd, SUM(h.status = 'aangepast') AS aangepast
       FROM academie_cursussen c LEFT JOIN academie_hoofdstukken h ON h.cursus_id = c.id
-      GROUP BY c.id ORDER BY c.nr`).all();
-    res.json(rijen);
+      GROUP BY c.id ORDER BY c.nr`).all() as (CursusRij & Record<string, unknown>)[];
+    // Per cursus en per beheerder: hoeveel hoofdstukken goedgekeurd, en of de cursus zelf is goedgekeurd
+    const perBeheerder = db.prepare<[], { cursus_id: number; lid_id: number; n: number }>(`
+      SELECT h.cursus_id, g.lid_id, COUNT(*) AS n FROM academie_goedkeuringen g
+      JOIN academie_hoofdstukken h ON g.soort = 'hoofdstuk' AND h.id = g.ref_id GROUP BY h.cursus_id, g.lid_id`).all();
+    const cursusGoed = db.prepare<[], { ref_id: number; lid_id: number }>(`SELECT ref_id, lid_id FROM academie_goedkeuringen WHERE soort = 'cursus'`).all();
+    res.json({
+      beheerders: beheerders().map(({ id, naam }) => ({ id, naam })),
+      cursussen: rijen.map((c) => ({
+        ...c,
+        per_beheerder: Object.fromEntries(perBeheerder.filter((p) => p.cursus_id === c.id).map((p) => [p.lid_id, p.n])),
+        cursus_goedgekeurd_door: cursusGoed.filter((g) => g.ref_id === c.id).map((g) => g.lid_id),
+      })),
+    });
   });
 
   app.get('/api/admin/academie/:slug', alleenAdmin, (req, res) => {
     const c = cursusVan.get(String(req.params.slug));
     if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
     const hoofdstukken = db.prepare(`SELECT id, nr, slug, titel, status, notitie, bijgewerkt, bijgewerkt_door,
-      (inhoud != origineel) AS gewijzigd, length(inhoud) AS lengte, (advies != '') AS heeft_advies FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr`).all(c.id);
-    res.json({ ...c, hoofdstukken });
+      (inhoud != origineel) AS gewijzigd, length(inhoud) AS lengte, (advies != '') AS heeft_advies FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr`).all(c.id) as { id: number }[];
+    const goed = db.prepare<[number], { ref_id: number; lid_id: number }>(`
+      SELECT g.ref_id, g.lid_id FROM academie_goedkeuringen g JOIN academie_hoofdstukken h ON g.soort = 'hoofdstuk' AND h.id = g.ref_id
+      WHERE h.cursus_id = ?`).all(c.id);
+    res.json({
+      ...c,
+      beheerders: beheerders().map(({ id, naam }) => ({ id, naam })),
+      cursus_goedkeuringen: goedkeuringenVan('cursus', c.id),
+      hoofdstukken: hoofdstukken.map((h) => ({ ...h, goedgekeurd_door: goed.filter((g) => g.ref_id === h.id).map((g) => g.lid_id) })),
+    });
   });
 
   app.patch('/api/admin/academie/:slug', alleenAdmin, (req, res) => {
@@ -346,7 +410,11 @@ export function installeerAcademie(app: express.Express, root: string) {
     const c = db.prepare<[number], CursusRij>('SELECT * FROM academie_cursussen WHERE id = ?').get(h.cursus_id)!;
     const buren = db.prepare<[number], { id: number; nr: number; titel: string }>('SELECT id, nr, titel FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(h.cursus_id);
     const versies = db.prepare('SELECT id, titel, datum, door, reden, length(inhoud) AS lengte FROM academie_versies WHERE hoofdstuk_id = ? ORDER BY id DESC LIMIT 50').all(h.id);
-    res.json({ ...h, cursus: { slug: c.slug, titel: c.titel, nr: c.nr }, buren, versies });
+    res.json({
+      ...h, cursus: { slug: c.slug, titel: c.titel, nr: c.nr }, buren, versies,
+      beheerders: beheerders().map(({ id, naam }) => ({ id, naam })),
+      goedkeuringen: goedkeuringenVan('hoofdstuk', h.id),
+    });
   });
 
   app.put('/api/admin/academie/hoofdstuk/:id', alleenAdmin, (req, res) => {
@@ -354,9 +422,11 @@ export function installeerAcademie(app: express.Express, root: string) {
     if (!h) { res.status(404).json({ error: 'Hoofdstuk niet gevonden' }); return; }
     const titel = typeof req.body?.titel === 'string' && req.body.titel.trim() ? req.body.titel.trim().slice(0, 200) : h.titel;
     const inhoud = typeof req.body?.inhoud === 'string' ? req.body.inhoud.slice(0, 100000) : h.inhoud;
-    const status = H_STATUS.includes(req.body?.status) ? req.body.status : h.status;
+    // 'goedgekeurd' wordt niet handmatig gezet: dat volgt uit de goedkeuringen van alle beheerders
+    const status = H_STATUS.includes(req.body?.status) && req.body.status !== 'goedgekeurd' ? req.body.status : h.status;
     const notitie = typeof req.body?.notitie === 'string' ? req.body.notitie.slice(0, 2000) : h.notitie;
     const advies = typeof req.body?.advies === 'string' ? req.body.advies.slice(0, 10000) : (h as HoofdstukRij & { advies: string }).advies;
+    const tekstVeranderd = inhoud !== h.inhoud || titel !== h.titel;
     db.transaction(() => {
       // Vorige versie bewaren als de tekst of titel verandert (zo is alles terug te zetten)
       if (inhoud !== h.inhoud || titel !== h.titel) {
@@ -365,6 +435,7 @@ export function installeerAcademie(app: express.Express, root: string) {
       }
       db.prepare(`UPDATE academie_hoofdstukken SET titel = ?, inhoud = ?, status = ?, notitie = ?, advies = ?, bijgewerkt = datetime('now'), bijgewerkt_door = ? WHERE id = ?`)
         .run(titel, inhoud, status, notitie, advies, req.lid!.email, h.id);
+      if (tekstVeranderd) goedkeuringVervalt(h.id);
     })();
     res.json(hoofdstukVan.get(h.id));
   });
@@ -390,6 +461,7 @@ export function installeerAcademie(app: express.Express, root: string) {
     db.prepare(`UPDATE academie_hoofdstukken SET titel = ?, inhoud = ?,
       status = CASE WHEN status = 'te_beoordelen' THEN 'aangepast' ELSE status END,
       bijgewerkt = datetime('now'), bijgewerkt_door = ? WHERE id = ?`).run(titel, inhoud.slice(0, 100000), door, h.id);
+    goedkeuringVervalt(h.id);
     return true;
   }
 
@@ -586,5 +658,66 @@ export function installeerAcademie(app: express.Express, root: string) {
     res.setHeader('Content-Type', 'application/zip');
     res.setHeader('Content-Disposition', `attachment; filename="chatgpt-pakket-${naam.replace(/\.md$/, '')}.zip"`);
     res.send(zip);
+  });
+
+  // ── Goedkeuren door de ingelogde beheerder (of intrekken met { goed: false }) ──
+  app.post('/api/admin/academie/hoofdstuk/:id/goedkeuren', alleenAdmin, (req, res) => {
+    const h = hoofdstukVan.get(Number(req.params.id));
+    if (!h) { res.status(404).json({ error: 'Hoofdstuk niet gevonden' }); return; }
+    db.transaction(() => {
+      if (req.body?.goed === false) {
+        db.prepare(`DELETE FROM academie_goedkeuringen WHERE soort = 'hoofdstuk' AND ref_id = ? AND lid_id = ?`).run(h.id, req.lid!.id);
+        // Zonder goedgekeurde hoofdstukken geen goedgekeurde/live cursus
+        db.prepare(`DELETE FROM academie_goedkeuringen WHERE soort = 'cursus' AND ref_id = ? AND lid_id = ?`).run(h.cursus_id, req.lid!.id);
+        db.prepare('UPDATE academie_cursussen SET live = 0 WHERE id = ?').run(h.cursus_id);
+      } else {
+        db.prepare(`INSERT OR IGNORE INTO academie_goedkeuringen (soort, ref_id, lid_id) VALUES ('hoofdstuk', ?, ?)`).run(h.id, req.lid!.id);
+      }
+      zetStatusNaarGoedkeuring(h.id);
+    })();
+    res.json({ status: hoofdstukVan.get(h.id)!.status, goedkeuringen: goedkeuringenVan('hoofdstuk', h.id) });
+  });
+
+  /** Wat ontbreekt er nog voordat een cursus live mag? (leeg = alles in orde) */
+  function ontbrekendVoorLive(cursusId: number): string[] {
+    const nodig = beheerders();
+    const hoofdstukken = db.prepare<[number], { id: number; nr: number; titel: string }>('SELECT id, nr, titel FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(cursusId);
+    const uit: string[] = [];
+    for (const b of nodig) {
+      const missend = hoofdstukken.filter((h) => !goedkeuringenVan('hoofdstuk', h.id).some((g) => g.lid_id === b.id));
+      if (missend.length) uit.push(`${b.naam}: nog ${missend.length} hoofdstuk(ken) goedkeuren (o.a. ${missend.slice(0, 3).map((h) => h.nr).join(', ')})`);
+      if (!goedkeuringenVan('cursus', cursusId).some((g) => g.lid_id === b.id)) uit.push(`${b.naam}: de cursus als geheel nog goedkeuren`);
+    }
+    return uit;
+  }
+
+  app.post('/api/admin/academie/:slug/goedkeuren', alleenAdmin, (req, res) => {
+    const c = cursusVan.get(String(req.params.slug));
+    if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
+    if (req.body?.goed === false) {
+      db.prepare(`DELETE FROM academie_goedkeuringen WHERE soort = 'cursus' AND ref_id = ? AND lid_id = ?`).run(c.id, req.lid!.id);
+      db.prepare('UPDATE academie_cursussen SET live = 0 WHERE id = ?').run(c.id);
+    } else {
+      // De cursus als geheel goedkeuren kan pas als deze beheerder alle hoofdstukken heeft goedgekeurd
+      const hoofdstukken = db.prepare<[number], { id: number }>('SELECT id FROM academie_hoofdstukken WHERE cursus_id = ?').all(c.id);
+      const nogNiet = hoofdstukken.filter((h) => !goedkeuringenVan('hoofdstuk', h.id).some((g) => g.lid_id === req.lid!.id)).length;
+      if (nogNiet) { res.status(400).json({ error: `Keur eerst alle hoofdstukken goed (nog ${nogNiet} te gaan)` }); return; }
+      db.prepare(`INSERT OR IGNORE INTO academie_goedkeuringen (soort, ref_id, lid_id) VALUES ('cursus', ?, ?)`).run(c.id, req.lid!.id);
+    }
+    res.json({ cursus_goedkeuringen: goedkeuringenVan('cursus', c.id), ontbreekt: ontbrekendVoorLive(c.id) });
+  });
+
+  // Live zetten voor klanten: alleen als ALLE beheerders de cursus én alle hoofdstukken hebben goedgekeurd
+  app.post('/api/admin/academie/:slug/live', alleenAdmin, (req, res) => {
+    const c = cursusVan.get(String(req.params.slug));
+    if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
+    if (req.body?.live === false) {
+      db.prepare('UPDATE academie_cursussen SET live = 0 WHERE id = ?').run(c.id);
+      res.json({ live: false }); return;
+    }
+    const ontbreekt = ontbrekendVoorLive(c.id);
+    if (ontbreekt.length) { res.status(400).json({ error: 'Nog niet door alle beheerders goedgekeurd', ontbreekt }); return; }
+    db.prepare(`UPDATE academie_cursussen SET live = 1, live_sinds = datetime('now'), status = 'goedgekeurd' WHERE id = ?`).run(c.id);
+    res.json({ live: true });
   });
 }

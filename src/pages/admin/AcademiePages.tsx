@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Markdown } from '../../components/Markdown';
-import { datumNL } from '../../lib/account';
+import { datumNL, useAccount } from '../../lib/account';
 
 const G = {
   goud: '#B8860B', goudBleek: '#F5EDD8',
@@ -57,6 +57,24 @@ async function api<T>(pad: string, opties?: RequestInit): Promise<T> {
   return d as T;
 }
 
+interface Beheerder { id: number; naam: string }
+
+/** Wie heeft goedgekeurd: per beheerder een ✓ (groen) of ○, met de naam erbij (kleur is nooit het enige signaal). */
+const GoedkeurChips: React.FC<{ beheerders: Beheerder[]; door: number[]; klein?: boolean }> = ({ beheerders, door, klein }) => (
+  <span style={{ display: 'inline-flex', gap: 6, flexWrap: 'wrap' }}>
+    {beheerders.map((b) => {
+      const ja = door.includes(b.id);
+      return (
+        <span key={b.id} title={`${b.naam}: ${ja ? 'goedgekeurd' : 'nog niet goedgekeurd'}`} style={{
+          fontSize: klein ? 11 : 13, padding: klein ? '1px 7px' : '3px 9px', borderRadius: 10, whiteSpace: 'nowrap',
+          border: `0.5px solid ${ja ? H_STATUS.goedgekeurd.kleur : G.rand}`,
+          background: ja ? 'rgba(95,167,119,0.15)' : 'transparent', color: ja ? '#9bd49b' : G.tekst3,
+        }}>{ja ? '✓' : '○'} {klein ? b.naam.split(' ')[0] : b.naam}</span>
+      );
+    })}
+  </span>
+);
+
 /** Stuurt een gekozen bestand als ruwe body naar de server (met voortgang) en geeft het JSON-antwoord terug. */
 function uploadBestand<T>(pad: string, bestand: File, type: string, voortgang?: (pct: number) => void): Promise<T> {
   return new Promise((ok, fout) => {
@@ -88,13 +106,21 @@ const BestandKnop: React.FC<{ label: string; accept: string; onKies: (f: File) =
 };
 
 // ═════════════ Overzicht van alle cursussen ═════════════
-interface CursusRij { id: number; slug: string; nr: number; titel: string; status: CStatus; hoofdstukken: number; goedgekeurd: number; aangepast: number; bijgewerkt: string }
+interface CursusRij {
+  id: number; slug: string; nr: number; titel: string; status: CStatus; hoofdstukken: number; goedgekeurd: number; aangepast: number; bijgewerkt: string;
+  live: number; per_beheerder: Record<string, number>; cursus_goedgekeurd_door: number[];
+}
 
 export const AcademieOverzichtPage: React.FC = () => {
   const [cursussen, setCursussen] = useState<CursusRij[] | null>(null);
+  const [beheerders, setBeheerders] = useState<Beheerder[]>([]);
   const [fout, setFout] = useState<string | null>(null);
   const [verslag, setVerslag] = useState<string | null>(null);
-  const laadOverzicht = useCallback(() => { api<CursusRij[]>('/api/admin/academie').then(setCursussen).catch((e) => setFout(e.message)); }, []);
+  const laadOverzicht = useCallback(() => {
+    api<{ beheerders: Beheerder[]; cursussen: CursusRij[] }>('/api/admin/academie')
+      .then((d) => { setBeheerders(d.beheerders); setCursussen(d.cursussen); })
+      .catch((e) => setFout(e.message));
+  }, []);
   useEffect(() => { laadOverzicht(); }, [laadOverzicht]);
 
   // Nieuwe cursus(sen): eerst als upload bewaren, daarna meteen importeren
@@ -156,8 +182,16 @@ export const AcademieOverzichtPage: React.FC = () => {
                   <div style={{ fontSize: 17, margin: '2px 0 8px', lineHeight: 1.3 }}>{c.titel}</div>
                   <Balk goed={c.goedgekeurd || 0} aangepast={c.aangepast || 0} totaal={c.hoofdstukken} />
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 13, color: G.tekst2 }}>
-                    <span>{c.goedgekeurd || 0}/{c.hoofdstukken} goedgekeurd</span>
-                    <Badge {...C_STATUS[c.status]} />
+                    <span>{c.goedgekeurd || 0}/{c.hoofdstukken} door iedereen goedgekeurd</span>
+                    {c.live ? <span style={{ fontSize: 12, color: '#9bd49b', fontFamily: "'Cinzel', serif" }}>● LIVE</span> : <Badge {...C_STATUS[c.status]} />}
+                  </div>
+                  <div style={{ marginTop: 6, fontSize: 12, color: G.tekst3, lineHeight: 1.6 }}>
+                    {beheerders.map((b) => (
+                      <div key={b.id}>
+                        {b.naam}: {c.per_beheerder?.[b.id] || 0}/{c.hoofdstukken} hoofdstukken
+                        {c.cursus_goedgekeurd_door?.includes(b.id) ? ' · cursus ✓' : ''}
+                      </div>
+                    ))}
                   </div>
                 </Link>
               ))}
@@ -170,8 +204,12 @@ export const AcademieOverzichtPage: React.FC = () => {
 };
 
 // ═════════════ Eén cursus met zijn hoofdstukken ═════════════
-interface HoofdstukKort { id: number; nr: number; titel: string; status: HStatus; notitie: string; bijgewerkt: string; bijgewerkt_door: string; gewijzigd: number; lengte: number; heeft_advies: number }
-interface CursusDetail { id: number; slug: string; nr: number; titel: string; beschrijving: string; status: CStatus; advies: string; hoofdstukken: HoofdstukKort[] }
+interface HoofdstukKort { id: number; nr: number; titel: string; status: HStatus; notitie: string; bijgewerkt: string; bijgewerkt_door: string; gewijzigd: number; lengte: number; heeft_advies: number; goedgekeurd_door: number[] }
+interface Goedkeuring { lid_id: number; naam: string; datum: string }
+interface CursusDetail {
+  id: number; slug: string; nr: number; titel: string; beschrijving: string; status: CStatus; advies: string; hoofdstukken: HoofdstukKort[];
+  live: number; live_sinds: string; beheerders: Beheerder[]; cursus_goedkeuringen: Goedkeuring[];
+}
 
 export const AcademieCursusPage: React.FC = () => {
   const { slug = '' } = useParams();
@@ -179,6 +217,23 @@ export const AcademieCursusPage: React.FC = () => {
   const [fout, setFout] = useState<string | null>(null);
   const [opgeslagen, setOpgeslagen] = useState<string | null>(null);
   const [uploadVerslag, setUploadVerslag] = useState<string | null>(null);
+  const [goedMelding, setGoedMelding] = useState<string[] | null>(null);
+  const { lid } = useAccount();
+
+  async function cursusGoedkeuren(goed: boolean) {
+    try {
+      const d = await api<{ ontbreekt: string[] }>(`/api/admin/academie/${slug}/goedkeuren`, { method: 'POST', body: JSON.stringify({ goed }) });
+      setGoedMelding(d.ontbreekt.length ? ['Nog nodig voordat de cursus live kan:', ...d.ontbreekt] : ['✓ Alle beheerders hebben alles goedgekeurd — de cursus mag live.']);
+      laadCursus();
+    } catch (e) { setGoedMelding([(e as Error).message]); }
+  }
+
+  async function zetLive(live: boolean) {
+    const r = await fetch(`/api/admin/academie/${slug}/live`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ live }) });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) setGoedMelding([d.error || 'Live zetten mislukt', ...(d.ontbreekt || [])]);
+    else { setGoedMelding([live ? '✓ De cursus staat live voor klanten.' : 'De cursus is offline gehaald.']); laadCursus(); }
+  }
 
   const laadCursus = useCallback(() => { api<CursusDetail>(`/api/admin/academie/${slug}`).then(setC).catch((e) => setFout(e.message)); }, [slug]);
   useEffect(() => { laadCursus(); }, [laadCursus]);
@@ -226,6 +281,46 @@ export const AcademieCursusPage: React.FC = () => {
           {opgeslagen && <span style={{ fontSize: 13, color: '#9bd49b' }}>{opgeslagen}</span>}
           <span style={{ marginLeft: 'auto', fontSize: 14, color: G.tekst2 }}>{goed}/{c.hoofdstukken.length} goedgekeurd</span>
         </div>
+        {/* Goedkeuring door alle beheerders + live zetten */}
+        {(() => {
+          const ikGoed = c.cursus_goedkeuringen.some((g) => g.lid_id === lid?.id);
+          const ikAlleHoofdstukken = c.hoofdstukken.every((h) => h.goedgekeurd_door.includes(lid?.id ?? -1));
+          const iedereen = c.beheerders.every((b) => c.cursus_goedkeuringen.some((g) => g.lid_id === b.id))
+            && c.hoofdstukken.every((h) => c.beheerders.every((b) => h.goedgekeurd_door.includes(b.id)));
+          return (
+            <div style={{ background: G.bg2, border: `0.5px solid ${c.live ? H_STATUS.goedgekeurd.kleur : G.rand}`, borderRadius: 12, padding: '1rem 1.2rem', margin: '0 0 1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                <strong style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>✓ GOEDKEURING EN LIVE ZETTEN</strong>
+                <span style={{ fontSize: 14, color: c.live ? '#9bd49b' : G.tekst3 }}>
+                  {c.live ? `● Live voor klanten sinds ${datumNL(c.live_sinds)}` : '○ Niet live (alleen zichtbaar voor beheerders)'}
+                </span>
+              </div>
+              <div style={{ fontSize: 14, color: G.tekst2, margin: '8px 0' }}>
+                Cursus goedgekeurd door: <GoedkeurChips beheerders={c.beheerders} door={c.cursus_goedkeuringen.map((g) => g.lid_id)} />
+              </div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {ikGoed
+                  ? <button style={knopLicht} onClick={() => cursusGoedkeuren(false)}>Mijn goedkeuring van de cursus intrekken</button>
+                  : <button style={{ ...knop, opacity: ikAlleHoofdstukken ? 1 : 0.55 }} onClick={() => cursusGoedkeuren(true)}
+                      title={ikAlleHoofdstukken ? '' : 'Keur eerst alle hoofdstukken goed'}>✓ Ik keur deze cursus goed</button>}
+                {c.live
+                  ? <button style={knopLicht} onClick={() => zetLive(false)}>Offline halen</button>
+                  : <button style={{ ...knop, background: H_STATUS.goedgekeurd.kleur, opacity: iedereen ? 1 : 0.5 }} onClick={() => zetLive(true)}
+                      title={iedereen ? '' : 'Kan pas als alle beheerders de cursus en alle hoofdstukken hebben goedgekeurd'}>● Live zetten voor klanten</button>}
+              </div>
+              <p style={{ fontSize: 12, color: G.tekst3, margin: '8px 0 0' }}>
+                Live zetten kan pas als <strong>alle beheerders</strong> elk hoofdstuk én de cursus als geheel hebben goedgekeurd.
+                Verandert er daarna iets aan een hoofdstuk, dan vervallen de goedkeuringen en gaat de cursus automatisch offline.
+              </p>
+              {goedMelding && (
+                <ul style={{ fontSize: 14, margin: '8px 0 0', paddingLeft: '1.1rem', color: goedMelding[0].startsWith('✓') ? '#9bd49b' : G.tekst2 }}>
+                  {goedMelding.map((m, i) => <li key={i} style={{ listStyle: i === 0 ? 'none' : 'disc', marginLeft: i === 0 ? '-1.1rem' : 0 }}>{m}</li>)}
+                </ul>
+              )}
+            </div>
+          );
+        })()}
+
         {/* Beoordeling + pakket voor ChatGPT */}
         <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 12, padding: '1rem 1.2rem', margin: '0 0 1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 8 }}>
@@ -261,8 +356,9 @@ export const AcademieCursusPage: React.FC = () => {
                 {h.heeft_advies ? <span style={{ fontSize: 13, marginLeft: 8 }} title="Er is advies voor dit hoofdstuk">💡</span> : null}
                 {h.notitie && <span style={{ fontSize: 13, color: G.tekst3, marginLeft: 8 }}>· 📝 {h.notitie.slice(0, 60)}</span>}
               </span>
-              <span style={{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 13, color: G.tekst3 }}>
+              <span style={{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 13, color: G.tekst3, flexWrap: 'wrap' }}>
                 {h.gewijzigd ? <span>bewerkt {datumNL(h.bijgewerkt)}</span> : <span>origineel</span>}
+                <GoedkeurChips beheerders={c.beheerders} door={h.goedgekeurd_door} klein />
                 <Badge {...H_STATUS[h.status]} />
               </span>
             </Link>
@@ -278,6 +374,7 @@ interface Versie { id: number; titel: string; datum: string; door: string; reden
 interface HoofdstukDetail {
   id: number; nr: number; titel: string; inhoud: string; origineel: string; status: HStatus; notitie: string; advies: string;
   bijgewerkt: string; bijgewerkt_door: string;
+  beheerders: Beheerder[]; goedkeuringen: Goedkeuring[];
   cursus: { slug: string; titel: string; nr: number };
   buren: { id: number; nr: number; titel: string }[];
   versies: Versie[];
@@ -300,6 +397,19 @@ export const AcademieHoofdstukPage: React.FC = () => {
   const [toon, setToon] = useState<'niets' | 'origineel' | 'versies'>('niets');
   const [versieTekst, setVersieTekst] = useState<{ id: number; titel: string; inhoud: string } | null>(null);
   const [wens, setWens] = useState('');
+  const { lid } = useAccount();
+
+  /** Goedkeuring van de ingelogde beheerder; bij niet-opgeslagen wijzigingen eerst opslaan. */
+  async function keurGoed(goed: boolean) {
+    if (!h) return;
+    if (goed && gewijzigdRef.current) await opslaan();
+    try {
+      await api(`/api/admin/academie/hoofdstuk/${h.id}/goedkeuren`, { method: 'POST', body: JSON.stringify({ goed }) });
+      setMelding(goed ? 'Jouw goedkeuring is opgeslagen ✓' : 'Jouw goedkeuring is ingetrokken');
+      setTimeout(() => setMelding(null), 2500);
+      laad();
+    } catch (e) { setMelding((e as Error).message); }
+  }
 
   const laad = useCallback(() => {
     api<HoofdstukDetail>(`/api/admin/academie/hoofdstuk/${id}`).then((d) => {
@@ -452,13 +562,26 @@ ${inhoud}`;
           </label>
           <label style={{ fontSize: 12, color: G.tekst3 }}>Status<br />
             <select value={status} onChange={(e) => setStatus(e.target.value as HStatus)} style={invoer}>
-              {(Object.keys(H_STATUS) as HStatus[]).map((s) => <option key={s} value={s}>{H_STATUS[s].label}</option>)}
+              {(['te_beoordelen', 'aangepast'] as HStatus[]).map((s) => <option key={s} value={s}>{H_STATUS[s].label}</option>)}
+              {status === 'goedgekeurd' && <option value="goedgekeurd">Goedgekeurd (door iedereen)</option>}
             </select>
           </label>
           <button style={{ ...knop, opacity: gewijzigd ? 1 : 0.6 }} onClick={() => opslaan()} title="Ctrl/Cmd + S">Opslaan</button>
-          <button style={{ ...knop, background: H_STATUS.goedgekeurd.kleur }} onClick={() => { setStatus('goedgekeurd'); opslaan('goedgekeurd'); }}>✓ Opslaan & goedkeuren</button>
+          {h.goedkeuringen.some((g) => g.lid_id === lid?.id)
+            ? <button style={knopLicht} onClick={() => keurGoed(false)}>Mijn goedkeuring intrekken</button>
+            : <button style={{ ...knop, background: H_STATUS.goedgekeurd.kleur }} onClick={() => keurGoed(true)}>✓ Ik keur dit hoofdstuk goed</button>}
           {melding && <span style={{ fontSize: 13, color: melding.includes('✓') ? '#9bd49b' : '#ff9a8a', alignSelf: 'center' }}>{melding}</span>}
           {gewijzigd && !melding && <span style={{ fontSize: 13, color: '#E0B04A', alignSelf: 'center' }}>● Niet opgeslagen</span>}
+        </div>
+
+        <div style={{ fontSize: 14, color: G.tekst2, marginBottom: '0.8rem', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          Goedgekeurd door: <GoedkeurChips beheerders={h.beheerders} door={h.goedkeuringen.map((g) => g.lid_id)} />
+          {h.goedkeuringen.length > 0 && (
+            <span style={{ fontSize: 12, color: G.tekst3 }}>
+              ({h.goedkeuringen.map((g) => `${g.naam.split(' ')[0]} ${new Date(`${g.datum.replace(' ', 'T')}Z`).toLocaleDateString('nl-NL')}`).join(', ')})
+            </span>
+          )}
+          <span style={{ fontSize: 12, color: G.tekst3 }}>· Wijzig je de tekst, dan vervallen de goedkeuringen.</span>
         </div>
 
         <label style={{ display: 'block', fontSize: 12, color: G.tekst3, marginBottom: '0.8rem' }}>Notitie (alleen voor beheerders)<br />

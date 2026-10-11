@@ -88,6 +88,8 @@ Nieuwe, losse cursussen (los van de bestaande cursus numerologie/astrologie) kom
 7. **Opnieuw importeren:** hoofdstukken die nog niet bewerkt zijn, krijgen de nieuwe versie (de vorige blijft bewaard). Bij al bewerkte hoofdstukken wordt alleen het *origineel* bijgewerkt, zodat je de nieuwe versie met één knop kunt overnemen.
 5. **Nieuwe cursussen:** op `/admin/academie` staan *Sjabloon voor ChatGPT (.zip)* (uitleg plus voorbeeldcursus uit `sjablonen/academie-cursus/`, aangevuld met de bestaande cursussen en het eerstvolgende vrije nummer) en *Nieuwe cursus uploaden (.zip)* (upload en import in één keer). Een onveranderd sjabloon importeert niets, omdat de voorbeeldmap `NN-…` heet.
 
+8. **Goedkeuren door alle beheerders:** elke beheerder keurt zelf elk hoofdstuk en daarna de cursus als geheel goed (tabel `academie_goedkeuringen`). Een hoofdstuk krijgt pas de status *goedgekeurd* als **alle actieve beheerders** het hebben goedgekeurd. **Live zetten voor klanten** (`POST /api/admin/academie/:slug/live`) weigert de server zolang een beheerder een hoofdstuk of de cursus nog niet heeft goedgekeurd. Verandert de tekst van een hoofdstuk (bewerken, uploaden of import), dan vervallen de goedkeuringen van dat hoofdstuk en van de cursus, en gaat een live cursus automatisch offline.
+
 Tabellen: `academie_cursussen`, `academie_hoofdstukken`, `academie_versies` (elke opslag bewaart de vorige versie), `cursus_uploads`. De weergave van Markdown (`src/components/Markdown.tsx`) bouwt React-elementen en voert nooit HTML uit.
 
 ## Lenormand-quiz
