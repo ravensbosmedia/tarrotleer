@@ -813,4 +813,51 @@ export function installeerAcademie(app: express.Express, root: string) {
     if (!h) { res.status(404).json({ error: 'Hoofdstuk niet gevonden' }); return; }
     res.json({ cursus: { slug: c!.slug, titel: c!.titel, nr: c!.nr, live: c!.live }, nr: h.nr, titel: h.titel, inhoud: h.inhoud, hoofdstukken: alle });
   });
+
+  // ── Kopafbeeldingen uploaden voor een cursus: zip of losse afbeelding; NN-MM-*.png → hoofdstuk MM ──
+  app.post('/api/admin/academie/:slug/afbeeldingen', alleenAdmin, async (req, res) => {
+    const c = cursusVan.get(String(req.params.slug));
+    if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
+    const naam = String(req.query.naam || 'afbeelding.png').replace(/[^\w.\- ()]/g, '_');
+    const prefix = `a${c.id}-${Date.now()}`;
+    const doelMap = join(mediaRoot, prefix);
+    const tmp = join(tmpMap, `afb-${Date.now()}`);
+    let afbeeldingen: string[] = [];
+    try {
+      const n = await ontvangNaarBestand(req, tmp, 500 * 1024 * 1024);
+      if (n < 8) { res.status(400).json({ error: 'Leeg bestand' }); return; }
+      if (isZip(tmp)) {
+        afbeeldingen = (await leesZip(tmp, doelMap)).img;
+      } else if (/\.(png|jpe?g|webp)$/i.test(naam)) {
+        mkdirSync(doelMap, { recursive: true });
+        writeFileSync(join(doelMap, naam), readFileSync(tmp));
+        afbeeldingen = [naam];
+      } else { res.status(400).json({ error: 'Kies een zip of een afbeelding (png, jpg, webp)' }); return; }
+    } catch {
+      res.status(400).json({ error: 'Bestand kon niet gelezen worden' }); return;
+    } finally {
+      try { unlinkSync(tmp); } catch { /* weg */ }
+    }
+    const resultaat = { gekoppeld: [] as string[], niet_herkend: [] as string[] };
+    db.transaction(() => {
+      for (const pad of afbeeldingen) {
+        const bestand = pad.split('/').pop() || '';
+        const m = bestand.match(/^(\d+)-(\d+)-/);
+        const h = m && Number(m[1]) === c.nr
+          ? db.prepare<[number, number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? AND nr = ?').get(c.id, Number(m[2]))
+          : undefined;
+        if (!h) { resultaat.niet_herkend.push(bestand); continue; }
+        const url = `/api/academie-media/${prefix}/${pad.split('/').map(encodeURIComponent).join('/')}`;
+        const regel = `![${h.titel} — ${c.titel}](${url})`;
+        const zonderOude = h.inhoud.replace(/^\s*!\[[^\]]*\]\(\/api\/academie-media\/[^)]+\)\s*\n*/, '');
+        const nieuw = `${regel}\n\n${zonderOude}`;
+        db.prepare('INSERT INTO academie_versies (hoofdstuk_id, titel, inhoud, door, reden) VALUES (?, ?, ?, ?, ?)')
+          .run(h.id, h.titel, h.inhoud, req.lid!.email, 'nieuwe kopafbeelding');
+        db.prepare(`UPDATE academie_hoofdstukken SET inhoud = ?, bijgewerkt = datetime('now'), bijgewerkt_door = ? WHERE id = ?`).run(nieuw, req.lid!.email, h.id);
+        goedkeuringVervalt(h.id);
+        resultaat.gekoppeld.push(`${h.nr}. ${h.titel}`);
+      }
+    })();
+    res.json(resultaat);
+  });
 }

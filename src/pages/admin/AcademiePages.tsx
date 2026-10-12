@@ -241,6 +241,18 @@ export const AcademieCursusPage: React.FC = () => {
   const laadCursus = useCallback(() => { api<CursusDetail>(`/api/admin/academie/${slug}`).then(setC).catch((e) => setFout(e.message)); }, [slug]);
   useEffect(() => { laadCursus(); }, [laadCursus]);
 
+  async function uploadAfbeeldingen(f: File) {
+    if (!/\.(zip|png|jpe?g|webp)$/i.test(f.name)) { setUploadVerslag('Kies een zip of een afbeelding (png, jpg, webp).'); return; }
+    setUploadVerslag('Uploaden… 0%');
+    try {
+      const d = await uploadBestand<{ gekoppeld: string[]; niet_herkend: string[] }>(`/api/admin/academie/${slug}/afbeeldingen?naam=${encodeURIComponent(f.name)}`, f,
+        /\.zip$/i.test(f.name) ? 'application/zip' : 'application/octet-stream', (pct) => setUploadVerslag(pct < 100 ? `Uploaden… ${pct}%` : 'Geüpload — bezig met koppelen…'));
+      setUploadVerslag(`✓ ${d.gekoppeld.length} kopafbeelding(en) gekoppeld${d.gekoppeld.length ? `: ${d.gekoppeld.join(', ')}` : ''}` +
+        (d.niet_herkend.length ? ` · niet herkend (naam moet beginnen met cursus- en hoofdstuknummer, bv. 01-11-…png): ${d.niet_herkend.join(', ')}` : ''));
+      laadCursus();
+    } catch (e) { setUploadVerslag((e as Error).message); }
+  }
+
   async function uploadZip(f: File) {
     if (!f.name.toLowerCase().endsWith('.zip')) { setUploadVerslag('Kies een .zip-bestand.'); return; }
     setUploadVerslag('Uploaden… 0%');
@@ -351,6 +363,7 @@ export const AcademieCursusPage: React.FC = () => {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
           <a href={`/api/admin/academie/${c.slug}/download`} style={{ ...knopLicht, textDecoration: 'none' }}>⬇ Download cursus (.zip)</a>
           <BestandKnop label="⬆ Upload nieuwe versie (.zip)" accept=".zip,application/zip" onKies={uploadZip} />
+          <BestandKnop label="⬆ Kopafbeeldingen uploaden (.zip of .png)" accept=".zip,.png,.jpg,.jpeg,.webp,application/zip,image/*" onKies={uploadAfbeeldingen} />
           <span style={{ fontSize: 12, color: G.tekst3 }}>Hoofdstukken worden herkend aan het nummer in de bestandsnaam (bijv. 06-03-amethist.md). Vorige versies blijven bewaard.</span>
         </div>
         {uploadVerslag && <p style={{ fontSize: 14, margin: '0 0 1rem', color: uploadVerslag.startsWith('✓') ? '#9bd49b' : G.tekst2 }}>{uploadVerslag}</p>}
