@@ -5,7 +5,22 @@ import React from 'react';
 // [links](https://…), ![afbeeldingen](/api/academie-media/… of https://…), regeleinde met twee spaties,
 // en <details><summary>…</summary> … </details>.
 
-interface Stijl { kop2: React.CSSProperties; kop3: React.CSSProperties; tekst: React.CSSProperties; link: string; rand: string }
+interface Stijl { kop2: React.CSSProperties; kop3: React.CSSProperties; tekst: React.CSSProperties; link: string; rand: string; donker: boolean }
+
+/** Soorten blokken in een interactieve les: `> **Soort** (extra)` op de eerste regel. */
+export type BlokSoort = 'In het kort' | 'Onthoud dit' | 'Voorbeeld' | 'Oefening' | 'Denk na' | 'Let op';
+const BLOK_SOORTEN: BlokSoort[] = ['In het kort', 'Onthoud dit', 'Voorbeeld', 'Oefening', 'Denk na', 'Let op'];
+export const BLOK_STIJL: Record<BlokSoort, { icoon: string; kleur: string }> = {
+  'In het kort': { icoon: '🗝️', kleur: '#B8860B' },
+  'Onthoud dit': { icoon: '✨', kleur: '#B8860B' },
+  'Voorbeeld':   { icoon: '📖', kleur: '#8FA3B8' },
+  'Oefening':    { icoon: '✍️', kleur: '#5FA777' },
+  'Denk na':     { icoon: '💭', kleur: '#A78BCA' },
+  'Let op':      { icoon: '⚠️', kleur: '#D08A3C' },
+};
+
+/** Optionele eigen weergave van een blok (de cursusspeler maakt Oefening en Denk na interactief). */
+export type BlokWeergave = (soort: BlokSoort, inhoud: React.ReactNode, extra: string, sleutel: string, ruweTekst: string) => React.ReactNode | null;
 
 /** Alleen afbeeldingen van onze eigen server of via https worden getoond. */
 const veiligeBron = (src: string) => /^\/api\/academie-media\//.test(src) || /^https:\/\//.test(src);
@@ -49,7 +64,7 @@ function alinea(regels: string[], stijl: Stijl, k: string) {
   );
 }
 
-function blokken(md: string, stijl: Stijl, prefix = 'b'): React.ReactNode[] {
+function blokken(md: string, stijl: Stijl, prefix = 'b', blokWeergave?: BlokWeergave): React.ReactNode[] {
   const regels = md.replace(/\r\n/g, '\n').split('\n');
   const uit: React.ReactNode[] = [];
   let i = 0;
@@ -74,9 +89,40 @@ function blokken(md: string, stijl: Stijl, prefix = 'b'): React.ReactNode[] {
       uit.push(
         <details key={k} style={{ border: `0.5px solid ${stijl.rand}`, borderRadius: 8, padding: '0.6rem 0.9rem', margin: '0.8rem 0' }}>
           <summary style={{ cursor: 'pointer', fontWeight: 600 }}>{inline(samenvatting, stijl, k)}</summary>
-          <div style={{ marginTop: '0.6rem' }}>{blokken(binnen.join('\n'), stijl, `${k}d`)}</div>
+          <div style={{ marginTop: '0.6rem' }}>{blokken(binnen.join('\n'), stijl, `${k}d`, blokWeergave)}</div>
         </details>,
       );
+      continue;
+    }
+
+    // Citaatblok (`> …`): gewoon citaat of een les-blok zoals `> **Oefening** (10 minuten)`
+    if (/^\s*>/.test(r)) {
+      const binnen: string[] = [];
+      while (i < regels.length && /^\s*>/.test(regels[i])) { binnen.push(regels[i].replace(/^\s*>\s?/, '')); i++; }
+      const kopRegel = binnen[0]?.trim().match(/^\*\*([^*]+)\*\*\s*:?\s*(.*)$/);
+      const soort = kopRegel && BLOK_SOORTEN.find((x) => x.toLowerCase() === kopRegel[1].trim().replace(/:$/, '').toLowerCase());
+      if (soort) {
+        const extra = (kopRegel![2] || '').trim();
+        const rest = binnen.slice(1).join('\n');
+        const inhoud = <>{blokken(rest, stijl, `${k}q`, blokWeergave)}</>;
+        const eigen = blokWeergave?.(soort, inhoud, extra, k, rest);
+        if (eigen) { uit.push(<React.Fragment key={k}>{eigen}</React.Fragment>); continue; }
+        const { icoon, kleur } = BLOK_STIJL[soort];
+        uit.push(
+          <div key={k} style={{ border: `1px solid ${kleur}55`, borderLeft: `4px solid ${kleur}`, background: `${kleur}14`, borderRadius: 10, padding: '0.8rem 1rem', margin: '1rem 0' }}>
+            <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.06em', color: kleur, marginBottom: 6 }}>
+              {icoon} {soort.toUpperCase()}{extra ? <span style={{ fontFamily: 'inherit', textTransform: 'none', opacity: 0.8 }}> {extra}</span> : null}
+            </div>
+            {inhoud}
+          </div>,
+        );
+      } else {
+        uit.push(
+          <blockquote key={k} style={{ borderLeft: `3px solid ${stijl.rand}`, margin: '1rem 0', padding: '0.2rem 0 0.2rem 1rem', fontStyle: 'italic' }}>
+            {blokken(binnen.join('\n'), stijl, `${k}q`, blokWeergave)}
+          </blockquote>,
+        );
+      }
       continue;
     }
 
@@ -124,7 +170,7 @@ function blokken(md: string, stijl: Stijl, prefix = 'b'): React.ReactNode[] {
 
     // Gewone alinea tot een lege regel of een nieuw blok
     const alineaRegels: string[] = [];
-    while (i < regels.length && regels[i].trim() && !/^(#{1,4}\s|<details>|\s{0,3}[-*]\s|\s{0,3}\d+[.)]\s)/i.test(regels[i])) {
+    while (i < regels.length && regels[i].trim() && !/^(#{1,4}\s|<details>|\s{0,3}[-*]\s|\s{0,3}\d+[.)]\s|\s*>)/i.test(regels[i])) {
       alineaRegels.push(regels[i]);
       i++;
     }
@@ -134,7 +180,7 @@ function blokken(md: string, stijl: Stijl, prefix = 'b'): React.ReactNode[] {
   return uit;
 }
 
-export const Markdown: React.FC<{ tekst: string; donker?: boolean }> = ({ tekst, donker = true }) => {
+export const Markdown: React.FC<{ tekst: string; donker?: boolean; blokWeergave?: BlokWeergave }> = ({ tekst, donker = true, blokWeergave }) => {
   const kleur = donker ? '#F5EDD8' : '#2C2416';
   const stijl: Stijl = {
     kop2: { fontFamily: "'Cinzel', serif", fontSize: 18, letterSpacing: '0.06em', color: '#B8860B', margin: '1.6rem 0 0.6rem' },
@@ -142,6 +188,7 @@ export const Markdown: React.FC<{ tekst: string; donker?: boolean }> = ({ tekst,
     tekst: { fontSize: 16, lineHeight: 1.75, color: kleur, margin: '0 0 0.9rem' },
     link: '#D4A537',
     rand: 'rgba(184,134,11,0.3)',
+    donker,
   };
-  return <div>{blokken(tekst, stijl)}</div>;
+  return <div>{blokken(tekst, stijl, 'b', blokWeergave)}</div>;
 };

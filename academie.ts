@@ -607,8 +607,8 @@ export function installeerAcademie(app: express.Express, root: string) {
     res.send(zip);
   });
 
-  // ── Afbeeldingen van de Academie (voorlopig alleen voor beheerders) ──
-  app.get(/^\/api\/academie-media\/(.+)$/, alleenAdmin, (req, res) => {
+  // ── Afbeeldingen van de Academie (iedereen met een account; het zijn sfeerbeelden bij de lessen) ──
+  app.get(/^\/api\/academie-media\/(.+)$/, (req, res) => {
     const rel = decodeURIComponent((req.params as unknown as string[])[0] || '');
     if (rel.includes('..') || rel.startsWith('/')) { res.status(400).end(); return; }
     if (/\.svg$/i.test(rel)) res.setHeader('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; sandbox");
@@ -780,5 +780,37 @@ export function installeerAcademie(app: express.Express, root: string) {
     if (ontbreekt.length) { res.status(400).json({ error: 'Nog niet door alle beheerders goedgekeurd', ontbreekt }); return; }
     db.prepare(`UPDATE academie_cursussen SET live = 1, live_sinds = datetime('now'), status = 'goedgekeurd' WHERE id = ?`).run(c.id);
     res.json({ live: true });
+  });
+
+  // ══════ Academie voor cursisten: alleen live cursussen (beheerders zien alles, als voorbeeld) ══════
+  const magZien = (c: { live?: number } | undefined, req: express.Request) => !!c && (c.live === 1 || req.lid?.rol === 'admin');
+  const kopAfbeelding = (inhoud: string) => inhoud.trimStart().match(/^!\[[^\]]*\]\((\/api\/academie-media\/[^)]+)\)/)?.[1] || null;
+
+  app.get('/api/academie', (req, res) => {
+    const admin = req.lid?.rol === 'admin';
+    const rijen = db.prepare(`SELECT c.id, c.slug, c.nr, c.titel, c.beschrijving, c.live, COUNT(h.id) AS hoofdstukken,
+      (SELECT inhoud FROM academie_hoofdstukken WHERE cursus_id = c.id ORDER BY nr LIMIT 1) AS eerste
+      FROM academie_cursussen c LEFT JOIN academie_hoofdstukken h ON h.cursus_id = c.id
+      ${admin ? '' : 'WHERE c.live = 1'} GROUP BY c.id ORDER BY c.nr`).all() as (Record<string, unknown> & { eerste: string | null })[];
+    res.json(rijen.map(({ eerste, ...c }) => ({ ...c, afbeelding: eerste ? kopAfbeelding(eerste) : null })));
+  });
+
+  app.get('/api/academie/:slug', (req, res) => {
+    const c = cursusVan.get(String(req.params.slug)) as (CursusRij & { live: number }) | undefined;
+    if (!magZien(c, req)) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
+    const hoofdstukken = db.prepare<[number], { nr: number; titel: string; inhoud: string }>('SELECT nr, titel, inhoud FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(c!.id);
+    res.json({
+      slug: c!.slug, nr: c!.nr, titel: c!.titel, beschrijving: c!.beschrijving, live: c!.live,
+      hoofdstukken: hoofdstukken.map((h) => ({ nr: h.nr, titel: h.titel, afbeelding: kopAfbeelding(h.inhoud), stappen: (h.inhoud.match(/^## /gm) || []).length })),
+    });
+  });
+
+  app.get('/api/academie/:slug/:nr', (req, res) => {
+    const c = cursusVan.get(String(req.params.slug)) as (CursusRij & { live: number }) | undefined;
+    if (!magZien(c, req)) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
+    const alle = db.prepare<[number], { nr: number; titel: string }>('SELECT nr, titel FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(c!.id);
+    const h = db.prepare<[number, number], { nr: number; titel: string; inhoud: string }>('SELECT nr, titel, inhoud FROM academie_hoofdstukken WHERE cursus_id = ? AND nr = ?').get(c!.id, Number(req.params.nr));
+    if (!h) { res.status(404).json({ error: 'Hoofdstuk niet gevonden' }); return; }
+    res.json({ cursus: { slug: c!.slug, titel: c!.titel, nr: c!.nr, live: c!.live }, nr: h.nr, titel: h.titel, inhoud: h.inhoud, hoofdstukken: alle });
   });
 }

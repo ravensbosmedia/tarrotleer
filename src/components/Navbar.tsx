@@ -79,8 +79,9 @@ const SECTIES: Sectie[] = [
   },
   {
     id: 'cursus', label: 'Cursus',
-    match: (p) => p.startsWith('/cursus'),
+    match: (p) => p.startsWith('/cursus') || p.startsWith('/academie'),
     links: [
+      { to: '/academie',         label: 'Spirituele Academie' },
       { to: '/cursus',           label: 'Overzicht' },
       { to: '/cursus/module-01', label: 'Module 1: Getallen' },
       { to: '/cursus/module-02', label: 'Module 2: Naam' },

@@ -7,6 +7,7 @@ import { VoortgangPage } from './pages/VoortgangPage';
 import { LedenPage } from './pages/admin/LedenPage';
 import { CursussenPage } from './pages/admin/CursussenPage';
 import { AcademieOverzichtPage, AcademieCursusPage, AcademieHoofdstukPage } from './pages/admin/AcademiePages';
+import { AcademieOverzicht, AcademieCursus, AcademieLes } from './pages/academie/AcademieSpeler';
 import { Navbar } from './components/Navbar';
 import ReadingPage from './pages/ReadingPage';
 import { HomePage } from './pages/HomePage';
@@ -77,6 +78,9 @@ function App() {
         <Route path="/admin/academie/:slug" element={<ProtectedRoute><Layout><AcademieCursusPage /></Layout></ProtectedRoute>} />
         <Route path="/account" element={<Layout><AccountPage /></Layout>} />
         <Route path="/voortgang" element={<Layout><VoortgangPage /></Layout>} />
+        <Route path="/academie" element={<Layout><AcademieOverzicht /></Layout>} />
+        <Route path="/academie/:slug" element={<Layout><AcademieCursus /></Layout>} />
+        <Route path="/academie/:slug/:nr" element={<Layout><AcademieLes /></Layout>} />
         <Route
           path="/admin/cards"
           element={
