@@ -150,6 +150,9 @@ export const AcademieOverzichtPage: React.FC = () => {
     <div style={pagina}>
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '2.5rem 1rem' }}>
         <h1 style={titelStijl}>ACADEMIE — BEHEER</h1>
+        <p style={{ fontSize: 14, margin: '0 0 0.4rem' }}>
+          Hier ontwerpen en maken jullie de cursussen. <Link to="/academie" style={{ color: G.goud }}>👁 Naar de cursusomgeving (zoals cursisten het zien) →</Link>
+        </p>
         <p style={{ color: G.tekst3, margin: '0 0 1.5rem', fontSize: 15 }}>
           Alleen zichtbaar voor beheerders. Beoordeel en verbeter elke cursus hoofdstuk voor hoofdstuk.{' '}
           <Link to="/admin/cursussen" style={{ color: G.goud }}>Alle uploads →</Link>
@@ -267,7 +270,10 @@ export const AcademieCursusPage: React.FC = () => {
   return (
     <div style={pagina}>
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '2.5rem 1rem' }}>
-        <p style={{ fontSize: 14, margin: '0 0 0.8rem' }}><Link to="/admin/academie" style={{ color: G.goud }}>← Alle cursussen</Link></p>
+        <p style={{ fontSize: 14, margin: '0 0 0.8rem', display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
+          <Link to="/admin/academie" style={{ color: G.goud }}>← Alle cursussen</Link>
+          <Link to={`/academie/${c.slug}`} style={{ color: G.goud }} title="Zo ziet een cursist deze cursus">👁 Bekijk als cursist</Link>
+        </p>
         <div style={{ fontSize: 13, color: G.tekst3 }}>Cursus {c.nr}</div>
         <input defaultValue={c.titel} onBlur={(e) => e.target.value !== c.titel && wijzig({ titel: e.target.value })}
           style={{ ...invoer, width: '100%', fontSize: 22, fontFamily: "'Cinzel', serif", margin: '4px 0 10px' }} aria-label="Titel van de cursus" />
@@ -554,7 +560,8 @@ ${inhoud}`;
           <Link to={`/admin/academie/${h.cursus.slug}`} style={{ color: G.goud }} onClick={(e) => { if (gewijzigd && !window.confirm('Niet-opgeslagen wijzigingen gaan verloren. Doorgaan?')) e.preventDefault(); }}>
             ← Cursus {h.cursus.nr}: {h.cursus.titel}
           </Link>
-          <span style={{ display: 'flex', gap: 8 }}>
+          <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <a href={`/academie/${h.cursus.slug}/${h.nr}`} target="_blank" rel="noopener noreferrer" style={{ ...knopLicht, textDecoration: 'none' }} title="Opent de les zoals een cursist hem ziet (laatst opgeslagen versie)">👁 Bekijk als cursist</a>
             <button style={knopLicht} disabled={!vorige} onClick={() => vorige && naar(vorige.id)}>← Vorige</button>
             <span style={{ color: G.tekst3, alignSelf: 'center' }}>{index + 1} / {h.buren.length}</span>
             <button style={knopLicht} disabled={!volgende} onClick={() => volgende && naar(volgende.id)}>Volgende →</button>
