@@ -327,13 +327,17 @@ export const AcademieCursusPage: React.FC = () => {
         <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 12, padding: '1rem 1.2rem', margin: '0 0 1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 8 }}>
             <strong style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>💡 BEOORDELING EN ADVIES</strong>
-            <a href={`/api/admin/academie/${c.slug}/chatgpt-pakket`} style={{ ...knop, textDecoration: 'none' }}>⬇ Pakket voor ChatGPT (.zip)</a>
+            <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <a href={`/api/admin/academie/${c.slug}/chatgpt-pakket`} style={{ ...knop, textDecoration: 'none' }} title="Inhoud herwerken: opdracht, eisen, taaleis, advies en hoofdstukken">⬇ Pakket herwerken (.zip)</a>
+              <a href={`/api/admin/academie/${c.slug}/chatgpt-pakket?soort=taalronde`} style={{ ...knop, textDecoration: 'none', background: '#8FA3B8' }} title="Alleen taal B1, In het kort, Onthoud dit en meerkeuzetoets — inhoud blijft gelijk">⬇ Pakket taalronde (.zip)</a>
+            </span>
           </div>
           <textarea key={c.advies} defaultValue={c.advies} placeholder="Nog geen beoordeling voor deze cursus."
             onBlur={(e) => e.target.value !== c.advies && wijzig({ advies: e.target.value })}
             style={{ ...invoer, width: '100%', minHeight: 120, resize: 'vertical', lineHeight: 1.55 }} />
           <p style={{ fontSize: 12, color: G.tekst3, margin: '6px 0 0' }}>
-            Het pakket bevat jullie herwerk-opdracht, de technische eisen, dit advies plus het advies per hoofdstuk, en de huidige hoofdstukken.
+            <strong>Pakket herwerken</strong>: jullie herwerk-opdracht, de technische eisen, de taaleis, dit advies plus het advies per hoofdstuk, en de hoofdstukken.
+            <strong> Pakket taalronde</strong>: alleen taal (B1), <em>In het kort</em>, <em>Onthoud dit</em> en een meerkeuzetoets — de inhoud blijft gelijk.
             Geef het aan ChatGPT en upload de zip die je terugkrijgt hieronder met <em>Upload nieuwe versie</em>.
           </p>
         </div>
@@ -604,7 +608,8 @@ ${inhoud}`;
             <button key={w} onClick={() => setWeergave(w)} style={{ ...knopLicht, ...(weergave === w ? { background: G.bg3, borderColor: G.goud } : {}) }}>{l}</button>
           ))}
           <span style={{ marginLeft: 'auto', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            <a href={`/api/admin/academie/hoofdstuk/${h.id}/chatgpt-pakket`} style={{ ...knop, textDecoration: 'none' }} title="Opdracht, eisen, taaleis, advies en dit hoofdstuk in één zip">⬇ Pakket voor ChatGPT (.zip)</a>
+            <a href={`/api/admin/academie/hoofdstuk/${h.id}/chatgpt-pakket`} style={{ ...knop, textDecoration: 'none' }} title="Inhoud herwerken: opdracht, eisen, taaleis, advies en dit hoofdstuk">⬇ Pakket herwerken (.zip)</a>
+            <a href={`/api/admin/academie/hoofdstuk/${h.id}/chatgpt-pakket?soort=taalronde`} style={{ ...knop, textDecoration: 'none', background: '#8FA3B8' }} title="Alleen taal B1, In het kort, Onthoud dit en meerkeuzetoets">⬇ Pakket taalronde (.zip)</a>
             <a href={`/api/admin/academie/hoofdstuk/${h.id}/download`} style={{ ...knopLicht, textDecoration: 'none' }} title="Alleen de tekst, laatst opgeslagen versie">⬇ Alleen tekst (.md)</a>
             <BestandKnop label="⬆ Upload nieuwe versie (.md of .zip)" accept=".md,.markdown,.txt,.zip,text/markdown,text/plain,application/zip" onKies={uploadMd} />
             <button onClick={() => setToon(toon === 'origineel' ? 'niets' : 'origineel')} style={knopLicht}>Origineel</button>

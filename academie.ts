@@ -165,6 +165,16 @@ const bestandsnaam = (cursusNr: number, nr: number, slug: string) =>
 /** Hoofdstuk als los Markdown-bestand, met de titel bovenaan zodat die mee terug kan komen. */
 const alsBestand = (nr: number, titel: string, inhoud: string) => `# Hoofdstuk ${nr} — ${titel}\n\n${inhoud}\n`;
 
+/**
+ * Heeft een nieuwe tekst geen kopafbeelding, maar de huidige wel, dan blijft de kopafbeelding staan
+ * (bijv. als ChatGPT de afbeeldingsregel heeft weggelaten).
+ */
+function behoudKopafbeelding(nieuw: string, oud: string): string {
+  if (/\/api\/academie-media\//.test(nieuw)) return nieuw;
+  const eerste = oud.trimStart().split('\n')[0].trim();
+  return /^!\[[^\]]*\]\(\/api\/academie-media\/[^)]+\)$/.test(eerste) ? `${eerste}\n\n${nieuw}` : nieuw;
+}
+
 /** Haalt de kop (titel + gegevens) en de navigatie onderaan uit een hoofdstuk. */
 function kaleInhoud(md: string): { titel: string; inhoud: string } {
   const titel = (md.match(/^#\s+(?:Hoofdstuk\s+\d+\s+[—-]\s+)?(.+)$/m)?.[1] || '').trim();
@@ -286,6 +296,10 @@ export function installeerAcademie(app: express.Express, root: string) {
       .get(Number(req.params.uploadId));
     if (!upload) { res.status(404).json({ error: 'Upload niet gevonden' }); return; }
     const prefix = `u${upload.id}`;
+    // Opties: ookBewerkt = ook al bewerkte hoofdstukken vervangen (vorige versie blijft bewaard);
+    //         notitie = notitie die bij alle nieuwe/bijgewerkte hoofdstukken wordt gezet
+    const ookBewerkt = req.body?.ookBewerkt === true;
+    const importNotitie = typeof req.body?.notitie === 'string' ? req.body.notitie.slice(0, 2000) : '';
     let zipInhoud: ZipInhoud;
     try {
       zipInhoud = await leesZip(join(root, 'data', 'uploads', 'cursussen', upload.bestand), join(mediaRoot, prefix));
@@ -323,18 +337,20 @@ export function installeerAcademie(app: express.Express, root: string) {
         const bestaat = db.prepare<[number, number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? AND nr = ?').get(cursus.id, nr);
         const kaal = kaleInhoud(b.tekst);
         const titel = kaal.titel;
-        const inhoud = b.kop ? `${b.kop}\n\n${kaal.inhoud}` : kaal.inhoud;
+        let inhoud = b.kop ? `${b.kop}\n\n${kaal.inhoud}` : kaal.inhoud;
+        if (bestaat) inhoud = behoudKopafbeelding(inhoud, bestaat.inhoud);
         // Lesstatus uit het koppelbestand als notitie, alleen als er nog geen notitie staat
         if (b.notitie) db.prepare(`UPDATE academie_hoofdstukken SET notitie = ? WHERE cursus_id = ? AND nr = ? AND notitie = ''`).run(b.notitie.slice(0, 2000), cursus.id, nr);
         if (bestaat) {
           if (inhoud === bestaat.origineel) { overgeslagen++; continue; }
-          if (bestaat.inhoud === bestaat.origineel) {
-            // Nog niet bewerkt: nieuwe versie overnemen (vorige als versie bewaren)
+          if (bestaat.inhoud === bestaat.origineel || ookBewerkt) {
+            // Nog niet bewerkt (of uitdrukkelijk gevraagd): nieuwe versie overnemen (vorige als versie bewaren)
             db.prepare('INSERT INTO academie_versies (hoofdstuk_id, titel, inhoud, door, reden) VALUES (?, ?, ?, ?, ?)')
               .run(bestaat.id, bestaat.titel, bestaat.inhoud, req.lid!.email, 'vervangen door nieuwe import');
             db.prepare(`UPDATE academie_hoofdstukken SET inhoud = ?, origineel = ?, titel = ?, bijgewerkt = datetime('now'), bijgewerkt_door = ? WHERE id = ?`)
               .run(inhoud, inhoud, titel || bestaat.titel, req.lid!.email, bestaat.id);
             goedkeuringVervalt(bestaat.id);
+            if (importNotitie) db.prepare('UPDATE academie_hoofdstukken SET notitie = ? WHERE id = ?').run(importNotitie, bestaat.id);
             bijgewerkt++;
           } else {
             // Al bewerkt: niets overschrijven, alleen het origineel bijwerken zodat het met één knop over te nemen is
@@ -453,7 +469,9 @@ export function installeerAcademie(app: express.Express, root: string) {
 
   /** Slaat nieuwe inhoud op als die anders is, met versie; geeft true terug als er iets veranderde. */
   function nieuweVersie(h: HoofdstukRij, md: string, door: string, reden: string): boolean {
-    const { titel: nieuweTitel, inhoud } = kaleInhoud(md.replace(/\r\n/g, '\n'));
+    const kaal = kaleInhoud(md.replace(/\r\n/g, '\n'));
+    const nieuweTitel = kaal.titel;
+    const inhoud = behoudKopafbeelding(kaal.inhoud, h.inhoud);
     const titel = nieuweTitel || h.titel;
     if (!inhoud.trim() || (inhoud === h.inhoud && titel === h.titel)) return false;
     db.prepare('INSERT INTO academie_versies (hoofdstuk_id, titel, inhoud, door, reden) VALUES (?, ?, ?, ?, ?)')
@@ -604,6 +622,18 @@ export function installeerAcademie(app: express.Express, root: string) {
     if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
     const hoofdstukken = db.prepare<[number], HoofdstukRij & { advies: string }>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(c.id);
     const map = join(root, 'sjablonen', 'academie-herwerken');
+    if (req.query.soort === 'taalronde') {
+      const bestanden = [
+        { naam: '00-OPDRACHT-TAALRONDE.md', tekst: readFileSync(join(map, '00-OPDRACHT-TAALRONDE.md'), 'utf-8') },
+        { naam: '01-TECHNISCHE-EISEN.md', tekst: readFileSync(join(map, '01-TECHNISCHE-EISEN.md'), 'utf-8') },
+        { naam: '02-TAAL-EN-ONTHOUDEN.md', tekst: readFileSync(join(map, '02-TAAL-EN-ONTHOUDEN.md'), 'utf-8') },
+        ...hoofdstukken.map((h) => ({ naam: `${c.slug}/${bestandsnaam(c.nr, h.nr, h.slug)}`, tekst: alsBestand(h.nr, h.titel, h.inhoud) })),
+      ];
+      const zip = execFileSync('python3', ['-c', ZIP_MAKER], { input: JSON.stringify(bestanden), maxBuffer: 50 * 1024 * 1024 });
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader('Content-Disposition', `attachment; filename="taalronde-${c.slug}.zip"`);
+      res.send(zip); return;
+    }
     const advies = [
       `# Beoordeling en advies — Cursus ${c.nr}: ${c.titel}`,
       '',
@@ -639,6 +669,18 @@ export function installeerAcademie(app: express.Express, root: string) {
     const alle = db.prepare<[number], { nr: number; titel: string }>('SELECT nr, titel FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(c.id);
     const map = join(root, 'sjablonen', 'academie-herwerken');
     const naam = bestandsnaam(c.nr, h.nr, h.slug);
+    if (req.query.soort === 'taalronde') {
+      const bestanden = [
+        { naam: '00-OPDRACHT-TAALRONDE.md', tekst: readFileSync(join(map, '00-OPDRACHT-TAALRONDE.md'), 'utf-8') },
+        { naam: '01-TECHNISCHE-EISEN.md', tekst: readFileSync(join(map, '01-TECHNISCHE-EISEN.md'), 'utf-8') },
+        { naam: '02-TAAL-EN-ONTHOUDEN.md', tekst: readFileSync(join(map, '02-TAAL-EN-ONTHOUDEN.md'), 'utf-8') },
+        { naam, tekst: alsBestand(h.nr, h.titel, h.inhoud) },
+      ];
+      const zip = execFileSync('python3', ['-c', ZIP_MAKER], { input: JSON.stringify(bestanden), maxBuffer: 20 * 1024 * 1024 });
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader('Content-Disposition', `attachment; filename="taalronde-${naam.replace(/\.md$/, '')}.zip"`);
+      res.send(zip); return;
+    }
     const leesEerst = [
       `# Lees eerst: dit pakket bevat één hoofdstuk`,
       '',
