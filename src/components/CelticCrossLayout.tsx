@@ -11,6 +11,14 @@ interface Props {
   showPositionDescriptions?: boolean;
   positionDescriptions?: string[];
   onDrawCard?: () => void;
+  /** Vaste stand per positie (omgekeerd ja/nee); zonder deze prop kiest de layout zelf. */
+  omgekeerdPerPositie?: boolean[];
+  /** Posities die al zijn omgedraaid; de rest ligt met de rug boven. Zonder deze prop liggen alle kaarten open. */
+  onthuld?: Set<number>;
+  /** Klik op een kaart die nog met de rug boven ligt */
+  onOnthul?: (index: number) => void;
+  /** Eigen kaartrug (bijv. de Zen Flow-rug van de leggingpagina) */
+  kaartRug?: (index: number) => React.ReactNode;
 }
 
 // Plaats in het kruis (3×3 raster) voor kaart 1–6; kaart 7–10 vormen de staf ernaast.
@@ -30,7 +38,11 @@ export const CelticCrossLayout: React.FC<Props> = ({
   onCardClick,
   showPositionDescriptions,
   positionDescriptions,
-  onDrawCard
+  onDrawCard,
+  omgekeerdPerPositie,
+  onthuld,
+  onOnthul,
+  kaartRug,
 }) => {
   // Eén keer per legging bepalen welke kaarten omgekeerd liggen (niet bij elke render opnieuw)
   const omgekeerd = useMemo(
@@ -54,6 +66,13 @@ export const CelticCrossLayout: React.FC<Props> = ({
     const cardId = selectedCards[index];
     const card = getCardById(cardId);
     if (!card) return null;
+    if (onthuld && !onthuld.has(index)) {
+      return (
+        <div onClick={() => onOnthul?.(index)} className="cursor-pointer" style={{ transform: `rotate(${rotatie}deg)` }} title={`${index + 1}. ${positions[index]} — klik om om te draaien`}>
+          {kaartRug ? kaartRug(index) : <TarotCardComponent card={card} faceDown />}
+        </div>
+      );
+    }
     return (
       <div
         onClick={() => onCardClick(cardId, positions[index])}
@@ -61,7 +80,7 @@ export const CelticCrossLayout: React.FC<Props> = ({
         style={{ transform: `rotate(${rotatie}deg)` }}
         title={`${index + 1}. ${positions[index]} — ${card.nameNL}`}
       >
-        <TarotCardComponent card={card} isReversed={omgekeerd.get(cardId)} />
+        <TarotCardComponent card={card} isReversed={omgekeerdPerPositie ? omgekeerdPerPositie[index] : omgekeerd.get(cardId)} />
       </div>
     );
   };

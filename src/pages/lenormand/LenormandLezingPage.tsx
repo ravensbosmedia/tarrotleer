@@ -50,6 +50,9 @@ const Verbindingen: React.FC<{
   );
 };
 
+// Kleine knop onder een legging (gelijk aan Tarot)
+const kleineKnop: React.CSSProperties = { ...ZF_KNOP_PAARS, minHeight: 38, padding: '9px 20px', fontSize: 11 };
+
 const G = {
   goud: '#F1CB78', goudBleek: '#2D2040', goudDonker: '#E0B04A',
   bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040',
@@ -349,7 +352,7 @@ export const LenormandLezingPage: React.FC = () => {
             {spread.id !== 'tableau' && onthuldeIndices.size === getrokken.length && getrokken.length >= 1 && (
               <div style={{ marginBottom: '1.5rem' }}>
                 {!duiding && !duidingBezig && (
-                  <button onClick={vraagDuiding} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.07em', padding: '10px 22px', borderRadius: 22, border: 'none', background: G.goud, color: '#FFF3DF', cursor: 'pointer', fontWeight: 600 }}>
+                  <button onClick={vraagDuiding} style={ZF_KNOP}>
                     ✦ Vraag een samenvattende duiding
                   </button>
                 )}
@@ -362,7 +365,7 @@ export const LenormandLezingPage: React.FC = () => {
                   <div style={{ fontSize: 14, color: '#F0A596' }}>{duidingFout}</div>
                 )}
                 {duiding && (
-                  <div style={{ background: 'linear-gradient(160deg, #FFFDF7, #F7F1E4)', border: `0.5px solid ${G.rand2}`, borderRadius: 12, padding: '1.6rem 1.7rem' }}>
+                  <div style={{ background: G.bg2, border: `0.5px solid ${G.rand2}`, borderRadius: 12, padding: '1.6rem 1.7rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.8rem' }}>
                       <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase' }}>
                         Duiding van de legging
@@ -374,7 +377,7 @@ export const LenormandLezingPage: React.FC = () => {
                     <div style={{ fontSize: 15.5, color: G.tekst, lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>
                       {duiding}
                     </div>
-                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, color: G.tekst3, marginTop: '1rem', letterSpacing: '0.05em' }}>
+                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: G.tekst3, marginTop: '1rem', letterSpacing: '0.05em' }}>
                       Op basis van onze kaartbetekenissen en combinaties · gpt-5.5
                     </div>
                   </div>
@@ -385,7 +388,7 @@ export const LenormandLezingPage: React.FC = () => {
             {/* Knoppen */}
             <div style={{ display: 'flex', gap: '0.7rem', flexWrap: 'wrap' }}>
               {onthuldeIndices.size < getrokken.length && spread.id !== 'dag' && spread.id !== 'tableau' && (
-                <button onClick={onthulAlles} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.rand2}`, background: G.bg2, color: G.tekst2, cursor: 'pointer' }}>
+                <button onClick={onthulAlles} style={kleineKnop}>
                   Alle kaarten omdraaien
                 </button>
               )}
@@ -395,12 +398,12 @@ export const LenormandLezingPage: React.FC = () => {
                     ✓ Bewaard — zie <Link to="/voortgang#leggingen" style={{ color: G.goudDonker }}>Mijn voortgang</Link>
                   </span>
                 ) : (
-                  <button onClick={bewaar} disabled={bewaard === 'bezig'} style={{ ...ZF_KNOP_PAARS, opacity: bewaard === 'bezig' ? 0.6 : 1 }}>
+                  <button onClick={bewaar} disabled={bewaard === 'bezig'} style={{ ...kleineKnop, opacity: bewaard === 'bezig' ? 0.6 : 1 }}>
                     {bewaard === 'bezig' ? 'Bewaren…' : bewaard === 'fout' ? 'Opnieuw proberen' : '💾 Bewaar legging'}
                   </button>
                 )
               )}
-              <button onClick={reset} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.rand}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
+              <button onClick={reset} style={{ ...kleineKnop, background: 'transparent', boxShadow: 'none', borderColor: G.rand2, color: G.tekst3 }}>
                 Nieuwe lezing
               </button>
             </div>

@@ -80,12 +80,16 @@ export const TarotAIInterpretation: React.FC<Props> = ({
     generateInterpretation();
   }, [cards, positions, vraagstelling, readingType]);
 
+  // Opmaak gelijk aan de duiding bij Lenormand (Zen Flow-paneel)
+  const paneel: React.CSSProperties = { background: '#20162F', border: '0.5px solid rgba(239,180,255,0.38)', borderRadius: 12, padding: '1.6rem 1.7rem', marginTop: '1.5rem' };
+  const label: React.CSSProperties = { fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.12em', color: '#F1CB78', textTransform: 'uppercase' };
+
   if (error || aiError) {
     return (
-      <div className="bg-[rgba(200,96,79,0.15)] border border-[rgba(240,165,150,0.5)] rounded-lg p-4 mt-6">
-        <div className="flex items-center gap-2 text-[#F0A596]">
+      <div style={{ ...paneel, borderColor: 'rgba(240,165,150,0.5)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#F0A596', fontSize: 14 }}>
           <AlertCircle className="w-5 h-5" />
-          <p>{error || aiError}</p>
+          <p style={{ margin: 0 }}>{error || aiError}</p>
         </div>
       </div>
     );
@@ -93,11 +97,8 @@ export const TarotAIInterpretation: React.FC<Props> = ({
 
   if (loading || isLoading) {
     return (
-      <div className="bg-[#2D2040] rounded-lg p-6 mt-6">
-        <div className="flex items-center justify-center gap-3">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#EFB4FF]"></div>
-          <p className="text-[#F1CB78]">Je persoonlijke interpretatie wordt voorbereid...</p>
-        </div>
+      <div style={{ ...paneel, fontSize: 14, color: '#B9A9CC', fontStyle: 'italic' }}>
+        De kaarten worden geduid…
       </div>
     );
   }
@@ -105,21 +106,23 @@ export const TarotAIInterpretation: React.FC<Props> = ({
   if (!interpretation.length) return null;
 
   return (
-    <div className="bg-[#2D2040] rounded-lg p-6 mt-6">
-      <div className="flex items-center gap-2 mb-4">
-        {isPaidReading && <Lock className="w-5 h-5 text-[#F1CB78]" />}
-        <Sparkles className="w-6 h-6 text-[#F1CB78]" />
-        <h3 className="font-medium text-[#FFF3DF] text-xl">
-          {isPaidReading ? 'Premium Tarot Interpretatie' : 'Jouw Persoonlijke Tarot Interpretatie'}
-        </h3>
+    <div style={paneel}>
+      <div style={{ ...label, display: 'flex', alignItems: 'center', gap: 6, marginBottom: '1rem' }}>
+        {isPaidReading ? <Lock className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+        Duiding van de legging
       </div>
-      <div className="prose prose-purple max-w-none">
-        {interpretation.map((part, index) => (
-          <div key={index} className="whitespace-pre-line text-[#E0D5E9] mb-6">
-            {index > 0 && <hr className="my-6" />}
-            {part}
-          </div>
-        ))}
+      {interpretation.map((part, index) => (
+        <div key={index} style={{ paddingTop: index ? '1.1rem' : 0, marginTop: index ? '1.1rem' : 0, borderTop: index ? '0.5px solid rgba(239,180,255,0.22)' : 'none' }}>
+          {positions[index] && (
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, color: '#FFF3DF', marginBottom: 4 }}>
+              {positions[index]}{cards[index] ? <span style={{ color: '#B9A9CC', fontSize: 15 }}> · {cards[index].nameNL}</span> : null}
+            </div>
+          )}
+          <div style={{ fontSize: 15.5, color: '#E0D5E9', lineHeight: 1.8, whiteSpace: 'pre-line' }}>{part}</div>
+        </div>
+      ))}
+      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#B9A9CC', marginTop: '1rem', letterSpacing: '0.05em' }}>
+        Op basis van onze kaartbetekenissen · gpt-5.5
       </div>
     </div>
   );

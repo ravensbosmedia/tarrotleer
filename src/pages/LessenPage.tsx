@@ -334,7 +334,7 @@ const lessons: Lesson[] = [
               { pos: '3', naam: 'Toekomst', uitleg: 'Waar leidt dit naartoe als de huidige energie voortduurt? Geen vaste bestemming, maar een waarschijnlijke richting.' },
             ].map(({ pos, naam, uitleg }) => (
               <div key={pos} className="zf-kaart p-3 border border-[rgba(194,146,189,0.3)] text-center">
-                <div className="zf-knop w-8 h-8 flex items-center justify-center mx-auto mb-1">{pos}</div>
+                <div className="w-8 h-8 rounded-full bg-[#F1CB78] text-[#1C0D06] font-bold flex items-center justify-center mx-auto mb-1">{pos}</div>
                 <p className="font-semibold text-[#F1CB78] text-sm">{naam}</p>
                 <p className="text-xs text-[#B9A9CC] mt-1 text-left">{uitleg}</p>
               </div>
