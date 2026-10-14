@@ -63,6 +63,18 @@ export function installeerPubliek(app: express.Express, root: string, opties: { 
     });
   });
 
+  // Eén kaart op nummer: de bezoeker schudt en kiest zelf op zen-flow.nl (toeval in de browser), hier alleen de tekst
+  app.get('/api/publiek/kaart/:id', (req, res) => {
+    const k = allCards.find((c) => c.id === Number(req.params.id));
+    if (!k) { res.status(404).json({ error: 'Onbekende kaart' }); return; }
+    const omgekeerd = req.query.omgekeerd === '1';
+    res.json({
+      id: k.id, naam: k.nameNL, naamEn: k.name, arcana: ARCANA[k.suit] ?? k.suit, omgekeerd,
+      betekenis: omgekeerd ? k.meaningReversed : k.meaningUpright, beschrijving: k.description,
+      afbeelding: `https://leren.zen-flow.nl/publiek/kaarten/${String(k.imageUrl).split('/').pop()}`,
+    });
+  });
+
   // Levenspadgetal uit de geboortedatum (berekening + eigen teksten, geen AI)
   app.get('/api/publiek/levenspad', (req, res) => {
     const datum = String(req.query.datum || '');
