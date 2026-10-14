@@ -8,6 +8,7 @@ import { LedenPage } from './pages/admin/LedenPage';
 import { CursussenPage } from './pages/admin/CursussenPage';
 import { AcademieOverzichtPage, AcademieCursusPage, AcademieHoofdstukPage } from './pages/admin/AcademiePages';
 import { AcademieOverzicht, AcademieCursus, AcademieLes } from './pages/academie/AcademieSpeler';
+import { AcademiePrint } from './pages/academie/AcademiePrint';
 import { Navbar } from './components/Navbar';
 import ReadingPage from './pages/ReadingPage';
 import { HomePage } from './pages/HomePage';
@@ -80,6 +81,7 @@ function App() {
         <Route path="/voortgang" element={<Layout><VoortgangPage /></Layout>} />
         <Route path="/academie" element={<Layout><AcademieOverzicht /></Layout>} />
         <Route path="/academie/:slug" element={<Layout><AcademieCursus /></Layout>} />
+        <Route path="/academie/:slug/print" element={<AcademiePrint />} />
         <Route path="/academie/:slug/:nr" element={<Layout><AcademieLes /></Layout>} />
         <Route
           path="/admin/cards"

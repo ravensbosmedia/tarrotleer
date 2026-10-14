@@ -1,5 +1,6 @@
 // Academie-beheer (alleen beheerders): cursussen beoordelen en hoofdstukken aanpassen.
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { TrainersVideos } from './TrainersVideos';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Markdown } from '../../components/Markdown';
 import { datumNL, useAccount } from '../../lib/account';
@@ -257,11 +258,12 @@ export const AcademieCursusPage: React.FC = () => {
     if (!f.name.toLowerCase().endsWith('.zip')) { setUploadVerslag('Kies een .zip-bestand.'); return; }
     setUploadVerslag('Uploaden… 0%');
     try {
-      const d = await uploadBestand<{ gewijzigd: string[]; ongewijzigd: number; onbekend: string[]; genegeerd: string[]; dubbel: string[] }>(`/api/admin/academie/${slug}/upload`, f, 'application/zip',
+      const d = await uploadBestand<{ gewijzigd: string[]; ongewijzigd: number; onbekend: string[]; genegeerd: string[]; dubbel: string[]; afbeeldingen: string[] }>(`/api/admin/academie/${slug}/upload`, f, 'application/zip',
         (pct) => setUploadVerslag(pct < 100 ? `Uploaden… ${pct}%` : 'Geüpload — bezig met verwerken…'));
       setUploadVerslag(`${d.dubbel.length ? '⚠' : '✓'} ${d.gewijzigd.length} hoofdstuk(ken) bijgewerkt${d.gewijzigd.length ? `: ${d.gewijzigd.join(', ')}` : ''} · ${d.ongewijzigd} ongewijzigd` +
         (d.dubbel.length ? ` · ⚠ NIET aangepast omdat de zip twee verschillende versies bevat — haal de oude map uit de zip en upload opnieuw: ${d.dubbel.join(' | ')}` : '') +
         (d.onbekend.length ? ` · niet herkend: ${d.onbekend.join(', ')}` : '') +
+        (d.afbeeldingen.length ? ` · nieuwe kopafbeelding bij: ${d.afbeeldingen.join(', ')}` : '') +
         (d.genegeerd.length ? ` · genegeerd (geen hoofdstuk): ${d.genegeerd.join(', ')}` : ''));
       laadCursus();
     } catch (e) { setUploadVerslag((e as Error).message); }
@@ -347,6 +349,8 @@ export const AcademieCursusPage: React.FC = () => {
             <strong style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>💡 BEOORDELING EN ADVIES</strong>
             <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               <a href={`/api/admin/academie/${c.slug}/chatgpt-pakket`} style={{ ...knop, textDecoration: 'none' }} title="Inhoud herwerken: opdracht, eisen, taaleis, advies en hoofdstukken">⬇ Pakket herwerken (.zip)</a>
+              <a href={`/academie/${c.slug}/print`} target="_blank" rel="noopener" style={{ ...knop, textDecoration: 'none', background: '#A78BCA' }} title="Hele cursus of één hoofdstuk afdrukken of opslaan als PDF">🖨 Printversie / PDF</a>
+              <a href={`/api/admin/academie/${c.slug}/chatgpt-pakket?soort=interactief`} style={{ ...knop, textDecoration: 'none', background: '#5FA777' }} title="Complete opdracht om de cursus om te zetten naar een interactieve cursus (stappen, blokken, meerkeuze, afbeeldingen)">⬇ Pakket interactief (.zip)</a>
               <a href={`/api/admin/academie/${c.slug}/chatgpt-pakket?soort=taalronde`} style={{ ...knop, textDecoration: 'none', background: '#8FA3B8' }} title="Alleen taal B1, In het kort, Onthoud dit en meerkeuzetoets — inhoud blijft gelijk">⬇ Pakket taalronde (.zip)</a>
             </span>
           </div>
@@ -367,6 +371,7 @@ export const AcademieCursusPage: React.FC = () => {
           <span style={{ fontSize: 12, color: G.tekst3 }}>Hoofdstukken worden herkend aan het nummer in de bestandsnaam (bijv. 06-03-amethist.md). Vorige versies blijven bewaard.</span>
         </div>
         {uploadVerslag && <p style={{ fontSize: 14, margin: '0 0 1rem', color: uploadVerslag.startsWith('✓') ? '#9bd49b' : G.tekst2 }}>{uploadVerslag}</p>}
+        <TrainersVideos slug={c.slug} />
         <Balk goed={goed} aangepast={aangepast} totaal={c.hoofdstukken.length} />
 
         <div style={{ marginTop: '1.2rem' }}>

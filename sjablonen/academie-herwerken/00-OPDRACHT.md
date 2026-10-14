@@ -113,3 +113,7 @@ Geef daarnaast een korte rapportage met:
 - Welke controles daadwerkelijk zijn uitgevoerd.
 
 Begin met de analyse van de aangeleverde cursus en voer daarna de volledige herwerking uit. Stop niet na een voorstel, analyse of voorbeeldhoofdstuk: de opdracht betreft de volledige aangeleverde cursus.
+
+---
+
+**Onderwijsvisie:** volg ook `00-ONDERWIJSVISIE.md` (in dit pakket). Bij twijfel gaat die visie vóór oudere formuleringen in de cursus.

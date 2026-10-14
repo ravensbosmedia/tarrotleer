@@ -6,6 +6,7 @@ import { Markdown, BLOK_STIJL, BlokWeergave } from '../../components/Markdown';
 import { useOnderdeelVoortgang, slaRondeOp } from '../../lib/voortgang';
 import { useAccount } from '../../lib/account';
 import { maakStappen, haalVragen, Stap, Vraag } from '../../lib/lesOpbouw';
+import { TrainersVideoBijHoofdstuk } from '../admin/TrainersVideos';
 
 const G = {
   goud: '#B8860B', goudBleek: '#F5EDD8', goudLicht: '#D4A537',
@@ -73,6 +74,7 @@ export const AcademieCursus: React.FC = () => {
   const [c, setC] = useState<Cursus | null>(null);
   const [fout, setFout] = useState<string | null>(null);
   const voortgang = useOnderdeelVoortgang<LesVoortgang>(`academie-${slug}`);
+  const { lid } = useAccount();
   useEffect(() => { haal<Cursus>(`/api/academie/${slug}`).then(setC).catch((e) => setFout(e.message)); }, [slug]);
 
   if (fout) return <div style={pagina}><p style={{ padding: '2rem', textAlign: 'center' }}>{fout} — <Link to="/academie" style={{ color: G.goud }}>naar de Academie</Link></p></div>;
@@ -93,6 +95,7 @@ export const AcademieCursus: React.FC = () => {
         <div style={{ fontSize: 13, color: G.tekst3 }}>Cursus {c.nr}</div>
         <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 28, color: G.goud, margin: '4px 0 0.6rem', letterSpacing: '0.04em' }}>{c.titel}</h1>
         {c.beschrijving && <p style={{ fontSize: 18, color: G.tekst2, lineHeight: 1.6, margin: '0 0 1rem' }}>{c.beschrijving}</p>}
+        {lid?.rol === 'admin' && <p style={{ margin: '0 0 1rem' }}><Link to={`/academie/${c.slug}/print`} style={{ ...knopLicht, padding: '7px 16px', fontSize: 12 }}>🖨 Printversie / PDF</Link></p>}
 
         <div style={{ background: G.bg2, border: `1px solid ${G.rand}`, borderRadius: 14, padding: '1rem 1.2rem', margin: '1rem 0 1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -188,6 +191,7 @@ export const AcademieLes: React.FC = () => {
   const [stap, setStap] = useState(0);
   const [afgerond, setAfgerond] = useState(false);
   const voortgang = useOnderdeelVoortgang<LesVoortgang>(`academie-${slug}`);
+  const { lid } = useAccount();
   const item = `h${nr}`;
   const data = voortgang.items.get(item) || {};
   const dataRef = useRef<LesVoortgang>(data);
@@ -285,9 +289,13 @@ export const AcademieLes: React.FC = () => {
         {/* Kop */}
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'baseline', flexWrap: 'wrap', fontSize: 14, marginBottom: 8 }}>
           <Link to={`/academie/${slug}`} style={{ color: G.goud }}>← {les.cursus.titel}</Link>
-          <span style={{ color: G.tekst3 }}>Hoofdstuk {les.nr} van {les.hoofdstukken.length}</span>
+          <span style={{ color: G.tekst3 }}>
+            {lid?.rol === 'admin' && <Link to={`/academie/${slug}/print?hoofdstuk=${les.nr}`} style={{ color: G.goud, marginRight: 12 }} title="Dit hoofdstuk afdrukken of opslaan als PDF">🖨 Print</Link>}
+            Hoofdstuk {les.nr} van {les.hoofdstukken.length}
+          </span>
         </div>
         <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 23, color: G.goud, margin: '0 0 0.8rem', letterSpacing: '0.03em', lineHeight: 1.3 }}>{les.titel}</h1>
+        {lid?.rol === 'admin' && <TrainersVideoBijHoofdstuk slug={slug} nr={les.nr} />}
 
         {afgerond ? (
           <div style={{ background: G.bg2, border: `1px solid ${G.groen}88`, borderRadius: 16, padding: '2rem 1.4rem', textAlign: 'center' }}>

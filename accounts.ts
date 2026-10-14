@@ -151,6 +151,25 @@ export function installeerAccounts(app: express.Express, root: string) {
     return r ? naarLid(r) : null;
   }
 
+  // ── De Zen Flow-voorpagina (zen-flow.nl) mag accounts aanmaken en inloggen (CORS, met cookies) ──
+  // zen-flow.nl en leren.zen-flow.nl zijn dezelfde site, dus de SameSite=Lax-sessiecookie wordt gewoon gezet.
+  const VOORPAGINA_ORIGINS = ['https://zen-flow.nl', 'https://www.zen-flow.nl'];
+  app.use('/api/auth', (req, res, next) => {
+    const origin = String(req.headers.origin || '');
+    if (VOORPAGINA_ORIGINS.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Vary', 'Origin');
+      if (req.method === 'OPTIONS') {
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        res.setHeader('Access-Control-Max-Age', '600');
+        res.status(204).end(); return;
+      }
+    }
+    next();
+  });
+
   // ── Aanmelden / inloggen (vóór de toegangscontrole) ──
   app.post('/api/auth/registreer', (req, res) => {
     if (teVeelPogingen(req.ip || '')) { res.status(429).json({ error: 'Te veel pogingen, probeer het over een kwartier opnieuw' }); return; }

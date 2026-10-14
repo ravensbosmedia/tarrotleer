@@ -34,3 +34,7 @@ Je ontvangt hoofdstukken die **inhoudelijk al zijn uitgewerkt en goedgekeurd**. 
 ## Oplevering
 
 Eén zip met **alleen de hoofdstukbestanden** (`NN-MM-naam.md`), elk hoofdstuk één keer, met dezelfde bestandsnamen. Zie `01-TECHNISCHE-EISEN.md`.
+
+---
+
+**Onderwijsvisie:** volg ook `00-ONDERWIJSVISIE.md` (in dit pakket). Bij twijfel gaat die visie vóór oudere formuleringen in de cursus.

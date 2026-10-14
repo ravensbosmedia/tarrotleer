@@ -9,7 +9,7 @@ import { execFileSync, execFile } from 'child_process';
 import { promisify } from 'util';
 import { posix } from 'path';
 import { join } from 'path';
-import { unlinkSync, mkdirSync, readdirSync, readFileSync, statSync, createWriteStream, openSync, readSync, closeSync, writeFileSync } from 'fs';
+import { unlinkSync, mkdirSync, readdirSync, readFileSync, statSync, createWriteStream, openSync, readSync, closeSync, writeFileSync, renameSync, existsSync } from 'fs';
 
 type HoofdstukStatus = 'te_beoordelen' | 'aangepast' | 'goedgekeurd';
 type CursusStatus = 'concept' | 'in_beoordeling' | 'goedgekeurd';
@@ -58,7 +58,7 @@ function ontvangNaarBestand(req: express.Request, pad: string, max: number): Pro
   return new Promise((ok, fout) => {
     const uit = createWriteStream(pad);
     let n = 0;
-    req.on('data', (stuk: Buffer) => { n += stuk.length; if (n > max) { req.destroy(); uit.destroy(); fout(new Error('Bestand is te groot (max 1 GB)')); } });
+    req.on('data', (stuk: Buffer) => { n += stuk.length; if (n > max) { req.destroy(); uit.destroy(); fout(new Error(`Bestand is te groot (max ${Math.round(max / 1024 ** 3)} GB)`)); } });
     req.on('aborted', () => { uit.destroy(); fout(new Error('Upload afgebroken')); });
     uit.on('finish', () => ok(n));
     uit.on('error', fout);
@@ -237,6 +237,21 @@ export function installeerAcademie(app: express.Express, root: string) {
     if (!kolommen.some((k) => k.name === kolom)) db.exec(`ALTER TABLE ${tabel} ADD COLUMN ${kolom} TEXT NOT NULL DEFAULT ''`);
   }
 
+  // Trainersvideo's: alleen voor beheerders, per cursus, optioneel gekoppeld aan hoofdstukken met tijdmarkeringen
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS academie_videos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      cursus_id INTEGER NOT NULL REFERENCES academie_cursussen(id) ON DELETE CASCADE,
+      titel TEXT NOT NULL,
+      bestand TEXT NOT NULL,
+      grootte INTEGER NOT NULL DEFAULT 0,
+      hoofdstukken TEXT NOT NULL DEFAULT '',
+      markeringen TEXT NOT NULL DEFAULT '',
+      geupload_door TEXT NOT NULL DEFAULT '',
+      datum TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `);
+
   // Goedkeuringen per beheerder (hoofdstuk of cursus) en live-status van cursussen
   db.exec(`
     CREATE TABLE IF NOT EXISTS academie_goedkeuringen (
@@ -291,6 +306,8 @@ export function installeerAcademie(app: express.Express, root: string) {
   // Nieuwe cursussen/hoofdstukken worden toegevoegd. Bestaande hoofdstukken die nog NIET bewerkt zijn, krijgen de
   // nieuwe versie (bv. met afbeeldingen); bij al bewerkte hoofdstukken wordt alleen het "origineel" bijgewerkt.
   const mediaRoot = join(root, 'data', 'academie-media');
+  /** De vaste onderwijsvisie gaat in ieder ChatGPT-pakket mee (geldt voor alle cursussen). */
+  const VISIE = () => ({ naam: '00-ONDERWIJSVISIE.md', tekst: readFileSync(join(root, 'sjablonen', 'ONDERWIJSVISIE.md'), 'utf-8') });
   app.post('/api/admin/academie/importeer/:uploadId', alleenAdmin, async (req, res) => {
     const upload = db.prepare<[number], { id: number; bestand: string }>('SELECT id, bestand FROM cursus_uploads WHERE id = ?')
       .get(Number(req.params.uploadId));
@@ -540,10 +557,12 @@ export function installeerAcademie(app: express.Express, root: string) {
     const tmp = join(tmpMap, `cursus-${Date.now()}.zip`);
     const prefix = `c${c.id}-${Date.now()}`;
     let bestanden: { pad: string; tekst: string }[];
+    let afbeeldingen: string[] = [];
     try {
       const n = await ontvangNaarBestand(req, tmp, 1024 * 1024 * 1024);
       if (n < 22 || !isZip(tmp)) { res.status(400).json({ error: 'Dit is geen zip-bestand' }); try { unlinkSync(tmp); } catch { /* weg */ } return; }
       const z = await leesZip(tmp, join(mediaRoot, prefix));
+      afbeeldingen = z.img.filter((p) => /^\d+-\d+-.+\.(png|jpe?g|webp)$/i.test(p.split('/').pop() || ''));
       bestanden = bereidVoor(z, prefix).map((b) => ({ pad: b.pad, tekst: b.kop ? b.tekst.replace(/^(#\s.*\n(?:\s*\n|\*\*.*\n)*)/, `$1\n${b.kop}\n\n`) : b.tekst }));
     } catch {
       res.status(400).json({ error: 'Zip kon niet gelezen worden' }); return;
@@ -551,7 +570,7 @@ export function installeerAcademie(app: express.Express, root: string) {
       try { unlinkSync(tmp); } catch { /* al weg */ }
     }
     const huidig = (nr: number) => db.prepare<[number, number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? AND nr = ?').get(c.id, nr);
-    const resultaat = { gewijzigd: [] as string[], ongewijzigd: 0, onbekend: [] as string[], genegeerd: [] as string[], dubbel: [] as string[] };
+    const resultaat = { gewijzigd: [] as string[], ongewijzigd: 0, onbekend: [] as string[], genegeerd: [] as string[], dubbel: [] as string[], afbeeldingen: [] as string[] };
 
     // 1) Bestanden per hoofdstuknummer verzamelen; alleen NN-MM-*.md van deze cursus telt als hoofdstuk
     const perHoofdstuk = new Map<number, { naam: string; tekst: string }[]>();
@@ -578,6 +597,11 @@ export function installeerAcademie(app: express.Express, root: string) {
         }
         if (nieuweVersie(h, versies[0].tekst, req.lid!.email, 'nieuwe versie geüpload (cursus-zip)')) resultaat.gewijzigd.push(`${h.nr}. ${h.titel}`);
         else resultaat.ongewijzigd++;
+      }
+      // Nieuwe kopafbeeldingen in dezelfde zip (NN-MM-*.png) koppelen aan het juiste hoofdstuk
+      for (const pad of afbeeldingen) {
+        const gekoppeld = zetKopafbeelding(c, pad, prefix, req.lid!.email);
+        if (gekoppeld) resultaat.afbeeldingen.push(gekoppeld);
       }
     })();
     res.json(resultaat);
@@ -616,15 +640,100 @@ export function installeerAcademie(app: express.Express, root: string) {
     res.sendFile(rel, { root: mediaRoot, dotfiles: 'deny' }, (err) => { if (err && !res.headersSent) res.status(404).end(); });
   });
 
+  // ── Trainersvideo's (alleen beheerders): buiten academie-media, zodat cursisten ze nooit kunnen ophalen ──
+  const videoMap = join(root, 'data', 'academie-video');
+  mkdirSync(join(videoMap, 'archief'), { recursive: true });
+  interface VideoRij { id: number; cursus_id: number; titel: string; bestand: string; grootte: number; hoofdstukken: string; markeringen: string; geupload_door: string; datum: string }
+  const videoVan = db.prepare<[number], VideoRij>('SELECT * FROM academie_videos WHERE id = ?');
+
+  /** mp4/mov ("ftyp" op positie 4) of webm (EBML-kop). */
+  function isVideo(pad: string): 'mp4' | 'webm' | null {
+    const kop = Buffer.alloc(12);
+    const fd = openSync(pad, 'r');
+    try { readSync(fd, kop, 0, 12, 0); } finally { closeSync(fd); }
+    if (kop.toString('latin1', 4, 8) === 'ftyp') return 'mp4';
+    if (kop.readUInt32BE(0) === 0x1a45dfa3) return 'webm';
+    return null;
+  }
+
+  app.get('/api/admin/academie/:slug/videos', alleenAdmin, (req, res) => {
+    const c = cursusVan.get(String(req.params.slug));
+    if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
+    res.json(db.prepare<[number], VideoRij>('SELECT * FROM academie_videos WHERE cursus_id = ? ORDER BY datum DESC, id DESC').all(c.id));
+  });
+
+  // Upload als ruwe body (tot 2 GB); ?titel=…&naam=bestand.mp4
+  app.post('/api/admin/academie/:slug/video', alleenAdmin, async (req, res) => {
+    const c = cursusVan.get(String(req.params.slug));
+    if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
+    const tmp = join(tmpMap, `video-${Date.now()}`);
+    try {
+      const n = await ontvangNaarBestand(req, tmp, 2 * 1024 ** 3);
+      const soort = n > 12 ? isVideo(tmp) : null;
+      if (!soort) { try { unlinkSync(tmp); } catch { /* weg */ } res.status(400).json({ error: 'Dit is geen video (mp4 of webm)' }); return; }
+      const titel = String(req.query.titel || req.query.naam || 'Trainersvideo').replace(/\.[a-z0-9]+$/i, '').slice(0, 200);
+      const r = db.prepare('INSERT INTO academie_videos (cursus_id, titel, bestand, grootte, geupload_door) VALUES (?, ?, ?, ?, ?)')
+        .run(c.id, titel, '', n, req.lid!.email);
+      const bestand = `v${r.lastInsertRowid}-c${c.id}.${soort}`;
+      renameSync(tmp, join(videoMap, bestand));
+      db.prepare('UPDATE academie_videos SET bestand = ? WHERE id = ?').run(bestand, r.lastInsertRowid);
+      res.json(videoVan.get(Number(r.lastInsertRowid)));
+    } catch (e) {
+      try { unlinkSync(tmp); } catch { /* weg */ }
+      if (!res.headersSent) res.status(400).json({ error: (e as Error).message || 'Upload mislukt' });
+    }
+  });
+
+  app.patch('/api/admin/academie/video/:id', alleenAdmin, (req, res) => {
+    const v = videoVan.get(Number(req.params.id));
+    if (!v) { res.status(404).json({ error: 'Video niet gevonden' }); return; }
+    const titel = typeof req.body?.titel === 'string' && req.body.titel.trim() ? req.body.titel.trim().slice(0, 200) : v.titel;
+    const hoofdstukken = typeof req.body?.hoofdstukken === 'string'
+      ? [...new Set<number>(String(req.body.hoofdstukken).split(/[^0-9]+/).filter(Boolean).map(Number))].sort((a, b) => a - b).join(',') : v.hoofdstukken;
+    const markeringen = typeof req.body?.markeringen === 'string' ? req.body.markeringen.slice(0, 20000) : v.markeringen;
+    db.prepare('UPDATE academie_videos SET titel = ?, hoofdstukken = ?, markeringen = ? WHERE id = ?').run(titel, hoofdstukken, markeringen, v.id);
+    res.json(videoVan.get(v.id));
+  });
+
+  // Verwijderen = archiveren (bestand naar data/academie-video/archief, rij weg)
+  app.delete('/api/admin/academie/video/:id', alleenAdmin, (req, res) => {
+    const v = videoVan.get(Number(req.params.id));
+    if (!v) { res.status(404).json({ error: 'Video niet gevonden' }); return; }
+    if (v.bestand && existsSync(join(videoMap, v.bestand))) renameSync(join(videoMap, v.bestand), join(videoMap, 'archief', v.bestand));
+    db.prepare('DELETE FROM academie_videos WHERE id = ?').run(v.id);
+    res.json({ ok: true });
+  });
+
+  // Afspelen (met Range, zodat doorspoelen werkt) — alleen beheerders
+  app.get('/api/admin/academie/video/:id/bestand', alleenAdmin, (req, res) => {
+    const v = videoVan.get(Number(req.params.id));
+    if (!v || !v.bestand) { res.status(404).end(); return; }
+    res.setHeader('Cache-Control', 'private, no-store');
+    res.sendFile(v.bestand, { root: videoMap, dotfiles: 'deny', acceptRanges: true }, (err) => { if (err && !res.headersSent) res.status(404).end(); });
+  });
+
   // ── Pakket voor ChatGPT: opdracht + technische eisen + advies + huidige hoofdstukken (één cursus) ──
   app.get('/api/admin/academie/:slug/chatgpt-pakket', alleenAdmin, (req, res) => {
     const c = cursusVan.get(String(req.params.slug)) as (CursusRij & { advies: string }) | undefined;
     if (!c) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
     const hoofdstukken = db.prepare<[number], HoofdstukRij & { advies: string }>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(c.id);
     const map = join(root, 'sjablonen', 'academie-herwerken');
+    if (req.query.soort === 'interactief') {
+      const zonderAfb = hoofdstukken.filter((h) => !/^\s*!\[[^\]]*\]\(\/api\/academie-media\//.test(h.inhoud)).map((h) => bestandsnaam(c.nr, h.nr, h.slug));
+      const bestanden = [
+        VISIE(), { naam: '00-OPDRACHT-INTERACTIEF.md', tekst: readFileSync(join(root, 'sjablonen', 'academie-interactief', '00-OPDRACHT-INTERACTIEF.md'), 'utf-8') +
+          `\n\n---\n\n## Deze cursus\n\nCursus ${String(c.nr).padStart(2, '0')}: **${c.titel}** — ${hoofdstukken.length} hoofdstukken in de map \`${c.slug}/\`.\n\n` +
+          (zonderAfb.length ? `Hoofdstukken **zonder** afbeelding (maak hiervoor een nieuwe kopafbeelding, zie punt 7):\n${zonderAfb.map((n) => `- ${n.replace(/\.md$/, '.png')}`).join('\n')}\n` : 'Alle hoofdstukken hebben al een afbeelding.\n') },
+        ...hoofdstukken.map((h) => ({ naam: `${c.slug}/${bestandsnaam(c.nr, h.nr, h.slug)}`, tekst: alsBestand(h.nr, h.titel, h.inhoud) })),
+      ];
+      const zip = execFileSync('python3', ['-c', ZIP_MAKER], { input: JSON.stringify(bestanden), maxBuffer: 50 * 1024 * 1024 });
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader('Content-Disposition', `attachment; filename="interactief-${c.slug}.zip"`);
+      res.send(zip); return;
+    }
     if (req.query.soort === 'taalronde') {
       const bestanden = [
-        { naam: '00-OPDRACHT-TAALRONDE.md', tekst: readFileSync(join(map, '00-OPDRACHT-TAALRONDE.md'), 'utf-8') },
+        VISIE(), { naam: '00-OPDRACHT-TAALRONDE.md', tekst: readFileSync(join(map, '00-OPDRACHT-TAALRONDE.md'), 'utf-8') },
         { naam: '01-TECHNISCHE-EISEN.md', tekst: readFileSync(join(map, '01-TECHNISCHE-EISEN.md'), 'utf-8') },
         { naam: '02-TAAL-EN-ONTHOUDEN.md', tekst: readFileSync(join(map, '02-TAAL-EN-ONTHOUDEN.md'), 'utf-8') },
         ...hoofdstukken.map((h) => ({ naam: `${c.slug}/${bestandsnaam(c.nr, h.nr, h.slug)}`, tekst: alsBestand(h.nr, h.titel, h.inhoud) })),
@@ -649,7 +758,7 @@ export function installeerAcademie(app: express.Express, root: string) {
       ...hoofdstukken.flatMap((h) => [`### ${bestandsnaam(c.nr, h.nr, h.slug)} — ${h.titel}`, '', h.advies || '(nog geen advies)', '']),
     ].join('\n');
     const bestanden = [
-      { naam: '00-OPDRACHT.md', tekst: readFileSync(join(map, '00-OPDRACHT.md'), 'utf-8') },
+      VISIE(), { naam: '00-OPDRACHT.md', tekst: readFileSync(join(map, '00-OPDRACHT.md'), 'utf-8') },
       { naam: '01-TECHNISCHE-EISEN.md', tekst: readFileSync(join(map, '01-TECHNISCHE-EISEN.md'), 'utf-8') },
       { naam: '02-TAAL-EN-ONTHOUDEN.md', tekst: readFileSync(join(map, '02-TAAL-EN-ONTHOUDEN.md'), 'utf-8') },
       { naam: '03-ADVIES-PER-HOOFDSTUK.md', tekst: advies },
@@ -671,7 +780,7 @@ export function installeerAcademie(app: express.Express, root: string) {
     const naam = bestandsnaam(c.nr, h.nr, h.slug);
     if (req.query.soort === 'taalronde') {
       const bestanden = [
-        { naam: '00-OPDRACHT-TAALRONDE.md', tekst: readFileSync(join(map, '00-OPDRACHT-TAALRONDE.md'), 'utf-8') },
+        VISIE(), { naam: '00-OPDRACHT-TAALRONDE.md', tekst: readFileSync(join(map, '00-OPDRACHT-TAALRONDE.md'), 'utf-8') },
         { naam: '01-TECHNISCHE-EISEN.md', tekst: readFileSync(join(map, '01-TECHNISCHE-EISEN.md'), 'utf-8') },
         { naam: '02-TAAL-EN-ONTHOUDEN.md', tekst: readFileSync(join(map, '02-TAAL-EN-ONTHOUDEN.md'), 'utf-8') },
         { naam, tekst: alsBestand(h.nr, h.titel, h.inhoud) },
@@ -709,7 +818,7 @@ export function installeerAcademie(app: express.Express, root: string) {
     ].join('\n');
     const bestanden = [
       { naam: '00-LEES-EERST.md', tekst: leesEerst },
-      { naam: '00-OPDRACHT.md', tekst: readFileSync(join(map, '00-OPDRACHT.md'), 'utf-8') },
+      VISIE(), { naam: '00-OPDRACHT.md', tekst: readFileSync(join(map, '00-OPDRACHT.md'), 'utf-8') },
       { naam: '01-TECHNISCHE-EISEN.md', tekst: readFileSync(join(map, '01-TECHNISCHE-EISEN.md'), 'utf-8') },
       { naam: '02-TAAL-EN-ONTHOUDEN.md', tekst: readFileSync(join(map, '02-TAAL-EN-ONTHOUDEN.md'), 'utf-8') },
       { naam: '03-ADVIES-DIT-HOOFDSTUK.md', tekst: advies },
@@ -814,6 +923,24 @@ export function installeerAcademie(app: express.Express, root: string) {
     res.json({ cursus: { slug: c!.slug, titel: c!.titel, nr: c!.nr, live: c!.live }, nr: h.nr, titel: h.titel, inhoud: h.inhoud, hoofdstukken: alle });
   });
 
+  /** Zet (of vervangt) de kopafbeelding van hoofdstuk MM op basis van een bestandsnaam NN-MM-*.png. */
+  function zetKopafbeelding(c: CursusRij, pad: string, prefix: string, door: string): string | null {
+    const bestand = pad.split('/').pop() || '';
+    const m = bestand.match(/^(\d+)-(\d+)-/);
+    const h = m && Number(m[1]) === c.nr
+      ? db.prepare<[number, number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? AND nr = ?').get(c.id, Number(m[2]))
+      : undefined;
+    if (!h) return null;
+    const url = `/api/academie-media/${prefix}/${pad.split('/').map(encodeURIComponent).join('/')}`;
+    const regel = `![${h.titel} — ${c.titel}](${url})`;
+    const zonderOude = h.inhoud.replace(/^\s*!\[[^\]]*\]\(\/api\/academie-media\/[^)]+\)\s*\n*/, '');
+    db.prepare('INSERT INTO academie_versies (hoofdstuk_id, titel, inhoud, door, reden) VALUES (?, ?, ?, ?, ?)')
+      .run(h.id, h.titel, h.inhoud, door, 'nieuwe kopafbeelding');
+    db.prepare(`UPDATE academie_hoofdstukken SET inhoud = ?, bijgewerkt = datetime('now'), bijgewerkt_door = ? WHERE id = ?`).run(`${regel}\n\n${zonderOude}`, door, h.id);
+    goedkeuringVervalt(h.id);
+    return `${h.nr}. ${h.titel}`;
+  }
+
   // ── Kopafbeeldingen uploaden voor een cursus: zip of losse afbeelding; NN-MM-*.png → hoofdstuk MM ──
   app.post('/api/admin/academie/:slug/afbeeldingen', alleenAdmin, async (req, res) => {
     const c = cursusVan.get(String(req.params.slug));
@@ -841,21 +968,9 @@ export function installeerAcademie(app: express.Express, root: string) {
     const resultaat = { gekoppeld: [] as string[], niet_herkend: [] as string[] };
     db.transaction(() => {
       for (const pad of afbeeldingen) {
-        const bestand = pad.split('/').pop() || '';
-        const m = bestand.match(/^(\d+)-(\d+)-/);
-        const h = m && Number(m[1]) === c.nr
-          ? db.prepare<[number, number], HoofdstukRij>('SELECT * FROM academie_hoofdstukken WHERE cursus_id = ? AND nr = ?').get(c.id, Number(m[2]))
-          : undefined;
-        if (!h) { resultaat.niet_herkend.push(bestand); continue; }
-        const url = `/api/academie-media/${prefix}/${pad.split('/').map(encodeURIComponent).join('/')}`;
-        const regel = `![${h.titel} — ${c.titel}](${url})`;
-        const zonderOude = h.inhoud.replace(/^\s*!\[[^\]]*\]\(\/api\/academie-media\/[^)]+\)\s*\n*/, '');
-        const nieuw = `${regel}\n\n${zonderOude}`;
-        db.prepare('INSERT INTO academie_versies (hoofdstuk_id, titel, inhoud, door, reden) VALUES (?, ?, ?, ?, ?)')
-          .run(h.id, h.titel, h.inhoud, req.lid!.email, 'nieuwe kopafbeelding');
-        db.prepare(`UPDATE academie_hoofdstukken SET inhoud = ?, bijgewerkt = datetime('now'), bijgewerkt_door = ? WHERE id = ?`).run(nieuw, req.lid!.email, h.id);
-        goedkeuringVervalt(h.id);
-        resultaat.gekoppeld.push(`${h.nr}. ${h.titel}`);
+        const gekoppeld = zetKopafbeelding(c, pad, prefix, req.lid!.email);
+        if (gekoppeld) resultaat.gekoppeld.push(gekoppeld);
+        else resultaat.niet_herkend.push(pad.split('/').pop() || pad);
       }
     })();
     res.json(resultaat);

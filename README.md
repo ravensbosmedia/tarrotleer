@@ -89,6 +89,9 @@ Nieuwe, losse cursussen (los van de bestaande cursus numerologie/astrologie) kom
 5. **Nieuwe cursussen:** op `/admin/academie` staan *Sjabloon voor ChatGPT (.zip)* (uitleg plus voorbeeldcursus uit `sjablonen/academie-cursus/`, aangevuld met de bestaande cursussen en het eerstvolgende vrije nummer) en *Nieuwe cursus uploaden (.zip)* (upload en import in één keer). Een onveranderd sjabloon importeert niets, omdat de voorbeeldmap `NN-…` heet.
 
 9. **Twee soorten pakket voor ChatGPT** (per cursus en per hoofdstuk): *Pakket herwerken* (inhoud verbeteren, met advies) en *Pakket taalronde* (`?soort=taalronde`, opdracht `sjablonen/academie-herwerken/00-OPDRACHT-TAALRONDE.md`: alleen B1-taal, *In het kort*, *Onthoud dit* en een meerkeuzetoets, de inhoud blijft gelijk). Bij elke nieuwe versie blijft de kopafbeelding automatisch staan als de nieuwe tekst er geen heeft. Import met `{ ookBewerkt: true, notitie }` vervangt ook al bewerkte hoofdstukken (vorige versie blijft bewaard).
+10. **Pakket interactief** (`?soort=interactief`, opdracht `sjablonen/academie-interactief/00-OPDRACHT-INTERACTIEF.md`): zet een cursus om naar het interactieve formaat (stappen, blokken, meerkeuze) en noemt welke hoofdstukken nog een kopafbeelding missen. Een cursus-zip mag `NN-MM-*.png` bevatten; die worden bij de upload direct als kopafbeelding gekoppeld.
+11. **Onderwijsvisie:** `sjablonen/ONDERWIJSVISIE.md` geldt voor alle cursussen en gaat als `00-ONDERWIJSVISIE.md` mee in ieder pakket.
+12. **Printversie / PDF:** `/academie/<slug>/print` (en `?hoofdstuk=N`) toont de hele cursus of één hoofdstuk op papierformaat, met per stap het label `H<nr> · stap X van Y` zoals online, schrijflijnen bij Denk na en de antwoorden achterin. Opslaan als PDF via de printfunctie van de browser. Knoppen alleen voor beheerders.
 8. **Goedkeuren door alle beheerders:** elke beheerder keurt zelf elk hoofdstuk en daarna de cursus als geheel goed (tabel `academie_goedkeuringen`). Een hoofdstuk krijgt pas de status *goedgekeurd* als **alle actieve beheerders** het hebben goedgekeurd. **Live zetten voor klanten** (`POST /api/admin/academie/:slug/live`) weigert de server zolang een beheerder een hoofdstuk of de cursus nog niet heeft goedgekeurd. Verandert de tekst van een hoofdstuk (bewerken, uploaden of import), dan vervallen de goedkeuringen van dat hoofdstuk en van de cursus, en gaat een live cursus automatisch offline.
 
 Tabellen: `academie_cursussen`, `academie_hoofdstukken`, `academie_versies` (elke opslag bewaart de vorige versie), `cursus_uploads`. De weergave van Markdown (`src/components/Markdown.tsx`) bouwt React-elementen en voert nooit HTML uit.
@@ -134,3 +137,9 @@ npm run build
 ```
 
 Testen van de server zonder de live site te raken: kopieer `server.ts` met een andere `PORT` (bijvoorbeeld 4299) en start die met `tsx`. Gebruik daarbij een tijdelijk testaccount en verwijder het daarna weer.
+
+## Zen Flow
+Sinds 14-10-2026 ook bereikbaar op https://leren.zen-flow.nl (nginx `server_name`, certificaat uitgebreid). De voorpagina https://zen-flow.nl (project `/home/ubuntu/zen-flow-voorpagina`) maakt accounts aan en logt in via deze API (CORS alleen voor zen-flow.nl en www) en stuurt daarna door naar de leeromgeving. Volgende stap: de leeromgeving in Zen Flow-stijl.
+
+## Trainersvideo's
+Per cursus uploaden in Academie (beheer) (mp4/webm, tot 2 GB; nginx-locatie `/api/admin/academie/<slug>/video`). Bestanden in `data/academie-video/` (buiten academie-media; verwijderen = naar `archief/`), tabel `academie_videos` met hoofdstukken en tijdmarkeringen (`hoofdstuk | m:ss | omschrijving`). Afspelen via `/api/admin/academie/video/:id/bestand` (alleen beheerders, met Range). In de cursusspeler zien beheerders per hoofdstuk de video met springknoppen.

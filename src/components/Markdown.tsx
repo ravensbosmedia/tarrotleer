@@ -5,7 +5,7 @@ import React from 'react';
 // [links](https://…), ![afbeeldingen](/api/academie-media/… of https://…), regeleinde met twee spaties,
 // en <details><summary>…</summary> … </details>.
 
-interface Stijl { kop2: React.CSSProperties; kop3: React.CSSProperties; tekst: React.CSSProperties; link: string; rand: string; donker: boolean }
+interface Stijl { kop2: React.CSSProperties; kop3: React.CSSProperties; tekst: React.CSSProperties; link: string; rand: string; donker: boolean; open?: boolean }
 
 /** Soorten blokken in een interactieve les: `> **Soort** (extra)` op de eerste regel. */
 export type BlokSoort = 'In het kort' | 'Onthoud dit' | 'Voorbeeld' | 'Oefening' | 'Denk na' | 'Let op';
@@ -87,7 +87,7 @@ function blokken(md: string, stijl: Stijl, prefix = 'b', blokWeergave?: BlokWeer
       }
       i++;
       uit.push(
-        <details key={k} style={{ border: `0.5px solid ${stijl.rand}`, borderRadius: 8, padding: '0.6rem 0.9rem', margin: '0.8rem 0' }}>
+        <details key={k} open={stijl.open || undefined} style={{ border: `0.5px solid ${stijl.rand}`, borderRadius: 8, padding: '0.6rem 0.9rem', margin: '0.8rem 0' }}>
           <summary style={{ cursor: 'pointer', fontWeight: 600 }}>{inline(samenvatting, stijl, k)}</summary>
           <div style={{ marginTop: '0.6rem' }}>{blokken(binnen.join('\n'), stijl, `${k}d`, blokWeergave)}</div>
         </details>,
@@ -148,6 +148,25 @@ function blokken(md: string, stijl: Stijl, prefix = 'b', blokWeergave?: BlokWeer
       continue;
     }
 
+    // Tabel: | kop | kop | met daaronder |---|---|
+    if (/^\s*\|.*\|\s*$/.test(r) && /^\s*\|?\s*:?-{2,}/.test(regels[i + 1] || '')) {
+      const cellen = (x: string) => x.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((c) => c.trim());
+      const kopCellen = cellen(r);
+      i += 2;
+      const rijen: string[][] = [];
+      while (i < regels.length && /^\s*\|/.test(regels[i])) { rijen.push(cellen(regels[i])); i++; }
+      const cel: React.CSSProperties = { border: `1px solid ${stijl.rand}`, padding: '0.4rem 0.6rem', verticalAlign: 'top', textAlign: 'left' };
+      uit.push(
+        <div key={k} style={{ overflowX: 'auto', margin: '0.8rem 0 1rem' }}>
+          <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 15, lineHeight: 1.5, color: stijl.tekst.color }}>
+            <thead><tr>{kopCellen.map((c, j) => <th key={j} style={{ ...cel, background: 'rgba(184,134,11,0.12)', fontWeight: 600 }}>{inline(c, stijl, `${k}h${j}`)}</th>)}</tr></thead>
+            <tbody>{rijen.map((rij, ri) => <tr key={ri} style={{ breakInside: 'avoid' }}>{kopCellen.map((_, j) => <td key={j} style={cel}>{inline(rij[j] || '', stijl, `${k}r${ri}-${j}`)}</td>)}</tr>)}</tbody>
+          </table>
+        </div>,
+      );
+      continue;
+    }
+
     // Lijsten (ook geneste regels met inspringing horen bij het vorige punt)
     const isPunt = (x: string) => /^\s{0,3}[-*]\s+/.test(x);
     const isNummer = (x: string) => /^\s{0,3}\d+[.)]\s+/.test(x);
@@ -160,8 +179,10 @@ function blokken(md: string, stijl: Stijl, prefix = 'b', blokWeergave?: BlokWeer
         i++;
       }
       const Lijst = genummerd ? 'ol' : 'ul';
+      // Een genummerde lijst begint bij het nummer uit de tekst (bijv. antwoorden 5–7 na een tussenregel)
+      const start = genummerd ? Number(r.match(/\d+/)?.[0] || 1) : undefined;
       uit.push(
-        <Lijst key={k} style={{ ...stijl.tekst, paddingLeft: '1.4rem' }}>
+        <Lijst key={k} start={start !== 1 ? start : undefined} style={{ ...stijl.tekst, paddingLeft: '1.4rem' }}>
           {items.map((it, j) => <li key={j} style={{ marginBottom: 4 }}>{inline(it, stijl, `${k}-${j}`)}</li>)}
         </Lijst>,
       );
@@ -170,7 +191,7 @@ function blokken(md: string, stijl: Stijl, prefix = 'b', blokWeergave?: BlokWeer
 
     // Gewone alinea tot een lege regel of een nieuw blok
     const alineaRegels: string[] = [];
-    while (i < regels.length && regels[i].trim() && !/^(#{1,4}\s|<details>|\s{0,3}[-*]\s|\s{0,3}\d+[.)]\s|\s*>)/i.test(regels[i])) {
+    while (i < regels.length && regels[i].trim() && !/^(#{1,4}\s|<details>|\s{0,3}[-*]\s|\s{0,3}\d+[.)]\s|\s*>|\s*\|.*\|\s*$)/i.test(regels[i])) {
       alineaRegels.push(regels[i]);
       i++;
     }
@@ -180,7 +201,7 @@ function blokken(md: string, stijl: Stijl, prefix = 'b', blokWeergave?: BlokWeer
   return uit;
 }
 
-export const Markdown: React.FC<{ tekst: string; donker?: boolean; blokWeergave?: BlokWeergave }> = ({ tekst, donker = true, blokWeergave }) => {
+export const Markdown: React.FC<{ tekst: string; donker?: boolean; blokWeergave?: BlokWeergave; uitgeklapt?: boolean }> = ({ tekst, donker = true, blokWeergave, uitgeklapt }) => {
   const kleur = donker ? '#F5EDD8' : '#2C2416';
   const stijl: Stijl = {
     kop2: { fontFamily: "'Cinzel', serif", fontSize: 18, letterSpacing: '0.06em', color: '#B8860B', margin: '1.6rem 0 0.6rem' },
@@ -189,6 +210,7 @@ export const Markdown: React.FC<{ tekst: string; donker?: boolean; blokWeergave?
     link: '#D4A537',
     rand: 'rgba(184,134,11,0.3)',
     donker,
+    open: uitgeklapt,
   };
   return <div>{blokken(tekst, stijl, 'b', blokWeergave)}</div>;
 };

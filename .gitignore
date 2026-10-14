@@ -31,3 +31,6 @@ cache/
 
 # Database (accounts, voortgang)
 /data/
+
+# Voorbeeld van de Zen Flow-voorpagina (bron: /home/ubuntu/zen-flow-voorpagina)
+/public/voorbeeld-zen-flow/
