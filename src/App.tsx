@@ -11,6 +11,7 @@ import { AcademieOverzicht, AcademieCursus, AcademieLes } from './pages/academie
 import { AcademiePrint } from './pages/academie/AcademiePrint';
 import { TarotLeggingPage } from './pages/tarot/TarotLeggingPage';
 import { TekstenPage } from './pages/admin/TekstenPage';
+import { HoroscoopBeheerPage } from './pages/admin/HoroscoopBeheerPage';
 import { Navbar } from './components/Navbar';
 import { StartPage } from './pages/StartPage';
 import { BibliotheekPage } from './pages/BibliotheekPage';
@@ -74,6 +75,7 @@ function App() {
         <Route path="/admin" element={<Navigate to="/admin/leden" replace />} />
         <Route path="/admin/leden" element={<ProtectedRoute><Layout><LedenPage /></Layout></ProtectedRoute>} />
         <Route path="/admin/cursussen" element={<ProtectedRoute><Layout><CursussenPage /></Layout></ProtectedRoute>} />
+        <Route path="/admin/horoscopen" element={<ProtectedRoute><Layout><HoroscoopBeheerPage /></Layout></ProtectedRoute>} />
         <Route path="/admin/teksten" element={<ProtectedRoute><Layout><TekstenPage /></Layout></ProtectedRoute>} />
         <Route path="/admin/academie" element={<ProtectedRoute><Layout><AcademieOverzichtPage /></Layout></ProtectedRoute>} />
         <Route path="/admin/academie/h/:id" element={<ProtectedRoute><Layout><AcademieHoofdstukPage /></Layout></ProtectedRoute>} />

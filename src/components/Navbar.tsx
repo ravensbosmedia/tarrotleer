@@ -294,7 +294,7 @@ export const Navbar: React.FC = () => {
                   {[
                     { to: '/voortgang', label: 'Mijn voortgang' },
                     { to: '/account', label: 'Mijn account' },
-                    ...(lid.rol === 'admin' ? [{ to: '/admin/leden', label: 'Leden beheren' }, { to: '/admin/academie', label: 'Academie (beheer)' }, { to: '/admin/cursussen', label: 'Cursus-uploads' }, { to: '/admin/teksten', label: 'Teksten (disclaimers)' }] : []),
+                    ...(lid.rol === 'admin' ? [{ to: '/admin/leden', label: 'Leden beheren' }, { to: '/admin/academie', label: 'Academie (beheer)' }, { to: '/admin/cursussen', label: 'Cursus-uploads' }, { to: '/admin/teksten', label: 'Teksten (disclaimers)' }, { to: '/admin/horoscopen', label: 'Maandhoroscopen' }] : []),
                   ].map((l) => (
                     <Link key={l.to} to={l.to} style={itemStijl(linkActief(l.to))} onMouseEnter={zweefAan} onMouseLeave={zweefUit(linkActief(l.to))}>{l.label}</Link>
                   ))}
@@ -381,6 +381,7 @@ export const Navbar: React.FC = () => {
                   <Link to="/admin/academie" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Academie (beheer)</Link>
                   <Link to="/admin/cursussen" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Cursus-uploads</Link>
                   <Link to="/admin/teksten" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Teksten (disclaimers)</Link>
+                  <Link to="/admin/horoscopen" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Maandhoroscopen</Link>
                 </>
               )}
               <button onClick={uitloggen} style={{ textAlign: 'left', background: 'none', border: 'none', color: '#B9A9CC', fontFamily: SANS, fontSize: 15, padding: '9px 0', cursor: 'pointer' }}>Uitloggen</button>

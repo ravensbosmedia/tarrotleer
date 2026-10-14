@@ -1,7 +1,7 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync, mkdirSync, renameSync } from 'fs';
 import { allCards } from './src/data/cards/index.js';
 import { installeerAccounts } from './accounts.js';
 import { installeerCursusUploads } from './cursussen.js';
@@ -391,16 +391,79 @@ async function astroApi(opslag: string, endpoint: string, body: Record<string, u
   try { return await aanvraag; } finally { astroBezig.delete(opslag); }
 }
 
+// ─── Beheer van de maandhoroscopen: origineel (AstroAPI) naast de makkelijke versie (B1), aanpassen of opnieuw herschrijven ───
+const alleenBeheer: express.RequestHandler = (req, res, next) => {
+  if ((req as express.Request & { lid?: { rol?: string } }).lid?.rol !== 'admin') { res.status(403).json({ error: 'Alleen voor beheerders' }); return; }
+  next();
+};
+const maandBestand = (maand: string, teken: string, b1 = false) => join(ASTRO_DIR, `maand-${maand}-${teken}${b1 ? '-b1' : ''}.json`);
+const geldigeMaand = (m: unknown) => (typeof m === 'string' && /^\d{4}-\d{2}$/.test(m) ? m : vandaagNL().slice(0, 7));
+
+app.get('/api/admin/horoscoop/maand', alleenBeheer, (req, res) => {
+  const maand = geldigeMaand(req.query.maand);
+  res.json({ maand, tekens: ALLE_TEKENS.map((t) => {
+    const b1 = existsSync(maandBestand(maand, t, true)) ? JSON.parse(readFileSync(maandBestand(maand, t, true), 'utf-8')) : null;
+    return { teken: t, naam: TEKEN_NL[t], opgehaald: existsSync(maandBestand(maand, t)), makkelijk: !!b1, aangepastDoor: b1?.aangepastDoor ?? null, bijgewerkt: b1?.bijgewerkt ?? b1?.gemaakt ?? null };
+  }) });
+});
+
+app.get('/api/admin/horoscoop/maand/:teken', alleenBeheer, (req, res) => {
+  const teken = String(req.params.teken), maand = geldigeMaand(req.query.maand);
+  if (!ALLE_TEKENS.includes(teken)) { res.status(400).json({ error: 'Onbekend teken' }); return; }
+  if (!existsSync(maandBestand(maand, teken))) { res.json({ maand, teken, naam: TEKEN_NL[teken], origineel: null, makkelijk: null }); return; }
+  const d = JSON.parse(readFileSync(maandBestand(maand, teken), 'utf-8')).data || {};
+  const b1 = existsSync(maandBestand(maand, teken, true)) ? JSON.parse(readFileSync(maandBestand(maand, teken, true), 'utf-8')) : null;
+  res.json({
+    maand, teken, naam: TEKEN_NL[teken],
+    origineel: { thema: d.monthly_theme ?? null, gebieden: d.life_areas ?? [], tips: d.tips ?? [], maancycli: d.lunations ?? [] },
+    makkelijk: b1?.b1 ?? null, meta: b1 ? { gemaakt: b1.gemaakt, bron: b1.bron, aangepastDoor: b1.aangepastDoor ?? null, bijgewerkt: b1.bijgewerkt ?? null } : null,
+  });
+});
+
+// Eigen aanpassingen opslaan: { thema, gebieden: [{area, prediction}], tips: [...], maancycli: [{date, interpretation}] }
+app.put('/api/admin/horoscoop/maand/:teken', alleenBeheer, (req, res) => {
+  const teken = String(req.params.teken), maand = geldigeMaand(req.query.maand);
+  const pad = maandBestand(maand, teken, true);
+  if (!ALLE_TEKENS.includes(teken) || !existsSync(pad)) { res.status(404).json({ error: 'Nog geen makkelijke versie voor dit teken' }); return; }
+  const huidig = JSON.parse(readFileSync(pad, 'utf-8'));
+  const b = req.body || {}, b1 = huidig.b1;
+  const kort = (x: unknown) => (typeof x === 'string' ? x.trim().slice(0, 4000) : null);
+  if (kort(b.thema)) b1.thema = kort(b.thema);
+  if (Array.isArray(b.gebieden)) b1.gebieden = b1.gebieden.map((g: { area: string; prediction: string }) => {
+    const n = b.gebieden.find((x: { area?: string }) => x.area === g.area); return n && kort(n.prediction) ? { ...g, prediction: kort(n.prediction) } : g;
+  });
+  if (Array.isArray(b.tips) && b.tips.length === b1.tips.length) b1.tips = b.tips.map((t: unknown, i: number) => kort(t) || b1.tips[i]);
+  if (Array.isArray(b.maancycli)) b1.maancycli = b1.maancycli.map((c: { date: string; interpretation?: string }) => {
+    const n = b.maancycli.find((x: { date?: string }) => x.date === c.date); return n && kort(n.interpretation) ? { ...c, interpretation: kort(n.interpretation) } : c;
+  });
+  const lid = (req as express.Request & { lid?: { email?: string } }).lid;
+  if (!existsSync(pad + '.ai')) writeFileSync(pad + '.ai', JSON.stringify(huidig));   // eerste AI-versie bewaren
+  writeFileSync(pad, JSON.stringify({ ...huidig, b1, aangepastDoor: lid?.email ?? null, bijgewerkt: new Date().toISOString() }));
+  res.json({ ok: true });
+});
+
+// Opnieuw laten herschrijven door AI (kost één AI-call); haalt het teken zo nodig eerst op bij AstroAPI
+app.post('/api/admin/horoscoop/maand/:teken/herschrijf', alleenBeheer, async (req, res) => {
+  const teken = String(req.params.teken), maand = vandaagNL().slice(0, 7);
+  if (!ALLE_TEKENS.includes(teken)) { res.status(400).json({ error: 'Onbekend teken' }); return; }
+  const pad = maandBestand(maand, teken, true);
+  if (existsSync(pad)) renameSync(pad, `${pad}.vorige-${Date.now()}`);   // vorige versie bewaren
+  try { const r = await maandHoroscoop(teken); res.json({ ok: 'taal' in r }); }
+  catch (err) { res.status(503).json({ error: err instanceof Error ? err.message : 'Mislukt' }); }
+});
+
 app.get('/api/astroapi/verbruik', (_req, res) => {
   const maand = vandaagNL().slice(0, 7);
   res.json({ maand, calls: astroTeller(maand), limiet: ASTRO_LIMIET });
 });
 
-// Maandhoroscoop per teken via AstroAPI: max 12 calls per maand (ook gebruikt door de voorpagina, zie publiek.ts)
+// Maandhoroscoop per teken via AstroAPI: max 12 calls per maand (ook gebruikt door de voorpagina, zie publiek.ts).
+// De tekst wordt één keer per teken per maand door gpt-5.5 herschreven in makkelijk Nederlands (B1) en bewaard
+// (cache/astroapi/maand-JJJJ-MM-teken-b1.json); lukt dat niet, dan volgt de oorspronkelijke tekst.
 async function maandHoroscoop(teken: string) {
   const maand = vandaagNL().slice(0, 7);
   const d = await astroApi(`maand-${maand}-${teken}`, 'horoscope/sign/monthly', { sign: teken, month: maand, language: 'nl' });
-  return {
+  const basis = {
     maand, slug: teken, naam: TEKEN_NL[teken],
     thema: d.monthly_theme ?? null,
     score: d.overall_rating ?? null,
@@ -410,6 +473,62 @@ async function maandHoroscoop(teken: string) {
     maancycli: d.lunations ?? [],
     geluk: d.lucky_elements ?? null,
   };
+  try {
+    return { ...basis, ...(await maandInMakkelijkeTaal(maand, teken, basis)), taal: 'B1' };
+  } catch (err) {
+    console.error(`Maandhoroscoop ${teken} niet herschreven:`, err instanceof Error ? err.message : err);
+    return basis;
+  }
+}
+
+const b1Bezig = new Map<string, Promise<Record<string, unknown>>>();
+async function maandInMakkelijkeTaal(maand: string, teken: string, basis: Record<string, unknown>): Promise<Record<string, unknown>> {
+  const pad = join(ASTRO_DIR, `maand-${maand}-${teken}-b1.json`);
+  if (existsSync(pad)) return JSON.parse(readFileSync(pad, 'utf-8')).b1;
+  const lopend = b1Bezig.get(pad);
+  if (lopend) return lopend;
+  const taak = (async () => {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) throw new Error('OPENAI_API_KEY ontbreekt');
+    type Gebied = { area?: string; title?: string; prediction?: string; [k: string]: unknown };
+    type Cyclus = { date?: string; phase?: string; interpretation?: string | null; [k: string]: unknown };
+    const gebieden = (basis.gebieden as Gebied[]) || [];
+    const cycli = (basis.maancycli as Cyclus[]) || [];
+    const invoer = {
+      thema: basis.thema, tips: basis.tips, weken: basis.weken,
+      gebieden: gebieden.map((g) => ({ area: g.area, titel: g.title, tekst: g.prediction })),
+      maancycli: cycli.map((c) => ({ datum: c.date, tekst: c.interpretation })),
+    };
+    const { default: OpenAI } = await import('openai');
+    const resp = await new OpenAI({ apiKey }).chat.completions.create({
+      model: 'gpt-5.5',
+      max_completion_tokens: 16000,
+      response_format: { type: 'json_object' },
+      messages: [
+        { role: 'system', content: `Je herschrijft een maandhoroscoop voor ${TEKEN_NL[teken]} in eenvoudig Nederlands (taalniveau B1) voor een breed publiek.
+Regels: behoud per onderdeel precies de boodschap; voeg niets toe en laat niets inhoudelijks weg. Korte zinnen (gemiddeld 10 tot 15 woorden, nooit meer dan 20). Gewone woorden; vervang moeilijke en vaktermen (zoals huizen, aspecten, trigoon, transit) door gewone woorden of laat ze weg als de boodschap blijft. Spreek de lezer aan met je. Warm en rustig, geen angst, geen garanties of zekere voorspellingen.
+Antwoord als JSON met PRECIES dezelfde opbouw, sleutels en aantallen als de invoer (dezelfde "area"- en "datum"-waarden); alleen de teksten veranderen. Laat "weken" null als het null is.` },
+        { role: 'user', content: JSON.stringify(invoer) },
+      ],
+    });
+    const uit = JSON.parse(resp.choices[0].message.content || '{}') as typeof invoer;
+    const nieuweGebieden = gebieden.map((g) => {
+      const n = (uit.gebieden || []).find((x) => x.area === g.area);
+      return n?.tekst ? { ...g, prediction: n.tekst } : g;
+    });
+    const nieuweCycli = cycli.map((c, i) => {
+      const n = (uit.maancycli || []).find((x) => x.datum === c.date) || (uit.maancycli || [])[i];
+      return n?.tekst ? { ...c, interpretation: n.tekst } : c;
+    });
+    const tips = Array.isArray(uit.tips) && uit.tips.length === (basis.tips as unknown[] || []).length ? uit.tips : basis.tips;
+    if (!uit.thema || nieuweGebieden.filter((g, i) => g !== gebieden[i]).length < Math.min(3, gebieden.length)) throw new Error('Onvolledige herschrijving');
+    const b1 = { thema: uit.thema, gebieden: nieuweGebieden, tips, maancycli: nieuweCycli, weken: uit.weken ?? basis.weken };
+    mkdirSync(ASTRO_DIR, { recursive: true });
+    writeFileSync(pad, JSON.stringify({ gemaakt: new Date().toISOString(), bron: 'gpt-5.5', b1 }));
+    return b1;
+  })();
+  b1Bezig.set(pad, taak);
+  try { return await taak; } finally { b1Bezig.delete(pad); }
 }
 
 app.get('/api/horoscoop/maand/:teken', async (req, res) => {

@@ -163,3 +163,8 @@ Knop **Aa** in het menu (op de telefoon bovenin het uitklapmenu): Normaal / Grot
 `publiek.ts` (vóór de toegangscontrole in server.ts): `/api/publiek/teksten`, `/api/publiek/dagkaart`, `/api/publiek/levenspad?datum=`, `/api/publiek/maandhoroscoop/:teken` (alleen GET; CORS alleen voor zen-flow.nl en www) en `/publiek/kaarten/*` (kaartafbeeldingen). Geen van deze roept AI aan; de maandhoroscoop gebruikt de bestaande AstroAPI-cache (`maandHoroscoop()` in server.ts, max. 12 calls per maand).
 **Teksten (disclaimers)**: `/admin/teksten` (alleen beheerders; tabel `instellingen`; leeg opslaan = standaardtekst, zie `STANDAARD_TEKSTEN`). De AI-disclaimer (`<AiDisclaimer />`) staat bij de Tarot- en Lenormand-duiding en het gesprek over je legging.
 
+## Maandhoroscoop in makkelijke taal (B1) — 15-10-2026
+`maandHoroscoop()` in server.ts: AstroAPI-tekst (max. één call per teken per maand) wordt **één keer per teken per maand** door gpt-5.5 herschreven naar B1 (korte zinnen, geen vaktermen, zelfde boodschap) en bewaard als `cache/astroapi/maand-JJJJ-MM-<teken>-b1.json`. Zowel zen-flow.nl als de horoscooppagina tonen die versie; lukt herschrijven niet, dan het origineel. Max. 12 AI-calls per maand, niet per bezoeker.
+**Beheer → Maandhoroscopen** (`/admin/horoscopen`): per teken origineel naast de makkelijke versie, zelf aanpassen (opslaan = meteen zichtbaar; eerste AI-versie blijft bewaard als `…-b1.json.ai`), opnieuw laten herschrijven (vorige versie → `…-b1.json.vorige-<tijd>`), of een nog niet opgehaald teken ophalen.
+`scripts/maandhoroscoop-klaarzetten.sh` zet alle 12 tekens klaar (eerste keer ±1 minuut per teken); bedoeld voor het begin van de maand (cron).
+
