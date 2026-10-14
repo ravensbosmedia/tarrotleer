@@ -122,7 +122,7 @@ export const TarotAIInterpretation: React.FC<Props> = ({
         </div>
       ))}
       <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#B9A9CC', marginTop: '1rem', letterSpacing: '0.05em' }}>
-        Op basis van onze kaartbetekenissen · gpt-5.5
+        Op basis van onze kaartbetekenissen
       </div>
     </div>
   );

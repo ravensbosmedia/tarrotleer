@@ -378,7 +378,7 @@ export const LenormandLezingPage: React.FC = () => {
                       {duiding}
                     </div>
                     <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: G.tekst3, marginTop: '1rem', letterSpacing: '0.05em' }}>
-                      Op basis van onze kaartbetekenissen en combinaties · gpt-5.5
+                      Op basis van onze kaartbetekenissen en combinaties
                     </div>
                   </div>
                 )}
