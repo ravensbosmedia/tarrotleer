@@ -156,3 +156,6 @@ Omzetten gaat in fasen met `scripts/zenflow-stijl.py` (eerst proefrun, dan `--to
 - **Bewust niet omgezet:** de Lenormand-kaarten zelf (`LenormandKaartVisueel`, `data/lenormand/kaarten.ts`), de printbare pendelschijf en de printversie van de Academie (papier).
 Niet aanpassen: "Mystieke Lenormand" (naam van het kaartspel). De kopafbeeldingen van de Academie bevatten nog de tekst "Mystieke Kaarten" (in de afbeelding zelf).
 
+## Tekstgrootte
+Knop **Aa** in het menu (op de telefoon bovenin het uitklapmenu): Normaal / Groter (115%) / Extra groot (130%). Per apparaat bewaard in `localStorage` (`zenflow-tekstgrootte`), toegepast via `html[data-tekst]` + CSS-`zoom` op `body` (`src/index.css`, `src/lib/tekstgrootte.ts`), zodat ook vaste px-maten meeschalen; bij printen altijd 100%. Wordt al in `main.tsx` toegepast, zodat de pagina niet verspringt.
+

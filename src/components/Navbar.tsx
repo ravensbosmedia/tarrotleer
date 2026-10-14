@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown, User } from 'lucide-react';
+import { TEKST_STANDEN, useTekstStand } from '../lib/tekstgrootte';
 import { useAccount, uitloggen, ABONNEMENT_LABEL } from '../lib/account';
 
 interface NavLink { to: string; label: string }
@@ -122,6 +123,7 @@ export const Navbar: React.FC = () => {
   const [mobielSectie, setMobielSectie] = useState<string | null>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const { lid } = useAccount();
+  const [tekstStand, kiesTekstStand] = useTekstStand();
   const sluitTimer = useRef<number | null>(null);   // vertraagd sluiten bij mouseleave
   const hoverOpenTijd = useRef(0);                  // moment waarop hover het menu opende
 
@@ -234,11 +236,45 @@ export const Navbar: React.FC = () => {
           })}
         </div>
 
+        {/* Desktop: tekstgrootte */}
+        <div
+          className="hidden md:block"
+          style={{ position: 'relative', marginLeft: 'auto' }}
+          onMouseEnter={() => openSectie('__tekst')}
+          onMouseLeave={() => sluitVertraagd('__tekst')}
+        >
+          <button
+            onClick={() => klikSectie('__tekst')}
+            aria-expanded={open === '__tekst'}
+            aria-label="Tekstgrootte aanpassen"
+            title="Tekstgrootte"
+            style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 19, lineHeight: 1, padding: '6px 14px', borderRadius: 30,
+              border: '1px solid #B67AC9', background: open === '__tekst' ? 'rgba(239,180,255,0.10)' : 'transparent', color: G.goud, cursor: 'pointer',
+            }}
+          >
+            A<span style={{ fontSize: 14 }}>a</span>
+          </button>
+          {open === '__tekst' && (
+            <div style={{ position: 'absolute', top: '100%', right: 0, paddingTop: 4, zIndex: 60 }}>
+              <div style={{ ...PANEEL, minWidth: 200 }}>
+                <div style={{ padding: '6px 14px 8px', color: G.goud, fontSize: 10, fontFamily: SANS, letterSpacing: '2px' }}>TEKSTGROOTTE</div>
+                {TEKST_STANDEN.map((t) => (
+                  <button key={t.id} onClick={() => { kiesTekstStand(t.id); setOpen(null); }} style={{ ...itemStijl(tekstStand === t.id), width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                    <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: Math.round(16 * t.factor), width: 26 }}>A</span>
+                    {t.label}{tekstStand === t.id ? ' ✓' : ''}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Desktop: accountmenu */}
         {lid && (
           <div
             className="hidden md:block"
-            style={{ position: 'relative', marginLeft: 'auto' }}
+            style={{ position: 'relative' }}
             onMouseEnter={() => openSectie('__account')}
             onMouseLeave={() => sluitVertraagd('__account')}
           >
@@ -294,6 +330,17 @@ export const Navbar: React.FC = () => {
       {/* Mobile: accordion per sectie */}
       {mobiel && (
         <div className="md:hidden" style={{ background: G.bg3, borderTop: '1px solid #A77AB9', borderBottom: '1px solid #A77AB9', padding: '0.5rem 0', maxHeight: '75vh', overflowY: 'auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0.6rem 1.5rem 0.9rem', borderBottom: '1px solid rgba(194,146,189,0.18)' }}>
+            <span style={{ color: G.goud, fontSize: 10, fontFamily: SANS, letterSpacing: '2px', marginRight: 'auto' }}>TEKSTGROOTTE</span>
+            {TEKST_STANDEN.map((t) => (
+              <button key={t.id} onClick={() => kiesTekstStand(t.id)} aria-label={`Tekst ${t.label.toLowerCase()}`} aria-pressed={tekstStand === t.id} style={{
+                minWidth: 44, minHeight: 40, borderRadius: 20, cursor: 'pointer', fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: Math.round(16 * t.factor), lineHeight: 1,
+                border: `1px solid ${tekstStand === t.id ? G.goud : '#B67AC9'}`,
+                background: tekstStand === t.id ? 'rgba(241,203,120,0.15)' : 'transparent', color: tekstStand === t.id ? G.goud : G.goudBleek,
+              }}>A</button>
+            ))}
+          </div>
           {SECTIES.map((s) => {
             const openSectie = mobielSectie === s.id;
             const isActief = activeId === s.id;

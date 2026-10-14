@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Tekstgrootte (knop "Aa" in het menu): schaalt de hele leeromgeving mee, niet bij het printen */
+html[data-tekst="groter"] body { zoom: 1.15; }
+html[data-tekst="grootst"] body { zoom: 1.3; }
+@media print { html[data-tekst] body { zoom: 1 !important; } }
+
 /* Zen Flow-bouwstenen: één stijl voor alle onderdelen (Tarot, Lenormand, pendel, Academie …).
    Gelijk aan zen-flow.nl; dezelfde stijlen voor inline-code staan in src/lib/zenStijl.ts. */
 @layer components {
