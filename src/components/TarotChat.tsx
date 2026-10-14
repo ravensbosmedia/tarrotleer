@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Send, User, Bot, Sparkles } from 'lucide-react';
 import { TarotCard } from '../types/cards';
 import { QuotaManager } from '../utils/quotaManager';
+import { AiDisclaimer } from './AiDisclaimer';
 
 interface Props {
   cards: TarotCard[];
@@ -161,6 +162,7 @@ export const TarotChat: React.FC<Props> = ({ cards, positions }) => {
           Verstuur
         </button>
       </form>
+      <AiDisclaimer />
     </div>
   );
 };

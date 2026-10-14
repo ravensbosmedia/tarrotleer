@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { ZF_KNOP, ZF_KNOP_PAARS } from '../../lib/zenStijl';
+import { AiDisclaimer } from '../../components/AiDisclaimer';
 import { Link } from 'react-router-dom';
 import { bewaarLegging } from '../../lib/voortgang';
 import { lenormandKaarten, lenormandSpreads } from '../../data/lenormand';
@@ -380,6 +381,7 @@ export const LenormandLezingPage: React.FC = () => {
                     <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: G.tekst3, marginTop: '1rem', letterSpacing: '0.05em' }}>
                       Op basis van onze kaartbetekenissen en combinaties · gpt-5.5
                     </div>
+                    <AiDisclaimer />
                   </div>
                 )}
               </div>

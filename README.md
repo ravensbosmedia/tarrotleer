@@ -159,3 +159,7 @@ Niet aanpassen: "Mystieke Lenormand" (naam van het kaartspel). De kopafbeeldinge
 ## Tekstgrootte
 Knop **Aa** in het menu (op de telefoon bovenin het uitklapmenu): Normaal / Groter (115%) / Extra groot (130%). Per apparaat bewaard in `localStorage` (`zenflow-tekstgrootte`), toegepast via `html[data-tekst]` + CSS-`zoom` op `body` (`src/index.css`, `src/lib/tekstgrootte.ts`), zodat ook vaste px-maten meeschalen; bij printen altijd 100%. Wordt al in `main.tsx` toegepast, zodat de pagina niet verspringt.
 
+## Openbaar voor zen-flow.nl (zonder inloggen, zonder AI) en Teksten
+`publiek.ts` (vóór de toegangscontrole in server.ts): `/api/publiek/teksten`, `/api/publiek/dagkaart`, `/api/publiek/levenspad?datum=`, `/api/publiek/maandhoroscoop/:teken` (alleen GET; CORS alleen voor zen-flow.nl en www) en `/publiek/kaarten/*` (kaartafbeeldingen). Geen van deze roept AI aan; de maandhoroscoop gebruikt de bestaande AstroAPI-cache (`maandHoroscoop()` in server.ts, max. 12 calls per maand).
+**Teksten (disclaimers)**: `/admin/teksten` (alleen beheerders; tabel `instellingen`; leeg opslaan = standaardtekst, zie `STANDAARD_TEKSTEN`). De AI-disclaimer (`<AiDisclaimer />`) staat bij de Tarot- en Lenormand-duiding en het gesprek over je legging.
+

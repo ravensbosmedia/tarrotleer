@@ -6,6 +6,7 @@ import { allCards } from './src/data/cards/index.js';
 import { installeerAccounts } from './accounts.js';
 import { installeerCursusUploads } from './cursussen.js';
 import { installeerAcademie } from './academie.js';
+import { installeerPubliek, installeerTekstenBeheer } from './publiek.js';
 
 // Laad .env als die aanwezig is (voor lokale dev en PM2 zonder ecosystem config)
 try {
@@ -22,7 +23,10 @@ app.use(express.json());
 
 // ─── Accounts: zonder geldige sessie alleen de inlog-/aanmeldpagina ───
 app.set('trust proxy', 'loopback'); // nginx ervoor → echte IP voor de inlogrem
+// Openbaar voor de voorpagina zen-flow.nl (zonder inloggen, zonder AI) — vóór de toegangscontrole
+installeerPubliek(app, __dirname, { maandhoroscoop: (teken) => maandHoroscoop(teken) });
 installeerAccounts(app, __dirname);
+installeerTekstenBeheer(app, __dirname);
 installeerCursusUploads(app, __dirname);
 installeerAcademie(app, __dirname);
 
@@ -392,25 +396,29 @@ app.get('/api/astroapi/verbruik', (_req, res) => {
   res.json({ maand, calls: astroTeller(maand), limiet: ASTRO_LIMIET });
 });
 
-// Maandhoroscoop per teken via AstroAPI: max 12 calls per maand
+// Maandhoroscoop per teken via AstroAPI: max 12 calls per maand (ook gebruikt door de voorpagina, zie publiek.ts)
+async function maandHoroscoop(teken: string) {
+  const maand = vandaagNL().slice(0, 7);
+  const d = await astroApi(`maand-${maand}-${teken}`, 'horoscope/sign/monthly', { sign: teken, month: maand, language: 'nl' });
+  return {
+    maand, slug: teken, naam: TEKEN_NL[teken],
+    thema: d.monthly_theme ?? null,
+    score: d.overall_rating ?? null,
+    weken: d.key_periods ?? null,
+    gebieden: d.life_areas ?? [],
+    tips: d.tips ?? [],
+    maancycli: d.lunations ?? [],
+    geluk: d.lucky_elements ?? null,
+  };
+}
+
 app.get('/api/horoscoop/maand/:teken', async (req, res) => {
   const teken = req.params.teken.toLowerCase();
   if (!ALLE_TEKENS.includes(teken)) {
     res.status(400).json({ error: `Ongeldig teken. Gebruik: ${ALLE_TEKENS.join(', ')}` }); return;
   }
-  const maand = vandaagNL().slice(0, 7);
   try {
-    const d = await astroApi(`maand-${maand}-${teken}`, 'horoscope/sign/monthly', { sign: teken, month: maand, language: 'nl' });
-    res.json({
-      maand, slug: teken, naam: TEKEN_NL[teken],
-      thema: d.monthly_theme ?? null,
-      score: d.overall_rating ?? null,
-      weken: d.key_periods ?? null,
-      gebieden: d.life_areas ?? [],
-      tips: d.tips ?? [],
-      maancycli: d.lunations ?? [],
-      geluk: d.lucky_elements ?? null,
-    });
+    res.json(await maandHoroscoop(teken));
   } catch (err: unknown) {
     res.status(503).json({ error: err instanceof Error ? err.message : 'Maandhoroscoop niet beschikbaar' });
   }
