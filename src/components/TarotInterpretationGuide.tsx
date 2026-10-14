@@ -94,14 +94,14 @@ const kleurBetekenissen: KleurBetekenis[] = [
 
 export const TarotInterpretationGuide: React.FC = () => {
   return (
-    <div className="bg-[#20162F] rounded-lg shadow-lg p-8">
+    <div className="zf-kaart p-8">
       <h2 className="text-3xl font-bold text-[#F1CB78] mb-8">
         Tarot Lezen voor Beginners
       </h2>
 
       {/* Introductie */}
       <div className="mb-12 bg-[#2D2040] p-6 rounded-lg">
-        <h3 className="text-xl font-semibold text-[#F1CB78] mb-4">
+        <h3 className="font-medium text-[#FFF3DF] text-xl mb-4">
           Hoe lees je een tarotkaart?
         </h3>
         <p className="text-[#E0D5E9]">
@@ -118,7 +118,7 @@ export const TarotInterpretationGuide: React.FC = () => {
         <div className="border border-[rgba(194,146,189,0.3)] rounded-lg p-6">
           <div className="flex items-center mb-4">
             <Eye className="w-6 h-6 text-[#F1CB78] mr-2" />
-            <h3 className="text-2xl font-semibold text-[#F1CB78]">
+            <h3 className="zf-sectie">
               1. Letterlijk Niveau: Wat zie je?
             </h3>
           </div>
@@ -145,7 +145,7 @@ export const TarotInterpretationGuide: React.FC = () => {
         <div className="border border-[rgba(194,146,189,0.3)] rounded-lg p-6">
           <div className="flex items-center mb-4">
             <Palette className="w-6 h-6 text-[#F1CB78] mr-2" />
-            <h3 className="text-2xl font-semibold text-[#F1CB78]">
+            <h3 className="zf-sectie">
               2. Symbolisch Niveau: Wat betekent het?
             </h3>
           </div>
@@ -190,7 +190,7 @@ export const TarotInterpretationGuide: React.FC = () => {
         <div className="border border-[rgba(194,146,189,0.3)] rounded-lg p-6">
           <div className="flex items-center mb-4">
             <Sparkles className="w-6 h-6 text-[#F1CB78] mr-2" />
-            <h3 className="text-2xl font-semibold text-[#F1CB78]">
+            <h3 className="zf-sectie">
               3. Intuïtief Niveau: Wat voel je?
             </h3>
           </div>
@@ -218,7 +218,7 @@ export const TarotInterpretationGuide: React.FC = () => {
       <div className="bg-[#2D2040] p-6 rounded-lg">
         <div className="flex items-center mb-4">
           <Brain className="w-6 h-6 text-[#F1CB78] mr-2" />
-          <h3 className="text-xl font-semibold text-[#F1CB78]">Tips voor beginners</h3>
+          <h3 className="font-medium text-[#FFF3DF] text-xl">Tips voor beginners</h3>
         </div>
         <ul className="space-y-3 text-[#E0D5E9]">
           <li className="flex items-center">

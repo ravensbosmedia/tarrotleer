@@ -125,7 +125,7 @@ export const CelticCrossBasicMeaning: React.FC<Props> = ({ cards, positions }) =
   return (
     <div className="space-y-8">
       <div className="bg-[#2D2040] p-6 rounded-lg mb-8">
-        <h3 className="text-xl font-semibold text-[#F1CB78] mb-4">Basis Interpretatie</h3>
+        <h3 className="font-medium text-[#FFF3DF] text-xl mb-4">Basis Interpretatie</h3>
         <p className="text-[#E0D5E9] mb-4">
           Het Keltisch Kruis is een krachtige en veelzijdige legging die verschillende aspecten van je vraag of situatie belicht. 
           Elke positie heeft een specifieke betekenis die samen een compleet beeld vormen.

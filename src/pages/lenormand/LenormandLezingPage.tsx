@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
+import { ZF_KNOP, ZF_KNOP_PAARS } from '../../lib/zenStijl';
 import { Link } from 'react-router-dom';
 import { bewaarLegging } from '../../lib/voortgang';
 import { lenormandKaarten, lenormandSpreads } from '../../data/lenormand';
@@ -280,13 +281,7 @@ export const LenormandLezingPage: React.FC = () => {
 
             <button
               onClick={startLezing}
-              style={{
-                fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em',
-                padding: '12px 32px', borderRadius: 24,
-                border: `0.5px solid ${G.goud}`,
-                background: G.goudBleek, color: G.goudDonker,
-                cursor: 'pointer', transition: 'all 0.18s',
-              }}
+              style={{ ...ZF_KNOP }}
             >
               Schud en trek kaarten →
             </button>
@@ -400,7 +395,7 @@ export const LenormandLezingPage: React.FC = () => {
                     ✓ Bewaard — zie <Link to="/voortgang#leggingen" style={{ color: G.goudDonker }}>Mijn voortgang</Link>
                   </span>
                 ) : (
-                  <button onClick={bewaar} disabled={bewaard === 'bezig'} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.goud}`, background: G.goudBleek, color: G.goudDonker, cursor: 'pointer', opacity: bewaard === 'bezig' ? 0.6 : 1 }}>
+                  <button onClick={bewaar} disabled={bewaard === 'bezig'} style={{ ...ZF_KNOP_PAARS, opacity: bewaard === 'bezig' ? 0.6 : 1 }}>
                     {bewaard === 'bezig' ? 'Bewaren…' : bewaard === 'fout' ? 'Opnieuw proberen' : '💾 Bewaar legging'}
                   </button>
                 )

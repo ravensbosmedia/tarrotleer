@@ -18,9 +18,9 @@ export const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#2D2040] flex items-center justify-center">
-      <div className="bg-[#20162F] p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-[#F1CB78] mb-6">Admin Login</h2>
+    <div className="zf-pagina flex items-center justify-center">
+      <div className="zf-kaart p-8 w-full max-w-md">
+        <h2 className="zf-sectie mb-6">Admin Login</h2>
         <p className="text-sm text-[#B9A9CC] mb-4">Standaard wachtwoord: <code>admin123</code></p>
         {error && (
           <div className="bg-[rgba(200,96,79,0.22)] border border-[#F0A596] text-[#F0A596] px-4 py-3 rounded mb-4">
@@ -36,7 +36,7 @@ export const AdminLogin: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
+              className="zf-veld w-full"
               required
             />
           </div>
@@ -48,13 +48,13 @@ export const AdminLogin: React.FC = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
+              className="zf-veld w-full"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-[#F1CB78] text-[#1C0D06] py-2 px-4 rounded hover:bg-[#FFC653] transition-colors"
+            className="zf-knop w-full"
           >
             Inloggen
           </button>

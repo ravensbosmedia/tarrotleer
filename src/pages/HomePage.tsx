@@ -102,15 +102,16 @@ export const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#2D2040]">
-      <div className="bg-[#FFC653] text-[#1C0D06] py-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-1">Leggingen</h1>
-          <p className="text-[#E0D5E9]">Trek kaarten en krijg inzicht in je situatie</p>
+    <div className="zf-pagina">
+      <div className="zf-kop">
+        <div>
+          <p className="zf-label">Tarot</p>
+          <h1 className="zf-titel">Leggingen</h1>
+          <p className="zf-intro">Trek kaarten en krijg inzicht in je situatie</p>
         </div>
       </div>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="zf-inhoud">
         {/* Basis Informatie Secties */}
         <div className="space-y-4 mb-12">
           {sections.map((section) => {
@@ -118,13 +119,13 @@ export const HomePage: React.FC = () => {
             const isExpanded = expandedSection === section.id;
 
             return (
-              <div key={section.id} className="bg-[#20162F] rounded-lg shadow-md overflow-hidden">
+              <div key={section.id} className="zf-kaart overflow-hidden">
                 <button
                   onClick={() => setExpandedSection(isExpanded ? null : section.id)}
                   className="w-full p-6 text-left flex items-center justify-between hover:bg-[#17112C] transition-colors"
                 >
                   <div>
-                    <h2 className="text-xl font-semibold text-[#F1CB78]">{section.title}</h2>
+                    <h2 className="font-medium text-[#FFF3DF] text-xl">{section.title}</h2>
                     <p className="text-[#CFC2DC] mt-1">{section.description}</p>
                   </div>
                   {isExpanded ? (
@@ -145,17 +146,17 @@ export const HomePage: React.FC = () => {
         </div>
 
         {/* Leggingen */}
-        <h2 className="text-2xl font-bold text-[#F1CB78] mb-6">Kies je Legging</h2>
+        <h2 className="zf-sectie mb-6">Kies je Legging</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {(Object.entries(READINGS) as [ReadingType, Reading][]).map(([type, info]) => (
             <button
               key={type}
               onClick={() => navigate(`/reading/${type}`)}
-              className="bg-[#20162F] p-6 rounded-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1"
+              className="zf-kaart zf-kaart-klik p-6"
             >
               <div className="flex items-center gap-2 mb-3">
                 <BookOpen className="w-6 h-6 text-[#F1CB78]" />
-                <h3 className="text-xl font-bold text-[#F1CB78]">{info.title}</h3>
+                <h3 className="font-medium text-[#FFF3DF] text-xl">{info.title}</h3>
               </div>
               <p className="text-[#CFC2DC]">{info.description}</p>
               <div className="mt-4 text-sm text-[#F1CB78]">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { ZF_KNOP, ZF_KNOP_PAARS } from '../../lib/zenStijl';
 import { PendelAnimatie, PendelMode } from '../../components/pendel/PendelAnimatie';
 import { PendelSchijf } from '../../components/pendel/PendelSchijf';
 import { pendelSchijven } from '../../data/pendel/schijven';
@@ -76,16 +77,7 @@ const JaNeeOefening: React.FC = () => {
             <button
               onClick={startPendelen}
               disabled={!vraag.trim()}
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: 13, letterSpacing: '0.08em',
-                padding: '10px 28px', borderRadius: 24,
-                border: `0.5px solid ${G.goud}`,
-                background: G.goudBleek, color: G.goudDonker,
-                cursor: vraag.trim() ? 'pointer' : 'not-allowed',
-                opacity: vraag.trim() ? 1 : 0.45,
-                transition: 'all 0.15s',
-              }}
+              style={{ ...ZF_KNOP, cursor: vraag.trim() ? 'pointer' : 'not-allowed', opacity: vraag.trim() ? 1 : 0.45 }}
             >
               Pendel →
             </button>
@@ -392,14 +384,7 @@ const LichaamsharmonieOefening: React.FC = () => {
         </p>
         <button
           onClick={reset}
-          style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 12, letterSpacing: '0.08em',
-            padding: '9px 22px', borderRadius: 20,
-            border: `0.5px solid ${G.goud}`,
-            background: G.goudBleek, color: G.goudDonker,
-            cursor: 'pointer',
-          }}
+          style={{ ...ZF_KNOP_PAARS }}
         >
           Opnieuw starten
         </button>
@@ -477,14 +462,7 @@ const LichaamsharmonieOefening: React.FC = () => {
         {!actief ? (
           <button
             onClick={() => setActief(true)}
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 12, letterSpacing: '0.08em',
-              padding: '9px 22px', borderRadius: 20,
-              border: `0.5px solid ${G.goud}`,
-              background: G.goudBleek, color: G.goudDonker,
-              cursor: 'pointer',
-            }}
+            style={{ ...ZF_KNOP }}
           >
             {verlopenTijd === 0 ? 'Starten' : 'Hervatten'}
           </button>

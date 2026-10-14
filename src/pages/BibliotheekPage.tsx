@@ -28,15 +28,16 @@ export const BibliotheekPage: React.FC = () => {
   }), [suit, search]);
 
   return (
-    <div className="min-h-screen bg-[#17112C]">
-      <div className="bg-[#FFC653] text-[#1C0D06] py-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-1">Kaartbibliotheek</h1>
-          <p className="text-[#E0D5E9]">Alle 78 Rider-Waite-Smith kaarten als naslagwerk</p>
+    <div className="zf-pagina">
+      <div className="zf-kop">
+        <div>
+          <p className="zf-label">Tarot</p>
+          <h1 className="zf-titel">Kaartbibliotheek</h1>
+          <p className="zf-intro">Alle 78 Rider-Waite-Smith kaarten als naslagwerk</p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6">
+      <div className="zf-inhoud">
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1">
@@ -46,13 +47,13 @@ export const BibliotheekPage: React.FC = () => {
               placeholder="Zoek op naam of betekenis..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
+              className="zf-veld w-full pl-9 pr-3"
             />
           </div>
           <select
             value={suit}
             onChange={e => setSuit(e.target.value)}
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
+            className="zf-veld"
           >
             {SUITS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
@@ -89,12 +90,12 @@ export const BibliotheekPage: React.FC = () => {
           onClick={() => setSelected(null)}
         >
           <div
-            className="bg-[#20162F] rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+            className="zf-kaart max-w-3xl w-full max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b">
               <div className="flex items-center gap-3">
-                <h3 className="text-xl font-bold text-[#F1CB78]">{selected.nameNL}</h3>
+                <h3 className="font-medium text-[#FFF3DF] text-xl">{selected.nameNL}</h3>
                 <button
                   onClick={() => setShowReversed(!showReversed)}
                   className={`text-xs px-2 py-1 rounded-full border transition-colors ${

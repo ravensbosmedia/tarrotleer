@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { ZF_KNOP } from '../../lib/zenStijl';
 import { pendelQuizVragen, QuizVraag } from '../../data/pendel/quiz';
 import { slaRondeOp, haalVoortgang, QuizAntwoord, QuizResultaat } from '../../lib/voortgang';
 
@@ -150,14 +151,7 @@ export const QuizPage: React.FC = () => {
             <div>
               <button
                 onClick={initialiseer}
-                style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: 13, letterSpacing: '0.08em',
-                  padding: '11px 28px',
-                  background: G.goud, color: '#1C0D06',
-                  border: 'none', borderRadius: 4,
-                  cursor: 'pointer', transition: 'background 0.2s',
-                }}
+                style={{ ...ZF_KNOP }}
                 onMouseOver={e => (e.currentTarget.style.background = G.goudDonker)}
                 onMouseOut={e => (e.currentTarget.style.background = G.goud)}
               >
@@ -306,14 +300,7 @@ export const QuizPage: React.FC = () => {
             </button>
             <button
               onClick={volgende}
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: 13, letterSpacing: '0.06em',
-                padding: '10px 24px',
-                background: G.goud, color: '#1C0D06',
-                border: 'none', borderRadius: 4,
-                cursor: 'pointer', transition: 'background 0.2s',
-              }}
+              style={{ ...ZF_KNOP }}
               onMouseOver={e => (e.currentTarget.style.background = G.goudDonker)}
               onMouseOut={e => (e.currentTarget.style.background = G.goud)}
             >

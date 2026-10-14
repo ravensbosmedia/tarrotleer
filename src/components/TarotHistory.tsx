@@ -84,14 +84,14 @@ const kleuren: KleurSymboliek[] = [
 
 export const TarotHistory: React.FC = () => {
   return (
-    <div className="bg-[#20162F] rounded-lg shadow-lg p-8">
+    <div className="zf-kaart p-8">
       <h2 className="text-3xl font-bold text-[#F1CB78] mb-8">Geschiedenis en Symboliek van Tarot</h2>
 
       {/* Historische Timeline */}
       <div className="mb-12">
         <div className="flex items-center mb-6">
           <Book className="w-6 h-6 text-[#F1CB78] mr-2" />
-          <h3 className="text-2xl font-semibold text-[#F1CB78]">Historische Ontwikkeling</h3>
+          <h3 className="zf-sectie">Historische Ontwikkeling</h3>
         </div>
         <div className="space-y-6">
           {historischeEvents.map((event, index) => (
@@ -114,11 +114,11 @@ export const TarotHistory: React.FC = () => {
       <div className="mb-12">
         <div className="flex items-center mb-6">
           <Palette className="w-6 h-6 text-[#F1CB78] mr-2" />
-          <h3 className="text-2xl font-semibold text-[#F1CB78]">Het Rider-Waite Legacy</h3>
+          <h3 className="zf-sectie">Het Rider-Waite Legacy</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-[#2D2040] p-6 rounded-lg">
-            <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">Arthur Edward Waite</h4>
+            <h4 className="font-medium text-[#FFF3DF] text-xl mb-3">Arthur Edward Waite</h4>
             <ul className="space-y-2 text-[#E0D5E9]">
               <li>• Occult geleerde (1857-1942)</li>
               <li>• Lid van de Golden Dawn</li>
@@ -127,7 +127,7 @@ export const TarotHistory: React.FC = () => {
             </ul>
           </div>
           <div className="bg-[#2D2040] p-6 rounded-lg">
-            <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">Pamela Colman Smith</h4>
+            <h4 className="font-medium text-[#FFF3DF] text-xl mb-3">Pamela Colman Smith</h4>
             <ul className="space-y-2 text-[#E0D5E9]">
               <li>• Kunstenaar (1878-1951)</li>
               <li>• Theatrale achtergrond</li>
@@ -142,7 +142,7 @@ export const TarotHistory: React.FC = () => {
       <div>
         <div className="flex items-center mb-6">
           <Sparkles className="w-6 h-6 text-[#F1CB78] mr-2" />
-          <h3 className="text-2xl font-semibold text-[#F1CB78]">Kleurensymboliek</h3>
+          <h3 className="zf-sectie">Kleurensymboliek</h3>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {kleuren.map((kleur, index) => (

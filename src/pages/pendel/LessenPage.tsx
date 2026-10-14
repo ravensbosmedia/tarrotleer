@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ZF_KNOP } from '../../lib/zenStijl';
 import { useOnderdeelVoortgang } from '../../lib/voortgang';
 import { pendelLessen, pendelVideos, PendelCategorie, PendelLes, PendelLesInhoud } from '../../data/pendel/lessen';
 import { PendelAnimatie, PendelMode, bewegingNaarMode } from '../../components/pendel/PendelAnimatie';
@@ -333,14 +334,7 @@ export const LessenPage: React.FC = () => {
             ) : (
               <button
                 onClick={() => markeerVoltooid(openLes.id)}
-                style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: 13, letterSpacing: '0.06em',
-                  padding: '10px 22px',
-                  background: G.goud, color: '#1C0D06',
-                  border: 'none', borderRadius: 4,
-                  cursor: 'pointer', transition: 'background 0.2s',
-                }}
+                style={{ ...ZF_KNOP }}
                 onMouseOver={e => (e.currentTarget.style.background = G.goudDonker)}
                 onMouseOut={e => (e.currentTarget.style.background = G.goud)}
               >
@@ -400,11 +394,7 @@ export const LessenPage: React.FC = () => {
             </div>
 
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <a href="#lessen" style={{
-                fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em',
-                padding: '10px 24px', background: G.goud, color: '#1C0D06',
-                border: 'none', borderRadius: 4, cursor: 'pointer', textDecoration: 'none',
-              }}>
+              <a href="#lessen" style={{ ...ZF_KNOP }}>
                 Begin met lessen
               </a>
               <a href="#videos" style={{

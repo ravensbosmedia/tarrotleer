@@ -227,7 +227,7 @@ const lessons: Lesson[] = [
                 ['De Toren + De Wereld', 'Een abrupte ineenstorting die uiteindelijk leidt tot voltooiing en bevrijding.'],
                 ['Koningin van Kelken + Twee van Kelken', 'Een emotioneel rijpe verbinding, of de roep om je hart open te stellen in een relatie.'],
               ].map(([combo, uitleg]) => (
-                <div key={combo} className="bg-[#20162F] rounded p-3 border border-[rgba(155,212,155,0.35)]">
+                <div key={combo} className="zf-kaart p-3 border border-[rgba(155,212,155,0.35)]">
                   <p className="font-semibold text-[#9BD49B] text-xs">{combo}</p>
                   <p className="text-[#CFC2DC] mt-0.5">{uitleg}</p>
                 </div>
@@ -246,7 +246,7 @@ const lessons: Lesson[] = [
                 ['Gerechtigheid + De Maan', 'Spanning tussen rationele waarheid en irrationele angsten of illusies.'],
                 ['Ridder van Zwaarden + Vier van Kelken', 'Enerzijds drang tot actie, anderzijds apathie of navel­staren. Iemand aarzelt terwijl actie vereist is.'],
               ].map(([combo, uitleg]) => (
-                <div key={combo} className="bg-[#20162F] rounded p-3 border border-orange-100">
+                <div key={combo} className="zf-kaart p-3 border border-orange-100">
                   <p className="font-semibold text-[#F2C27A] text-xs">{combo}</p>
                   <p className="text-[#CFC2DC] mt-0.5">{uitleg}</p>
                 </div>
@@ -306,7 +306,7 @@ const lessons: Lesson[] = [
               ['Aas van Pentakels', 'Er is een kans in het praktische domein — werk, geld of gezondheid. Houd je ogen open voor een concrete mogelijkheid.'],
               ['De Maan', 'Dingen zijn misschien niet wat ze lijken. Vertrouw vandaag meer op gevoel dan op logica alleen.'],
             ].map(([kaart, uitleg]) => (
-              <div key={kaart} className="bg-[#20162F] rounded p-3 border border-[rgba(224,176,74,0.35)]">
+              <div key={kaart} className="zf-kaart p-3 border border-[rgba(224,176,74,0.35)]">
                 <p className="font-semibold text-[#F2C27A]">{kaart}</p>
                 <p className="text-[#CFC2DC] mt-0.5">{uitleg}</p>
               </div>
@@ -333,8 +333,8 @@ const lessons: Lesson[] = [
               { pos: '2', naam: 'Heden', uitleg: 'Waar sta je nu? Dit is de kern van de situatie — de energie die actief is op dit moment.' },
               { pos: '3', naam: 'Toekomst', uitleg: 'Waar leidt dit naartoe als de huidige energie voortduurt? Geen vaste bestemming, maar een waarschijnlijke richting.' },
             ].map(({ pos, naam, uitleg }) => (
-              <div key={pos} className="bg-[#20162F] rounded-lg p-3 border border-[rgba(194,146,189,0.3)] text-center">
-                <div className="w-8 h-8 bg-[#F1CB78] text-[#1C0D06] rounded-full flex items-center justify-center font-bold mx-auto mb-1">{pos}</div>
+              <div key={pos} className="zf-kaart p-3 border border-[rgba(194,146,189,0.3)] text-center">
+                <div className="zf-knop w-8 h-8 flex items-center justify-center mx-auto mb-1">{pos}</div>
                 <p className="font-semibold text-[#F1CB78] text-sm">{naam}</p>
                 <p className="text-xs text-[#B9A9CC] mt-1 text-left">{uitleg}</p>
               </div>
@@ -351,7 +351,7 @@ const lessons: Lesson[] = [
               { pos: '2', naam: 'Actie', uitleg: 'Wat kun je doen? Welke stap of houding helpt je vooruit? Dit is praktisch advies.' },
               { pos: '3', naam: 'Uitkomst', uitleg: 'Wat is het resultaat als je de actie onderneemt? Let op: dit is geen garantie, maar een richting.' },
             ].map(({ pos, naam, uitleg }) => (
-              <div key={pos} className="bg-[#20162F] rounded-lg p-3 border border-[rgba(155,212,155,0.35)] text-center">
+              <div key={pos} className="zf-kaart p-3 border border-[rgba(155,212,155,0.35)] text-center">
                 <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-1">{pos}</div>
                 <p className="font-semibold text-[#9BD49B] text-sm">{naam}</p>
                 <p className="text-xs text-[#B9A9CC] mt-1 text-left">{uitleg}</p>
@@ -369,7 +369,7 @@ const lessons: Lesson[] = [
               { pos: '2', naam: 'Hart', uitleg: 'Wat voel je? Welke emoties of verlangens zijn aanwezig, ook de onuitgesproken?' },
               { pos: '3', naam: 'Lichaam', uitleg: 'Hoe uit dit zich in je dagelijkse leven, je gedrag of je fysieke welzijn?' },
             ].map(({ pos, naam, uitleg }) => (
-              <div key={pos} className="bg-[#20162F] rounded-lg p-3 border border-indigo-100 text-center">
+              <div key={pos} className="zf-kaart p-3 border border-indigo-100 text-center">
                 <div className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-1">{pos}</div>
                 <p className="font-semibold text-[#AFC3EE] text-sm">{naam}</p>
                 <p className="text-xs text-[#B9A9CC] mt-1 text-left">{uitleg}</p>
@@ -388,7 +388,7 @@ const lessons: Lesson[] = [
               ['Wat laat ik los · Wat hou ik vast · Wat omarm ik', 'Voor overgangsmomenten, jaareinde, nieuwe fase'],
               ['Oorzaak · Gevoel · Les', 'Begrijpen waarom iets pijn doet en wat het je leert'],
             ].map(([naam, uitleg]) => (
-              <div key={naam} className="bg-[#20162F] rounded p-2 border border-[rgba(224,176,74,0.35)]">
+              <div key={naam} className="zf-kaart p-2 border border-[rgba(224,176,74,0.35)]">
                 <p className="font-semibold text-[#F2C27A] text-xs">{naam}</p>
                 <p className="text-[#B9A9CC]">{uitleg}</p>
               </div>
@@ -417,7 +417,7 @@ const lessons: Lesson[] = [
               { nr: '4', naam: 'De uitdaging', uitleg: 'Wat is de grootste hindernis of het grootste groeipunt in deze relatie? Niet per se negatief — een uitdaging kan ook de aanzet zijn tot verdieping.' },
               { nr: '5', naam: 'Het potentieel', uitleg: 'Waar kan de relatie naartoe groeien als beide partijen bewust met de uitdagingen omgaan? Dit is de beste uitkomst, niet de garantie.' },
             ].map(({ nr, naam, uitleg }) => (
-              <div key={nr} className="flex gap-3 bg-[#20162F] rounded-lg p-3 border border-pink-100">
+              <div key={nr} className="zf-kaart flex gap-3 p-3 border border-pink-100">
                 <div className="w-7 h-7 bg-pink-500 text-white rounded-full flex items-center justify-center font-bold text-sm shrink-0">{nr}</div>
                 <div>
                   <p className="font-semibold text-[#F3B6D9]">{naam}</p>
@@ -452,7 +452,7 @@ const lessons: Lesson[] = [
               { nr: '3', naam: 'Kansen', uitleg: 'Welke mogelijkheden zijn er? Wat zie je misschien over het hoofd? Deze kaart vraagt je de blik te verbreden naar wat er wél aanwezig is.' },
               { nr: '4', naam: 'Beste pad vooruit', uitleg: 'Wat is de meest vruchtbare richting of aanpak? Dit is advies — welke energie of actie past het beste bij dit moment in je carrière?' },
             ].map(({ nr, naam, uitleg }) => (
-              <div key={nr} className="flex gap-3 bg-[#20162F] rounded-lg p-3 border border-amber-100">
+              <div key={nr} className="zf-kaart flex gap-3 p-3 border border-amber-100">
                 <div className="w-7 h-7 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-sm shrink-0">{nr}</div>
                 <div>
                   <p className="font-semibold text-[#F2C27A]">{naam}</p>
@@ -637,15 +637,16 @@ export const LessenPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#17112C]">
-      <div className="bg-[#FFC653] text-[#1C0D06] py-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-1">Lessen</h1>
-          <p className="text-[#E0D5E9]">Gestructureerde uitleg — van kaart lezen tot complexe leggingen</p>
+    <div className="zf-pagina">
+      <div className="zf-kop">
+        <div>
+          <p className="zf-label">Tarot</p>
+          <h1 className="zf-titel">Lessen</h1>
+          <p className="zf-intro">Gestructureerde uitleg — van kaart lezen tot complexe leggingen</p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
+      <div className="zf-inhoud max-w-3xl">
         {/* Filters */}
         <div className="space-y-3 mb-6">
           <div className="flex gap-2 flex-wrap">
@@ -689,7 +690,7 @@ export const LessenPage: React.FC = () => {
 
         <div className="space-y-3">
           {filtered.map(lesson => (
-            <div key={lesson.id} className="bg-[#20162F] rounded-xl shadow-sm overflow-hidden">
+            <div key={lesson.id} className="zf-kaart overflow-hidden">
               <button
                 onClick={() => setOpen(open === lesson.id ? null : lesson.id)}
                 className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-[#17112C] transition-colors"
@@ -719,7 +720,7 @@ export const LessenPage: React.FC = () => {
                     ) : (
                       <button
                         onClick={() => gelezen.zet(lesson.id, { voltooid: true, titel: lesson.title, datum: new Date().toISOString() })}
-                        className="bg-[#F1CB78] text-[#1C0D06] text-sm px-4 py-2 rounded-lg hover:bg-[#FFC653] transition-colors"
+                        className="zf-knop"
                       >
                         ✓ Markeer als gelezen
                       </button>

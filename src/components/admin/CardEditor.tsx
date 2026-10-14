@@ -92,7 +92,7 @@ export const CardEditor: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#2D2040] flex items-center justify-center">
+      <div className="zf-pagina flex items-center justify-center">
         <div className="text-2xl text-[#F1CB78]">Laden...</div>
       </div>
     );
@@ -100,7 +100,7 @@ export const CardEditor: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold text-[#F1CB78] mb-6">Kaarten Beheren</h2>
+      <h2 className="zf-sectie mb-6">Kaarten Beheren</h2>
 
       <ImportButton onImported={() => {
         const cardsData = getCards() as TarotCard[];
@@ -108,7 +108,7 @@ export const CardEditor: React.FC = () => {
       }} />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-[#20162F] p-4 rounded-lg shadow-md">
+        <div className="zf-kaart p-4">
           <div className="mb-4">
             <div className="relative">
               <input
@@ -116,7 +116,7 @@ export const CardEditor: React.FC = () => {
                 placeholder="Zoek kaarten..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-2 pl-10 border rounded focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
+                className="zf-veld w-full pl-10"
               />
               <Search className="absolute left-3 top-2.5 text-[#9A8CB3] w-5 h-5" />
             </div>
@@ -157,7 +157,7 @@ export const CardEditor: React.FC = () => {
 
         <div className="md:col-span-2">
           {selectedCard ? (
-            <div className="bg-[#20162F] p-6 rounded-lg shadow-md">
+            <div className="zf-kaart p-6">
               <div className="flex items-start gap-6 mb-6">
                 <div className="flex flex-col items-center gap-2">
                   <div
@@ -301,7 +301,7 @@ export const CardEditor: React.FC = () => {
                 <div className="flex justify-end">
                   <button
                     type="submit"
-                    className="bg-[#F1CB78] text-[#1C0D06] py-2 px-4 rounded hover:bg-[#FFC653] transition-colors"
+                    className="zf-knop"
                   >
                     Opslaan
                   </button>
@@ -309,7 +309,7 @@ export const CardEditor: React.FC = () => {
               </form>
             </div>
           ) : (
-            <div className="bg-[#20162F] p-6 rounded-lg shadow-md text-center text-[#B9A9CC]">
+            <div className="zf-kaart p-6 text-center text-[#B9A9CC]">
               Selecteer een kaart om te bewerken
             </div>
           )}

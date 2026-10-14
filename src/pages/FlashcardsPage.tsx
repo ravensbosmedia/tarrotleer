@@ -62,21 +62,22 @@ export const FlashcardsPage: React.FC = () => {
   const done = index > 0 && index % filteredDeck.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#17112C]">
-      <div className="bg-[#FFC653] text-[#1C0D06] py-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-1">Flashcards</h1>
-          <p className="text-[#E0D5E9]">Leer de kaarten kennen door ze te oefenen</p>
+    <div className="zf-pagina">
+      <div className="zf-kop">
+        <div>
+          <p className="zf-label">Tarot</p>
+          <h1 className="zf-titel">Flashcards</h1>
+          <p className="zf-intro">Leer de kaarten kennen door ze te oefenen</p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="zf-inhoud max-w-2xl">
         {/* Controls */}
         <div className="flex gap-3 mb-6 items-center flex-wrap">
           <select
             value={suit}
             onChange={e => { setSuit(e.target.value); reset(); }}
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
+            className="zf-veld"
           >
             {SUITS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
@@ -100,16 +101,16 @@ export const FlashcardsPage: React.FC = () => {
         <p className="text-sm text-[#B9A9CC] mb-6 text-center">{progress} / {filteredDeck.length}</p>
 
         {done ? (
-          <div className="text-center bg-[#20162F] rounded-2xl shadow-lg p-10">
+          <div className="zf-kaart text-center p-10">
             <p className="text-4xl mb-4">🎉</p>
-            <h2 className="text-2xl font-bold text-[#F1CB78] mb-2">Deck voltooid!</h2>
+            <h2 className="zf-sectie mb-2">Deck voltooid!</h2>
             <p className="text-[#CFC2DC] mb-6">Gekend: {known} · Nog oefenen: {practice}</p>
-            <button onClick={reset} className="bg-[#F1CB78] text-[#1C0D06] px-6 py-2 rounded-lg hover:bg-[#FFC653]">
+            <button onClick={reset} className="zf-knop">
               Opnieuw beginnen
             </button>
           </div>
         ) : (
-          <div className="bg-[#20162F] rounded-2xl shadow-lg overflow-hidden">
+          <div className="zf-kaart overflow-hidden">
             {/* Kaart */}
             <div
               className="cursor-pointer select-none"
@@ -130,7 +131,7 @@ export const FlashcardsPage: React.FC = () => {
               {/* Info (zichtbaar na flip) */}
               <div className={`px-8 pb-4 transition-opacity ${flipped ? 'opacity-100' : 'opacity-0 select-none'}`}>
                 <div className="flex items-center gap-2 mb-2">
-                  <h2 className="text-2xl font-bold text-[#F1CB78]">{card.nameNL}</h2>
+                  <h2 className="zf-sectie">{card.nameNL}</h2>
                   {cardReversed && (
                     <span className="text-xs px-2 py-0.5 bg-[#3A2A52] text-[#F1CB78] rounded-full">Omgekeerd</span>
                   )}

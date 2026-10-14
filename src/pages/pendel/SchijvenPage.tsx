@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { ZF_KNOP, ZF_KNOP_PAARS } from '../../lib/zenStijl';
 import { pendelSchijven, PendelSchijfConfig } from '../../data/pendel/schijven';
 import { PendelSchijf } from '../../components/pendel/PendelSchijf';
 
@@ -150,21 +151,13 @@ const SchijfModal: React.FC<{
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', flexWrap: 'wrap', borderTop: `0.5px solid ${G.rand}`, paddingTop: '1.2rem' }}>
           <button
             onClick={handleDownload}
-            style={{
-              fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em',
-              padding: '9px 20px', background: G.goudBleek, color: G.goudDonker,
-              border: `0.5px solid ${G.rand2}`, borderRadius: 4, cursor: 'pointer',
-            }}
+            style={{ ...ZF_KNOP_PAARS }}
           >
             ↓ Download SVG
           </button>
           <button
             onClick={handlePrint}
-            style={{
-              fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em',
-              padding: '9px 20px', background: G.goud, color: '#1C0D06',
-              border: 'none', borderRadius: 4, cursor: 'pointer',
-            }}
+            style={{ ...ZF_KNOP }}
           >
             🖨 Afdrukken
           </button>

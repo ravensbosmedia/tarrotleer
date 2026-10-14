@@ -63,9 +63,9 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded, curre
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className={`flex items-center gap-2 bg-[#F1CB78] text-[#1C0D06] py-2 px-4 rounded hover:bg-[#FFC653] transition-colors ${
-            uploading ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+          className={`zf-knop flex items-center gap-2 ${
+ uploading ? 'opacity-50 cursor-not-allowed' : ''
+ }`}
         >
           <Upload size={20} />
           {uploading ? 'Bezig met laden...' : 'Upload Nieuwe Afbeelding'}

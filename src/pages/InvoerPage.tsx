@@ -298,7 +298,7 @@ const KaartKiezer: React.FC<KaartKiezerProps> = ({ positie, positieIndex, spread
 
   if (gekozen) {
     return (
-      <div className="bg-[#20162F] rounded-xl shadow-sm overflow-hidden">
+      <div className="zf-kaart overflow-hidden">
         <div className="flex items-start gap-4 p-4">
           {/* Kaartafbeelding */}
           <div className={`w-16 rounded-lg overflow-hidden shadow shrink-0 ${gekozen.omgekeerd ? 'rotate-180' : ''}`}>
@@ -338,7 +338,7 @@ const KaartKiezer: React.FC<KaartKiezerProps> = ({ positie, positieIndex, spread
   }
 
   return (
-    <div className="bg-[#20162F] rounded-xl shadow-sm overflow-hidden">
+    <div className="zf-kaart overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
         className="w-full px-5 py-4 flex items-center gap-3 hover:bg-[#17112C] transition-colors text-left"
@@ -382,7 +382,7 @@ const KaartKiezer: React.FC<KaartKiezerProps> = ({ positie, positieIndex, spread
               placeholder="Zoek op naam (bv. Maan, Kelken, Dood...)"
               value={zoek}
               onChange={e => setZoek(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
+              className="zf-veld w-full pl-9 pr-3"
             />
           </div>
 
@@ -444,15 +444,16 @@ export const InvoerPage: React.FC = () => {
   const aantalIngevuld = kaarten.filter(k => k !== null).length;
 
   return (
-    <div className="min-h-screen bg-[#17112C]">
-      <div className="bg-[#FFC653] text-[#1C0D06] py-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-1">Mijn Legging Invoeren</h1>
-          <p className="text-[#E0D5E9]">Heb je al kaarten getrokken? Voer ze hier in en krijg uitleg per positie.</p>
+    <div className="zf-pagina">
+      <div className="zf-kop">
+        <div>
+          <p className="zf-label">Tarot</p>
+          <h1 className="zf-titel">Mijn Legging Invoeren</h1>
+          <p className="zf-intro">Heb je al kaarten getrokken? Voer ze hier in en krijg uitleg per positie.</p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="zf-inhoud max-w-2xl">
 
         {/* Stap 1 — Legging kiezen */}
         <div className="mb-6">
@@ -477,7 +478,7 @@ export const InvoerPage: React.FC = () => {
                 <button
                   key={spread.id}
                   onClick={() => kiesSpread(spread)}
-                  className="bg-[#20162F] rounded-xl shadow-sm p-4 text-left hover:shadow-md hover:border-[#C292BD] border border-transparent transition-all"
+                  className="zf-kaart zf-kaart-klik p-4 text-left hover:border-[#C292BD] border border-transparent"
                 >
                   <p className="font-semibold text-[#F1CB78]">{spread.label}</p>
                   <p className="text-xs text-[#B9A9CC] mt-0.5">{spread.posities.length} kaart{spread.posities.length > 1 ? 'en' : ''} · {spread.beschrijving}</p>
@@ -515,7 +516,7 @@ export const InvoerPage: React.FC = () => {
             {allesIngevuld && (
               <button
                 onClick={() => setToonSamenvatting(!toonSamenvatting)}
-                className="w-full bg-[#F1CB78] text-[#1C0D06] py-3 rounded-xl font-semibold hover:bg-[#FFC653] transition-colors"
+                className="zf-knop w-full"
               >
                 {toonSamenvatting ? 'Verberg samenvatting' : 'Bekijk volledige lezing'}
               </button>
@@ -523,7 +524,7 @@ export const InvoerPage: React.FC = () => {
 
             {/* Volledige samenvatting */}
             {toonSamenvatting && allesIngevuld && (
-              <div className="mt-6 bg-[#20162F] rounded-2xl shadow-lg overflow-hidden">
+              <div className="zf-kaart mt-6 overflow-hidden">
                 <div className="bg-gradient-to-r from-[#20162F] to-[#2D2040] text-white px-6 py-4">
                   <h3 className="text-xl font-bold">{gekozenSpread.label}</h3>
                   <p className="text-[#E0D5E9] text-sm mt-0.5">{gekozenSpread.beschrijving}</p>

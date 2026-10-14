@@ -239,30 +239,26 @@ const ReadingPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#2D2040] flex items-center justify-center">
-        <div className="text-2xl text-[#F1CB78]">Laden...</div>
+      <div className="zf-pagina flex items-center justify-center">
+        <div className="zf-titel">Laden…</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#2D2040]">
-      <header className="bg-[#F1CB78] text-[#1C0D06] py-6 shadow-lg">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-4 mb-4">
-            <button
-              onClick={() => navigate('/')}
-              className="text-white hover:text-[#E0D5E9] transition-colors"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <h1 className="text-3xl font-bold">{currentReading.title}</h1>
-          </div>
-          <p className="text-[#E0D5E9]">{currentReading.description}</p>
+    <div className="zf-pagina">
+      <header className="zf-kop">
+        <div>
+          <button onClick={() => navigate('/tarot')} className="zf-terug mb-4">
+            <ArrowLeft className="w-4 h-4" /> Alle leggingen
+          </button>
+          <p className="zf-label">Tarot · legging</p>
+          <h1 className="zf-titel">{currentReading.title}</h1>
+          <p className="zf-intro">{currentReading.description}</p>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="zf-inhoud">
         <div className="mb-6 flex items-center gap-2">
           <button
             onClick={() => setShowPositionInfo(!showPositionInfo)}
@@ -273,7 +269,7 @@ const ReadingPage: React.FC = () => {
           </button>
         </div>
 
-        <div className="bg-[#20162F] rounded-lg shadow-md p-8">
+        <div className="zf-kaart p-8">
           {!showInterpretation && (
             <>
               {(type === 'three' || type === 'celtic') && (
@@ -286,7 +282,7 @@ const ReadingPage: React.FC = () => {
                     value={vraagstelling}
                     onChange={(e) => setVraagstelling(e.target.value)}
                     placeholder="Bijvoorbeeld: Wat moet ik weten over mijn huidige situatie?"
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
+                    className="zf-veld w-full"
                   />
                 </div>
               )}
@@ -295,9 +291,9 @@ const ReadingPage: React.FC = () => {
                 <button
                   onClick={shuffleCards}
                   disabled={isShuffling}
-                  className={`bg-[#F1CB78] text-[#1C0D06] py-3 px-6 rounded-lg flex items-center gap-2 mx-auto hover:bg-[#FFC653] transition-colors ${
-                    isShuffling ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className={`zf-knop flex items-center gap-2 mx-auto ${
+ isShuffling ? 'opacity-50 cursor-not-allowed' : ''
+ }`}
                 >
                   <Shuffle className={`w-5 h-5 ${isShuffling ? 'animate-spin' : ''}`} />
                   {isShuffling ? 'Kaarten worden geschud...' : 'Schud de kaarten automatisch'}
@@ -329,7 +325,7 @@ const ReadingPage: React.FC = () => {
                 <div className="mt-8 text-center">
                   <button
                     onClick={handleConfirmSelection}
-                    className="bg-[#F1CB78] text-[#1C0D06] py-3 px-6 rounded-lg hover:bg-[#FFC653] transition-colors"
+                    className="zf-knop"
                   >
                     Bevestig Keuze en Toon Interpretatie
                   </button>
@@ -344,14 +340,14 @@ const ReadingPage: React.FC = () => {
                 <div className="flex justify-end gap-4 mb-6">
                   <button
                     onClick={handlePrint}
-                    className="flex items-center gap-2 bg-[#F1CB78] text-[#1C0D06] px-4 py-2 rounded-lg hover:bg-[#FFC653] transition-colors print:hidden"
+                    className="zf-knop flex items-center gap-2 print:hidden"
                   >
                     <Printer className="w-5 h-5" />
                     <span>Print Legging</span>
                   </button>
                   <button
                     onClick={handleSavePDF}
-                    className="flex items-center gap-2 bg-[#F1CB78] text-[#1C0D06] px-4 py-2 rounded-lg hover:bg-[#FFC653] transition-colors print:hidden"
+                    className="zf-knop flex items-center gap-2 print:hidden"
                   >
                     <Download className="w-5 h-5" />
                     <span>Opslaan als PDF</span>
@@ -437,14 +433,14 @@ const ReadingPage: React.FC = () => {
                   <button
                     onClick={bewaar}
                     disabled={bewaard === 'bezig'}
-                    className="border border-[#EFB4FF] text-[#F1CB78] py-2 px-4 rounded hover:bg-[#2D2040] transition-colors disabled:opacity-50"
+                    className="zf-knop-paars disabled:opacity-50"
                   >
                     {bewaard === 'bezig' ? 'Bewaren…' : bewaard === 'fout' ? 'Opnieuw proberen' : '💾 Bewaar legging'}
                   </button>
                 )}
                 <button
                   onClick={resetReading}
-                  className="bg-[#F1CB78] text-[#1C0D06] py-2 px-4 rounded hover:bg-[#FFC653] transition-colors"
+                  className="zf-knop"
                 >
                   Nieuwe Legging
                 </button>
@@ -459,11 +455,11 @@ const ReadingPage: React.FC = () => {
             onClick={() => setSelectedCardDetails(null)}
           >
             <div
-              className="bg-[#20162F] rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+              className="zf-kaart max-w-3xl w-full max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-[rgba(194,146,189,0.25)]">
-                <h3 className="text-xl font-bold text-[#F1CB78]">
+                <h3 className="font-medium text-[#FFF3DF] text-xl">
                   {selectedCardDetails.card.nameNL}
                   {selectedCardDetails.position && (
                     <span className="ml-2 text-sm font-normal text-[#9A8CB3]">

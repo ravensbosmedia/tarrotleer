@@ -2,12 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Zen Flow-bouwstenen: één stijl voor alle onderdelen (Tarot, Lenormand, pendel, Academie …).
+   Gelijk aan zen-flow.nl; dezelfde stijlen voor inline-code staan in src/lib/zenStijl.ts. */
+@layer components {
+  .zf-pagina { min-height: 100vh; background: #0D0C22; color: #FFF3DF; font-family: 'DM Sans', sans-serif; line-height: 1.6; }
+  .zf-kop { border-bottom: 0.5px solid rgba(239,180,255,0.22); padding: 3rem 2rem 2rem; }
+  .zf-kop > div, .zf-inhoud { max-width: 1100px; margin: 0 auto; }
+  .zf-inhoud { padding: 2rem; }
+  .zf-label { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 12px; letter-spacing: 0.14em; color: #F1CB78; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .zf-titel { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 36px; font-weight: 400; color: #FFF3DF; line-height: 1.15; margin-bottom: 0.6rem; }
+  .zf-intro { font-size: 17px; font-style: italic; color: #E0D5E9; line-height: 1.7; max-width: 620px; }
+  .zf-sectie { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 28px; font-weight: 500; color: #FFF3DF; margin-bottom: 1rem; }
+  .zf-kaart { background: #20162F; border: 0.5px solid rgba(239,180,255,0.38); border-radius: 10px; }
+  .zf-kaart-klik { transition: border-color .18s, transform .18s; text-align: left; }
+  .zf-kaart-klik:hover { border-color: #F1CB78; transform: translateY(-2px); }
+  .zf-knop, .zf-knop-paars { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 12px 26px;
+    border-radius: 28px; font: 700 12px/1.2 'DM Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; transition: .2s; }
+  .zf-knop { border: 1px solid #FFF2C3; background: linear-gradient(#FFEEB5, #FFC653 58%, #EEB153); color: #1C0D06; box-shadow: inset 0 0 7px #FFF1AF, 0 0 16px #FFA33B55; }
+  .zf-knop-paars { border: 1px solid #EFB4FF; background: linear-gradient(#322040, #160D24); color: #fff; font-weight: 600; box-shadow: 0 0 12px #BF60ED55, inset 0 0 12px #C45FE62A; }
+  .zf-knop:hover { filter: brightness(1.1); transform: translateY(-2px); }
+  .zf-knop-paars:hover { background: #482254; }
+  .zf-knop:disabled, .zf-knop-paars:disabled { opacity: .48; cursor: not-allowed; transform: none; filter: none; }
+  .zf-knop:focus-visible, .zf-knop-paars:focus-visible, .zf-veld:focus-visible { outline: 3px solid #F1CB78; outline-offset: 3px; }
+  .zf-veld { width: 100%; background: #130E1C; border: 1px solid #79527C; border-radius: 6px; color: #fff; padding: 0.8rem 1rem; font: 16px 'DM Sans', sans-serif; }
+  .zf-terug { color: #F1CB78; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; }
+  @media (max-width: 700px) { .zf-kop { padding: 2.2rem 1.2rem 1.6rem; } .zf-inhoud { padding: 1.4rem 1.1rem; } .zf-titel { font-size: 30px; } }
+}
+
 /* Zen Flow: standaard donkere achtergrond, lichte tekst en de lettertypen van zen-flow.nl */
 @layer base {
   html { background: #080718; }
   body { background: #0D0C22; color: #FFF3DF; font-family: 'DM Sans', sans-serif; }
   h1, h2, h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; }
   ::selection { background: rgba(241,203,120,0.35); }
+  *, ::before, ::after { border-color: rgba(194,146,189,0.3); }   /* standaardrand (Tailwind: grijs) → zacht paars */
 }
 
 /* ── Pendel module gold/cream thema ───────────────────────────────────── */

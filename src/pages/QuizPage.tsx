@@ -93,22 +93,23 @@ export const QuizPage: React.FC = () => {
   const pct = total > 0 ? Math.round(score / total * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-[#17112C]">
-      <div className="bg-[#FFC653] text-[#1C0D06] py-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-1">Quiz</h1>
-          <p className="text-[#E0D5E9]">Test je kennis van de tarotkaarten</p>
+    <div className="zf-pagina">
+      <div className="zf-kop">
+        <div>
+          <p className="zf-label">Tarot</p>
+          <h1 className="zf-titel">Quiz</h1>
+          <p className="zf-intro">Test je kennis van de tarotkaarten</p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="zf-inhoud max-w-2xl">
         {/* Instellingen */}
         <div className="flex gap-3 mb-6 flex-wrap">
           <select value={suit} onChange={e => { setSuit(e.target.value); reset(); }}
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#F1CB78] text-sm">
+            className="zf-veld">
             {SUITS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
-          <div className="flex gap-1 bg-[#20162F] border rounded-lg overflow-hidden">
+          <div className="zf-kaart flex gap-1 border overflow-hidden">
             {([['betekenis', 'Betekenis raden'], ['naam', 'Naam raden']] as [Mode, string][]).map(([m, l]) => (
               <button key={m} onClick={() => { setMode(m); reset(); }}
                 className={`px-3 py-2 text-sm font-medium transition-colors ${mode === m ? 'bg-[#F1CB78] text-[#1C0D06]' : 'text-[#CFC2DC] hover:bg-[#17112C]'}`}>
@@ -124,22 +125,22 @@ export const QuizPage: React.FC = () => {
 
         {/* Score */}
         <div className="flex gap-6 mb-6 text-center">
-          <div className="flex-1 bg-[#20162F] rounded-xl shadow p-4">
+          <div className="zf-kaart flex-1 p-4">
             <p className="text-3xl font-bold text-[#F1CB78]">{score}</p>
             <p className="text-xs text-[#B9A9CC]">Goed</p>
           </div>
-          <div className="flex-1 bg-[#20162F] rounded-xl shadow p-4">
+          <div className="zf-kaart flex-1 p-4">
             <p className="text-3xl font-bold text-[#E0D5E9]">{total}</p>
             <p className="text-xs text-[#B9A9CC]">Totaal</p>
           </div>
-          <div className="flex-1 bg-[#20162F] rounded-xl shadow p-4">
+          <div className="zf-kaart flex-1 p-4">
             <p className="text-3xl font-bold text-[#9BD49B]">{pct}%</p>
             <p className="text-xs text-[#B9A9CC]">Score</p>
           </div>
         </div>
 
         {/* Vraag */}
-        <div className="bg-[#20162F] rounded-2xl shadow-lg overflow-hidden">
+        <div className="zf-kaart overflow-hidden">
           <div className="p-6 flex flex-col items-center gap-4 bg-gradient-to-br from-[#20162F] to-[#2D2040]">
             <div className={`w-36 rounded-xl shadow-lg overflow-hidden ${isReversed ? 'rotate-180' : ''}`}>
               <img src={correct.imageUrl} alt="?" className="w-full h-auto" />
@@ -201,7 +202,7 @@ export const QuizPage: React.FC = () => {
               </div>
               <button
                 onClick={next}
-                className="w-full bg-[#F1CB78] text-[#1C0D06] py-2.5 rounded-lg hover:bg-[#FFC653] transition-colors font-medium"
+                className="zf-knop w-full"
               >
                 Volgende kaart →
               </button>

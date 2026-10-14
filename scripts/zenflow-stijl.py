@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Zet de leeromgeving om naar de Zen Flow-stijl (zen-flow.nl), in fasen.
 
-  python3 scripts/zenflow-stijl.py fase1|fase2|fase3 [--toepassen]
+  python3 scripts/zenflow-stijl.py fase1|fase2|fase3|fase4 [--toepassen]
 
 Fase 1: lettertypen overal (Cinzel → Cormorant Garamond, Crimson Pro → DM Sans) en de kleuren
 in bestanden die al een donker thema hebben (bruin/goud → nachtblauw/paars/goud).
@@ -139,6 +139,46 @@ def fase3(toepassen):
             if toepassen: p.write_text(s)
     print({'fase3_bestanden': n}, '(toegepast)' if toepassen else '(proefrun)')
 
+# Fase 4: Tailwind-onderdelen naar de gedeelde Zen Flow-bouwstenen (.zf-knop, .zf-knop-paars, .zf-kaart, .zf-veld, .zf-sectie)
+WEG_KNOP = re.compile(r'^(bg-\S+|hover:bg-\S+|text-\[#1C0D06\]|text-\[#F1CB78\]|hover:text-\S+|text-white|py-\S+|px-\S+|p-\d+|rounded\S*|transition\S*|shadow\S*|font-\S+|border|border-\[#EFB4FF\]|text-(xs|sm|base|lg))$')
+WEG_KAART = re.compile(r'^(rounded\S*|shadow\S*|hover:shadow\S*|transform|hover:-translate-y-\S+|transition-all|bg-\[#20162F\])$')
+WEG_VELD = re.compile(r'^(p-\d+|px-\S+|py-\S+|border|border-\S+|rounded\S*|focus:\S+|bg-\S+|text-\S+)$')
+
+def zf_klasse(t):
+    """Werkt op de inhoud van één className-string (zonder aanhalingstekens)."""
+    delen = t.split(' ')
+    has = lambda x: x in delen
+    knop_goud = has('bg-[#F1CB78]') and has('text-[#1C0D06]')
+    knop_paars = has('border-[#EFB4FF]') and has('text-[#F1CB78]') and any(d.startswith(('py-', 'px-')) for d in delen)
+    if knop_goud or knop_paars:
+        rest = [d for d in delen if d and ('${' in d or not WEG_KNOP.match(d))]
+        return ' '.join(['zf-knop' if knop_goud else 'zf-knop-paars'] + rest)
+    if has('bg-[#20162F]') and any(d.startswith('rounded') for d in delen):
+        klik = any(d.startswith(('hover:shadow', 'hover:-translate')) for d in delen)
+        rest = [d for d in delen if d and ('${' in d or not WEG_KAART.match(d))]
+        return ' '.join(['zf-kaart'] + (['zf-kaart-klik'] if klik else []) + rest)
+    if any(d.startswith('focus:ring') for d in delen) and has('border') and not has('zf-knop'):
+        rest = [d for d in delen if d and ('${' in d or not WEG_VELD.match(d))]
+        return ' '.join(['zf-veld'] + rest)
+    if any(d in ('text-xl', 'text-2xl') for d in delen) and has('text-[#F1CB78]') and any(d in ('font-bold', 'font-semibold') for d in delen):
+        rest = [d for d in delen if d not in ('font-bold', 'font-semibold', 'text-[#F1CB78]', 'text-2xl')]
+        return ' '.join(['zf-sectie' if has('text-2xl') else 'font-medium text-[#FFF3DF]'] + rest)
+    return t
+
+def fase4(toepassen):
+    n = 0
+    for p in BESTANDEN:
+        if p.suffix != '.tsx': continue
+        s0 = p.read_text()
+        if 'bg-[#' not in s0 and 'border-[#EFB4FF]' not in s0: continue
+        s = re.sub(r'className="([^"]*)"', lambda m: f'className="{zf_klasse(m.group(1))}"', s0)
+        s = re.sub(r'className=\{`([^`]*)`\}', lambda m: 'className={`' + zf_klasse(m.group(1)) + '`}', s)
+        s = s.replace('min-h-screen bg-[#2D2040]', 'zf-pagina').replace('min-h-screen bg-[#17112C]', 'zf-pagina')
+        if s != s0:
+            n += 1; print('bouwstenen', p.relative_to(ROOT))
+            if toepassen: p.write_text(s)
+    print({'fase4_bestanden': n}, '(toegepast)' if toepassen else '(proefrun)')
+
 def fase1(toepassen):
     tot = {'lettertype': 0, 'kleur': 0}
     for p in BESTANDEN:
@@ -154,6 +194,6 @@ def fase1(toepassen):
     print(tot, '(toegepast)' if toepassen else '(proefrun)')
 
 if __name__ == '__main__':
-    fasen = {'fase1': fase1, 'fase2': fase2, 'fase3': fase3}
+    fasen = {'fase1': fase1, 'fase2': fase2, 'fase3': fase3, 'fase4': fase4}
     if len(sys.argv) < 2 or sys.argv[1] not in fasen: sys.exit(__doc__)
     fasen[sys.argv[1]]('--toepassen' in sys.argv)

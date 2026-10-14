@@ -49,8 +49,8 @@ export const DocumentUpload: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#20162F] p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold text-[#F1CB78] mb-4">
+    <div className="zf-kaart p-6">
+      <h2 className="font-medium text-[#FFF3DF] text-xl mb-4">
         Document Uploaden
       </h2>
 
@@ -63,7 +63,7 @@ export const DocumentUpload: React.FC = () => {
 
       <div className="space-y-4">
         <label className="block">
-          <div className="flex items-center justify-center w-full h-32 px-4 transition bg-[#20162F] border-2 border-[rgba(194,146,189,0.45)] border-dashed rounded-lg appearance-none cursor-pointer hover:border-[#EFB4FF] focus:outline-none">
+          <div className="zf-kaart flex items-center justify-center w-full h-32 px-4 transition border-2 border-[rgba(194,146,189,0.45)] border-dashed appearance-none cursor-pointer hover:border-[#EFB4FF] focus:outline-none">
             <div className="flex flex-col items-center space-y-2">
               <FileText className="w-8 h-8 text-[#F1CB78]" />
               <span className="font-medium text-[#CFC2DC]">

@@ -76,10 +76,10 @@ export const TarotChat: React.FC<Props> = ({ cards, positions }) => {
   };
 
   return (
-    <div className="bg-[#20162F] rounded-lg shadow-lg p-6 mt-6">
+    <div className="zf-kaart p-6 mt-6">
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="w-6 h-6 text-[#F1CB78]" />
-        <h3 className="text-xl font-semibold text-[#F1CB78]">
+        <h3 className="font-medium text-[#FFF3DF] text-xl">
           Persoonlijk Tarot Gesprek
         </h3>
       </div>
@@ -147,15 +147,15 @@ export const TarotChat: React.FC<Props> = ({ cards, positions }) => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Stel je vraag over de legging..."
-          className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
+          className="zf-veld flex-1"
           disabled={loading}
         />
         <button
           type="submit"
           disabled={loading}
-          className={`px-4 py-2 rounded-lg bg-[#F1CB78] text-[#1C0D06] flex items-center gap-2 ${
-            loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#FFC653]'
-          }`}
+          className={`zf-knop flex items-center gap-2 ${
+ loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#FFC653]'
+ }`}
         >
           <Send className="w-4 h-4" />
           Verstuur

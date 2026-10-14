@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ZF_KNOP } from '../../lib/zenStijl';
 import { laadCombinaties, Combinatie } from '../../data/lenormand/combinaties';
 import { Link } from 'react-router-dom';
 import { maakRonde, QuizVraag, QuizOnderwerp, Niveau, niveauVan } from '../../data/lenormand/quizGenerator';
@@ -40,10 +41,7 @@ function antwoordSleutels(v: QuizVraag, goed: boolean): QuizAntwoord[] {
   return lijst;
 }
 
-const knopStijl: React.CSSProperties = {
-  fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em', padding: '11px 28px', borderRadius: 24,
-  border: `0.5px solid ${G.goud}`, background: G.goudBleek, color: G.goudDonker, cursor: 'pointer',
-};
+const knopStijl: React.CSSProperties = ZF_KNOP;   // Zen Flow-hoofdknop
 
 function boodschap(score: number, total: number): string {
   const pct = score / total;

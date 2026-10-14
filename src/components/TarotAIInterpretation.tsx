@@ -109,7 +109,7 @@ export const TarotAIInterpretation: React.FC<Props> = ({
       <div className="flex items-center gap-2 mb-4">
         {isPaidReading && <Lock className="w-5 h-5 text-[#F1CB78]" />}
         <Sparkles className="w-6 h-6 text-[#F1CB78]" />
-        <h3 className="text-xl font-semibold text-[#F1CB78]">
+        <h3 className="font-medium text-[#FFF3DF] text-xl">
           {isPaidReading ? 'Premium Tarot Interpretatie' : 'Jouw Persoonlijke Tarot Interpretatie'}
         </h3>
       </div>

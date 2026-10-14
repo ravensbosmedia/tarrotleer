@@ -140,15 +140,15 @@ const lifeDomains: LifeDomain[] = [
 
 export const TarotInterpretation: React.FC = () => {
   return (
-    <div className="bg-[#20162F] rounded-lg shadow-lg p-8">
+    <div className="zf-kaart p-8">
       <h2 className="text-3xl font-bold text-[#F1CB78] mb-8">Tarot Interpretatie</h2>
 
       {/* Kaartposities */}
       <div className="mb-12">
-        <h3 className="text-2xl font-semibold text-[#F1CB78] mb-6">Kaartposities</h3>
+        <h3 className="zf-sectie mb-6">Kaartposities</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-[#2D2040] p-6 rounded-lg">
-            <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">Rechtopstaande Kaarten</h4>
+            <h4 className="font-medium text-[#FFF3DF] text-xl mb-3">Rechtopstaande Kaarten</h4>
             <ul className="space-y-2 text-[#E0D5E9]">
               <li>• Natuurlijke energie van de kaart</li>
               <li>• Actieve manifestatie</li>
@@ -158,7 +158,7 @@ export const TarotInterpretation: React.FC = () => {
             </ul>
           </div>
           <div className="bg-[#2D2040] p-6 rounded-lg">
-            <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">Omgekeerde Kaarten</h4>
+            <h4 className="font-medium text-[#FFF3DF] text-xl mb-3">Omgekeerde Kaarten</h4>
             <ul className="space-y-2 text-[#E0D5E9]">
               <li>• Geblokkeerde of vertraagde energie</li>
               <li>• Interne manifestatie</li>
@@ -172,11 +172,11 @@ export const TarotInterpretation: React.FC = () => {
 
       {/* Interpretatieniveaus */}
       <div className="mb-12">
-        <h3 className="text-2xl font-semibold text-[#F1CB78] mb-6">Interpretatieniveaus</h3>
+        <h3 className="zf-sectie mb-6">Interpretatieniveaus</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {interpretationLevels.map((level) => (
-            <div key={level.title} className="bg-[#20162F] border border-[rgba(194,146,189,0.3)] rounded-lg p-6 shadow-sm">
-              <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">{level.title}</h4>
+            <div key={level.title} className="zf-kaart border border-[rgba(194,146,189,0.3)] p-6">
+              <h4 className="font-medium text-[#FFF3DF] text-xl mb-3">{level.title}</h4>
               <p className="text-[#CFC2DC] mb-4">{level.description}</p>
               <ul className="space-y-2">
                 {level.aspects.map((aspect, index) => (
@@ -193,11 +193,11 @@ export const TarotInterpretation: React.FC = () => {
 
       {/* Tijdsaspecten */}
       <div className="mb-12">
-        <h3 className="text-2xl font-semibold text-[#F1CB78] mb-6">Tijdsaspecten</h3>
+        <h3 className="zf-sectie mb-6">Tijdsaspecten</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {timeAspects.map((time) => (
             <div key={time.phase} className="bg-[#2D2040] p-6 rounded-lg">
-              <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">{time.phase}</h4>
+              <h4 className="font-medium text-[#FFF3DF] text-xl mb-3">{time.phase}</h4>
               <p className="text-[#CFC2DC] mb-4">{time.description}</p>
               <ul className="space-y-2">
                 {time.aspects.map((aspect, index) => (
@@ -214,12 +214,12 @@ export const TarotInterpretation: React.FC = () => {
 
       {/* Levensdomeinen */}
       <div>
-        <h3 className="text-2xl font-semibold text-[#F1CB78] mb-6">Levensdomeinen</h3>
+        <h3 className="zf-sectie mb-6">Levensdomeinen</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {lifeDomains.map((domain) => {
             const Icon = domain.icon;
             return (
-              <div key={domain.domain} className="bg-[#20162F] border border-[rgba(194,146,189,0.3)] rounded-lg p-6 shadow-sm">
+              <div key={domain.domain} className="zf-kaart border border-[rgba(194,146,189,0.3)] p-6">
                 <div className="flex items-center mb-4">
                   <Icon className="w-6 h-6 text-[#F1CB78] mr-2" />
                   <h4 className="text-lg font-semibold text-[#F1CB78]">{domain.domain}</h4>

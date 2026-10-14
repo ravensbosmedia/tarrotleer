@@ -33,9 +33,9 @@ export const ImportButton: React.FC<ImportButtonProps> = ({ onImported }) => {
       <button
         onClick={handleImport}
         disabled={importing}
-        className={`bg-[#F1CB78] text-[#1C0D06] py-2 px-4 rounded hover:bg-[#FFC653] transition-colors ${
-          importing ? 'opacity-50 cursor-not-allowed' : ''
-        }`}
+        className={`zf-knop ${
+ importing ? 'opacity-50 cursor-not-allowed' : ''
+ }`}
       >
         {importing ? 'Bezig met importeren...' : 'Importeer Kaarten'}
       </button>
