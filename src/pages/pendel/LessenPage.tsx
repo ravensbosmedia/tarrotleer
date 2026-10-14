@@ -49,7 +49,7 @@ const LesInhoud: React.FC<{ inhoud: PendelLesInhoud[] }> = ({ inhoud }) => (
           return (
             <div key={idx} style={{ marginBottom: '0.9rem' }}>
               {item.tekst && (
-                <p style={{ fontFamily: "'Cinzel', serif", fontSize: 14, color: G.tekst, marginBottom: '0.5rem', letterSpacing: '0.04em' }}>
+                <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 14, color: G.tekst, marginBottom: '0.5rem', letterSpacing: '0.04em' }}>
                   {item.tekst}
                 </p>
               )}
@@ -65,7 +65,7 @@ const LesInhoud: React.FC<{ inhoud: PendelLesInhoud[] }> = ({ inhoud }) => (
           return (
             <div key={idx} style={{ marginBottom: '0.9rem' }}>
               {item.tekst && (
-                <p style={{ fontFamily: "'Cinzel', serif", fontSize: 14, color: G.tekst, marginBottom: '0.5rem', letterSpacing: '0.04em' }}>
+                <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 14, color: G.tekst, marginBottom: '0.5rem', letterSpacing: '0.04em' }}>
                   {item.tekst}
                 </p>
               )}
@@ -143,7 +143,7 @@ const LesInhoud: React.FC<{ inhoud: PendelLesInhoud[] }> = ({ inhoud }) => (
 // ─── Hero pendel (canvas engine) ──────────────────────────────────────────
 const HeroPendel: React.FC = () => (
   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-    <p style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.10em', color: G.tekst3, textTransform: 'uppercase', marginBottom: 10 }}>
+    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.10em', color: G.tekst3, textTransform: 'uppercase', marginBottom: 10 }}>
       Live demonstratie
     </p>
     <PendelAnimatie mode="right" width={300} height={300} showControls={true} />
@@ -232,7 +232,7 @@ export const LessenPage: React.FC = () => {
         }}
       >
         <div style={{
-          fontFamily: "'Cinzel', serif",
+          fontFamily: "'Cormorant Garamond', serif",
           fontSize: 11,
           letterSpacing: '0.10em',
           color: voltooid ? G.goud : G.tekst3,
@@ -292,10 +292,10 @@ export const LessenPage: React.FC = () => {
             }}
           >×</button>
 
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.4rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.4rem' }}>
             Les {String(openLes.nummer).padStart(2, '0')} · {catLabels[openLes.categorie]}
           </p>
-          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 26, fontWeight: 400, color: G.tekst, marginBottom: '1.5rem' }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, fontWeight: 400, color: G.tekst, marginBottom: '1.5rem' }}>
             {openLes.titel}
           </h2>
 
@@ -334,7 +334,7 @@ export const LessenPage: React.FC = () => {
               <button
                 onClick={() => markeerVoltooid(openLes.id)}
                 style={{
-                  fontFamily: "'Cinzel', serif",
+                  fontFamily: "'Cormorant Garamond', serif",
                   fontSize: 13, letterSpacing: '0.06em',
                   padding: '10px 22px',
                   background: G.goud, color: '#fff',
@@ -358,7 +358,7 @@ export const LessenPage: React.FC = () => {
     <button
       onClick={onClick}
       style={{
-        fontFamily: "'Cinzel', serif",
+        fontFamily: "'Cormorant Garamond', serif",
         fontSize: 12, letterSpacing: '0.05em',
         padding: '6px 16px', borderRadius: 20,
         border: `0.5px solid ${active ? G.goud : G.rand2}`,
@@ -378,10 +378,10 @@ export const LessenPage: React.FC = () => {
       <section style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '4rem 2rem 3rem' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 340px', gap: '3rem', alignItems: 'center' }}>
           <div>
-            <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '1rem' }}>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '1rem' }}>
               Stap voor stap pendelen leren
             </p>
-            <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 42, fontWeight: 400, lineHeight: 1.2, marginBottom: '1.2rem', color: G.tekst }}>
+            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 42, fontWeight: 400, lineHeight: 1.2, marginBottom: '1.2rem', color: G.tekst }}>
               Pendelcursus
             </h1>
             <p style={{ fontSize: 18, fontWeight: 300, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, marginBottom: '1.8rem', maxWidth: 460 }}>
@@ -401,14 +401,14 @@ export const LessenPage: React.FC = () => {
 
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
               <a href="#lessen" style={{
-                fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em',
+                fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em',
                 padding: '10px 24px', background: G.goud, color: '#fff',
                 border: 'none', borderRadius: 4, cursor: 'pointer', textDecoration: 'none',
               }}>
                 Begin met lessen
               </a>
               <a href="#videos" style={{
-                fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em',
+                fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em',
                 padding: '10px 24px', background: 'transparent', color: G.tekst2,
                 border: `0.5px solid ${G.rand2}`, borderRadius: 4, textDecoration: 'none',
               }}>
@@ -428,7 +428,7 @@ export const LessenPage: React.FC = () => {
       <div id="lessen" style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '0.75rem 2rem' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            <span style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, flexShrink: 0 }}>Categorie:</span>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, flexShrink: 0 }}>Categorie:</span>
             <FilterBtn active={catFilter === 'alle'}    onClick={() => setCatFilter('alle')}>Alle lessen</FilterBtn>
             <FilterBtn active={catFilter === 'basis'}   onClick={() => setCatFilter('basis')}>Basis</FilterBtn>
             <FilterBtn active={catFilter === 'bewegingen'} onClick={() => setCatFilter('bewegingen')}>Pendelbewegingen</FilterBtn>
@@ -438,7 +438,7 @@ export const LessenPage: React.FC = () => {
           </div>
           {catFilter !== 'videos' && (
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, flexShrink: 0 }}>Niveau:</span>
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, flexShrink: 0 }}>Niveau:</span>
               <FilterBtn active={nivFilter === 'alle'}      onClick={() => setNivFilter('alle')}>Alle niveaus</FilterBtn>
               <FilterBtn active={nivFilter === 'beginner'}  onClick={() => setNivFilter('beginner')}>Beginner</FilterBtn>
               <FilterBtn active={nivFilter === 'gevorderd'} onClick={() => setNivFilter('gevorderd')}>Gevorderd</FilterBtn>
@@ -454,7 +454,7 @@ export const LessenPage: React.FC = () => {
             {/* Sectielabel */}
             <div style={{
               padding: '0.65rem 2rem',
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 11, letterSpacing: '0.12em',
               color: G.tekst3, textTransform: 'uppercase',
               background: G.bg2,
@@ -484,10 +484,10 @@ export const LessenPage: React.FC = () => {
       {/* ── Video's ── */}
       {toonVideos && (
         <section id="videos" style={{ maxWidth: 1100, margin: '3rem auto 0', padding: '0 2rem 3rem', borderTop: `0.5px solid ${G.rand}`, paddingTop: '3rem' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
             Extra leermaterial
           </p>
-          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 400, color: G.tekst, marginBottom: '0.4rem' }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 400, color: G.tekst, marginBottom: '0.4rem' }}>
             Video Lessen
           </h2>
           <p style={{ fontSize: 16, fontStyle: 'italic', color: G.tekst2, marginBottom: '2rem' }}>
@@ -545,7 +545,7 @@ const VideoKaart: React.FC<{
             <rect width={320} height={180} fill="#1a1a2e" />
             <circle cx={160} cy={90} r={60} fill="rgba(184,134,11,0.12)" />
             <polygon points="145,70 145,110 185,90" fill="rgba(255,255,255,0.08)" />
-            <text x={160} y={148} textAnchor="middle" fontFamily="'Cinzel', serif" fontSize={11} fill="rgba(255,255,255,0.35)" letterSpacing={2}>
+            <text x={160} y={148} textAnchor="middle" fontFamily="'Cormorant Garamond', serif" fontSize={11} fill="rgba(255,255,255,0.35)" letterSpacing={2}>
               PENDELEN
             </text>
           </svg>

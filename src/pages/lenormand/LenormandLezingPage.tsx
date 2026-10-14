@@ -18,7 +18,7 @@ const Verbindingen: React.FC<{
 
   return (
     <div style={{ marginBottom: '1.5rem', background: G.bg, border: `0.5px solid ${G.rand2}`, borderRadius: 10, padding: '1.4rem 1.5rem' }}>
-      <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: 4 }}>
+      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: 4 }}>
         De verbindingen
       </div>
       <p style={{ fontSize: 13, color: G.tekst3, fontStyle: 'italic', margin: '0 0 1.1rem' }}>
@@ -28,7 +28,7 @@ const Verbindingen: React.FC<{
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
         {paren.map((p, i) => (
           <div key={i} style={{ display: 'flex', gap: '0.9rem', alignItems: 'flex-start', paddingBottom: '0.8rem', borderBottom: i < paren.length - 1 ? `0.5px solid ${G.rand}` : 'none' }}>
-            <div style={{ flexShrink: 0, fontFamily: "'Cinzel', serif", fontSize: 13, color: G.tekst, whiteSpace: 'nowrap', paddingTop: 1 }}>
+            <div style={{ flexShrink: 0, fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: G.tekst, whiteSpace: 'nowrap', paddingTop: 1 }}>
               <span style={{ color: p.links.kleurDonker }}>{p.links.symbool} {p.links.naam}</span>
               <span style={{ color: G.goud, margin: '0 6px' }}>+</span>
               <span style={{ color: p.rechts.kleurDonker }}>{p.rechts.symbool} {p.rechts.naam}</span>
@@ -71,7 +71,7 @@ const GrandTableau: React.FC<{ kaarten: LenormandKaart[]; onKlik: (k: LenormandK
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(9, 1fr)', gap: '0.5rem', minWidth: 720 }}>
       {kaarten.map((k, i) => (
         <div key={k.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 9, color: G.tekst3 }}>{i + 1}</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 9, color: G.tekst3 }}>{i + 1}</div>
           <LenormandKaartVisueel kaart={k} grootte={80} onClick={() => onKlik(k)} />
         </div>
       ))}
@@ -87,9 +87,9 @@ const KaartDetail: React.FC<{ kaart: LenormandKaart; positie?: string; onSluit: 
       <LenormandKaartVisueel kaart={kaart} grootte={100} />
       <div style={{ flex: 1 }}>
         {positie && (
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.10em', color: G.goud, textTransform: 'uppercase', marginBottom: 4 }}>{positie}</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.10em', color: G.goud, textTransform: 'uppercase', marginBottom: 4 }}>{positie}</div>
         )}
-        <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 20, fontWeight: 400, color: G.tekst, margin: '0 0 0.3rem' }}>
+        <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, color: G.tekst, margin: '0 0 0.3rem' }}>
           {kaart.naam} <span style={{ fontSize: 13, color: G.tekst3 }}>#{kaart.id}</span>
         </h3>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: '0.7rem' }}>
@@ -107,7 +107,7 @@ const KaartDetail: React.FC<{ kaart: LenormandKaart; positie?: string; onSluit: 
         { label: 'Combinatietip', tekst: kaart.combinatieTip },
       ].map(({ label, tekst }) => (
         <div key={label} style={{ background: G.bg, border: `0.5px solid ${G.rand}`, borderRadius: 6, padding: '0.7rem' }}>
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: 3 }}>{label}</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: 3 }}>{label}</div>
           <p style={{ fontSize: 12, color: G.tekst2, margin: 0, lineHeight: 1.6 }}>{tekst}</p>
         </div>
       ))}
@@ -225,8 +225,8 @@ export const LenormandLezingPage: React.FC = () => {
       {/* Hero */}
       <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3rem 2rem 2rem' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>Mystieke Lenormand</p>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 400, color: G.tekst, marginBottom: '0.6rem' }}>Leggingen</h1>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>Mystieke Lenormand</p>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, fontWeight: 400, color: G.tekst, marginBottom: '0.6rem' }}>Leggingen</h1>
           <p style={{ fontSize: 17, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, maxWidth: 520 }}>
             Kies een spreiding, formuleer een heldere vraag en trek je kaarten.
           </p>
@@ -244,7 +244,7 @@ export const LenormandLezingPage: React.FC = () => {
                   key={s.id}
                   onClick={() => setActieveSpread(s.id)}
                   style={{
-                    fontFamily: "'Cinzel', serif", textAlign: 'left',
+                    fontFamily: "'Cormorant Garamond', serif", textAlign: 'left',
                     padding: '1.2rem', borderRadius: 8,
                     border: `0.5px solid ${actieveSpread === s.id ? G.goud : G.rand2}`,
                     background: actieveSpread === s.id ? G.goudBleek : G.bg,
@@ -253,15 +253,15 @@ export const LenormandLezingPage: React.FC = () => {
                   }}
                 >
                   <div style={{ fontSize: 15, marginBottom: '0.3rem' }}>{s.naam}</div>
-                  <div style={{ fontFamily: "'Crimson Pro', serif", fontSize: 13, fontStyle: 'italic', opacity: 0.75, letterSpacing: 0 }}>{s.aantalKaarten} kaarten</div>
-                  <div style={{ fontFamily: "'Crimson Pro', serif", fontSize: 12, marginTop: '0.5rem', lineHeight: 1.5, opacity: 0.7, letterSpacing: 0 }}>{s.beschrijving}</div>
+                  <div style={{ fontFamily: "'DM Sans', serif", fontSize: 13, fontStyle: 'italic', opacity: 0.75, letterSpacing: 0 }}>{s.aantalKaarten} kaarten</div>
+                  <div style={{ fontFamily: "'DM Sans', serif", fontSize: 12, marginTop: '0.5rem', lineHeight: 1.5, opacity: 0.7, letterSpacing: 0 }}>{s.beschrijving}</div>
                 </button>
               ))}
             </div>
 
             {/* Vraag invoer */}
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>
+              <label style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>
                 Jouw vraag (optioneel)
               </label>
               <textarea
@@ -270,7 +270,7 @@ export const LenormandLezingPage: React.FC = () => {
                 value={vraag}
                 onChange={e => setVraag(e.target.value)}
                 style={{
-                  fontFamily: "'Crimson Pro', serif", fontSize: 16, color: G.tekst,
+                  fontFamily: "'DM Sans', serif", fontSize: 16, color: G.tekst,
                   background: G.bg, border: `0.5px solid ${G.rand2}`,
                   borderRadius: 6, padding: '0.8rem 1rem',
                   resize: 'none', outline: 'none', width: '100%', maxWidth: 500,
@@ -281,7 +281,7 @@ export const LenormandLezingPage: React.FC = () => {
             <button
               onClick={startLezing}
               style={{
-                fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em',
+                fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em',
                 padding: '12px 32px', borderRadius: 24,
                 border: `0.5px solid ${G.goud}`,
                 background: G.goudBleek, color: G.goudDonker,
@@ -313,7 +313,7 @@ export const LenormandLezingPage: React.FC = () => {
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '1.5rem', alignItems: 'flex-start' }}>
                 {getrokken.map((kaart, i) => (
                   <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', textAlign: 'center', maxWidth: 100 }}>
+                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', textAlign: 'center', maxWidth: 100 }}>
                       {spread.posities[i]}
                     </div>
                     {onthuldeIndices.has(i) ? (
@@ -354,7 +354,7 @@ export const LenormandLezingPage: React.FC = () => {
             {spread.id !== 'tableau' && onthuldeIndices.size === getrokken.length && getrokken.length >= 1 && (
               <div style={{ marginBottom: '1.5rem' }}>
                 {!duiding && !duidingBezig && (
-                  <button onClick={vraagDuiding} style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.07em', padding: '10px 22px', borderRadius: 22, border: 'none', background: G.goud, color: '#2C2416', cursor: 'pointer', fontWeight: 600 }}>
+                  <button onClick={vraagDuiding} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.07em', padding: '10px 22px', borderRadius: 22, border: 'none', background: G.goud, color: '#2C2416', cursor: 'pointer', fontWeight: 600 }}>
                     ✦ Vraag een samenvattende duiding
                   </button>
                 )}
@@ -369,17 +369,17 @@ export const LenormandLezingPage: React.FC = () => {
                 {duiding && (
                   <div style={{ background: 'linear-gradient(160deg, #FFFDF7, #F7F1E4)', border: `0.5px solid ${G.rand2}`, borderRadius: 12, padding: '1.6rem 1.7rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.8rem' }}>
-                      <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase' }}>
+                      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase' }}>
                         Duiding van de legging
                       </div>
-                      <button onClick={vraagDuiding} style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.06em', padding: '4px 11px', borderRadius: 14, border: `0.5px solid ${G.rand2}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
+                      <button onClick={vraagDuiding} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.06em', padding: '4px 11px', borderRadius: 14, border: `0.5px solid ${G.rand2}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
                         Opnieuw
                       </button>
                     </div>
                     <div style={{ fontSize: 15.5, color: G.tekst, lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>
                       {duiding}
                     </div>
-                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, color: G.tekst3, marginTop: '1rem', letterSpacing: '0.05em' }}>
+                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, color: G.tekst3, marginTop: '1rem', letterSpacing: '0.05em' }}>
                       Op basis van onze kaartbetekenissen en combinaties · gpt-5.5
                     </div>
                   </div>
@@ -390,7 +390,7 @@ export const LenormandLezingPage: React.FC = () => {
             {/* Knoppen */}
             <div style={{ display: 'flex', gap: '0.7rem', flexWrap: 'wrap' }}>
               {onthuldeIndices.size < getrokken.length && spread.id !== 'dag' && spread.id !== 'tableau' && (
-                <button onClick={onthulAlles} style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.rand2}`, background: G.bg2, color: G.tekst2, cursor: 'pointer' }}>
+                <button onClick={onthulAlles} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.rand2}`, background: G.bg2, color: G.tekst2, cursor: 'pointer' }}>
                   Alle kaarten omdraaien
                 </button>
               )}
@@ -400,12 +400,12 @@ export const LenormandLezingPage: React.FC = () => {
                     ✓ Bewaard — zie <Link to="/voortgang#leggingen" style={{ color: G.goudDonker }}>Mijn voortgang</Link>
                   </span>
                 ) : (
-                  <button onClick={bewaar} disabled={bewaard === 'bezig'} style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.goud}`, background: G.goudBleek, color: G.goudDonker, cursor: 'pointer', opacity: bewaard === 'bezig' ? 0.6 : 1 }}>
+                  <button onClick={bewaar} disabled={bewaard === 'bezig'} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.goud}`, background: G.goudBleek, color: G.goudDonker, cursor: 'pointer', opacity: bewaard === 'bezig' ? 0.6 : 1 }}>
                     {bewaard === 'bezig' ? 'Bewaren…' : bewaard === 'fout' ? 'Opnieuw proberen' : '💾 Bewaar legging'}
                   </button>
                 )
               )}
-              <button onClick={reset} style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.rand}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
+              <button onClick={reset} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.07em', padding: '9px 20px', borderRadius: 20, border: `0.5px solid ${G.rand}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
                 Nieuwe lezing
               </button>
             </div>
@@ -414,7 +414,7 @@ export const LenormandLezingPage: React.FC = () => {
 
         {/* Info blok onderaan */}
         <div style={{ marginTop: '3rem', background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 8, padding: '1.2rem 1.5rem', fontSize: 13, color: G.tekst2, lineHeight: 1.7 }}>
-          <strong style={{ fontFamily: "'Cinzel', serif", color: G.goud }}>Lenormand lees-tip:</strong>{' '}
+          <strong style={{ fontFamily: "'Cormorant Garamond', serif", color: G.goud }}>Lenormand lees-tip:</strong>{' '}
           In Lenormand is de combinatie van kaarten de sleutel. Lees niet elke kaart los, maar kijk hoe de buurkaarten elkaar beïnvloeden — de kaart rechts van een andere wijzigt de betekenis van de linker kaart.
         </div>
       </div>

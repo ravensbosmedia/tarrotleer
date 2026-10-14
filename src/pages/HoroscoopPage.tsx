@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8', goudDonker: '#7A5C00',
-  bg: '#1A1209', bg2: '#2C2416', bg3: '#3A2E1C',
-  accent: 'rgba(184,134,11,0.15)', rand: 'rgba(184,134,11,0.25)',
+  goud: '#F1CB78', goudBleek: '#FFF3DF', goudDonker: '#E0B04A',
+  bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040',
+  accent: 'rgba(241,203,120,0.15)', rand: 'rgba(241,203,120,0.25)',
 };
 
 const TEKENS = [
@@ -67,7 +67,7 @@ type Periode = 'dag' | 'maand';
 const GEBIED_VOLGORDE = ['love', 'relationships', 'career', 'finance', 'health', 'spirituality', 'home', 'communication'];
 
 const Sterren: React.FC<{ n: number }> = ({ n }) => (
-  <span style={{ color: '#B8860B', letterSpacing: 2, fontSize: 13 }} aria-label={`${n} van 5`}>
+  <span style={{ color: '#F1CB78', letterSpacing: 2, fontSize: 13 }} aria-label={`${n} van 5`}>
     {'★'.repeat(Math.max(0, Math.min(5, n)))}<span style={{ opacity: 0.25 }}>{'★'.repeat(5 - Math.max(0, Math.min(5, n)))}</span>
   </span>
 );
@@ -109,7 +109,7 @@ export const HoroscoopPage: React.FC = () => {
   const huidigTeken = TEKENS.find(t => t.slug === geselecteerd);
 
   const tabStyle = (id: Tab): React.CSSProperties => ({
-    fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em',
+    fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em',
     padding: '8px 24px', borderRadius: 20,
     border: `0.5px solid ${tab === id ? G.goud : G.rand}`,
     background: tab === id ? G.goud : 'transparent',
@@ -118,16 +118,16 @@ export const HoroscoopPage: React.FC = () => {
   });
 
   return (
-    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'Crimson Pro', serif" }}>
+    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'DM Sans', serif" }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '2.5rem 1.5rem' }}>
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <div style={{ fontSize: 48, marginBottom: '0.5rem' }}>✦</div>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 28, letterSpacing: '0.15em', color: G.goud, margin: 0 }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, letterSpacing: '0.15em', color: G.goud, margin: 0 }}>
             STERRENBEELDEN
           </h1>
-          <p style={{ color: 'rgba(245,237,216,0.5)', fontSize: 14, marginTop: '0.5rem', letterSpacing: '0.05em' }}>
+          <p style={{ color: 'rgba(255,243,223,0.5)', fontSize: 14, marginTop: '0.5rem', letterSpacing: '0.05em' }}>
             {vandaag}
           </p>
 
@@ -148,11 +148,11 @@ export const HoroscoopPage: React.FC = () => {
                   key={id}
                   onClick={() => { setPeriode(id); if (geselecteerd) laadHoroscoop(geselecteerd, id); }}
                   style={{
-                    fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em',
+                    fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em',
                     padding: '5px 16px', borderRadius: 16, cursor: 'pointer',
                     border: `0.5px solid ${periode === id ? G.goud : G.rand}`,
                     background: periode === id ? G.accent : 'transparent',
-                    color: periode === id ? G.goud : 'rgba(245,237,216,0.7)',
+                    color: periode === id ? G.goud : 'rgba(255,243,223,0.7)',
                   }}
                 >{label}</button>
               ))}
@@ -175,10 +175,10 @@ export const HoroscoopPage: React.FC = () => {
                     }}
                   >
                     <span style={{ fontSize: 28, color: actief ? G.goud : G.goudBleek }}>{t.symbool}</span>
-                    <span style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.1em', color: actief ? G.goud : G.goudBleek }}>
+                    <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.1em', color: actief ? G.goud : G.goudBleek }}>
                       {t.naam.toUpperCase()}
                     </span>
-                    <span style={{ fontSize: 10, color: 'rgba(245,237,216,0.4)', letterSpacing: '0.04em' }}>{t.periode}</span>
+                    <span style={{ fontSize: 10, color: 'rgba(255,243,223,0.4)', letterSpacing: '0.04em' }}>{t.periode}</span>
                     <span style={{
                       fontSize: 9, padding: '2px 8px', borderRadius: 8,
                       background: ELEMENT_KLEUR[t.element] + '33',
@@ -195,7 +195,7 @@ export const HoroscoopPage: React.FC = () => {
             {geselecteerd && (
               <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 16, padding: '2rem' }}>
                 {laden ? (
-                  <p style={{ textAlign: 'center', color: G.goud, letterSpacing: '0.1em', fontFamily: "'Cinzel', serif", fontSize: 12 }}>
+                  <p style={{ textAlign: 'center', color: G.goud, letterSpacing: '0.1em', fontFamily: "'Cormorant Garamond', serif", fontSize: 12 }}>
                     Laden...
                   </p>
                 ) : huidigTeken && horoscoop ? (
@@ -203,14 +203,14 @@ export const HoroscoopPage: React.FC = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
                       <span style={{ fontSize: 48, color: G.goud }}>{huidigTeken.symbool}</span>
                       <div>
-                        <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 20, color: G.goud, margin: 0, letterSpacing: '0.1em' }}>
+                        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, color: G.goud, margin: 0, letterSpacing: '0.1em' }}>
                           {huidigTeken.naam}
                         </h2>
                         <div style={{ display: 'flex', gap: '0.8rem', marginTop: '0.4rem', flexWrap: 'wrap' }}>
                           {[
                             { label: huidigTeken.element, kleur: ELEMENT_KLEUR[huidigTeken.element] },
                             { label: `♃ ${huidigTeken.planeet}`, kleur: G.goud },
-                            { label: huidigTeken.periode, kleur: 'rgba(245,237,216,0.5)' },
+                            { label: huidigTeken.periode, kleur: 'rgba(255,243,223,0.5)' },
                           ].map(b => (
                             <span key={b.label} style={{ fontSize: 12, color: b.kleur, letterSpacing: '0.04em' }}>{b.label}</span>
                           ))}
@@ -225,7 +225,7 @@ export const HoroscoopPage: React.FC = () => {
                         <p style={{ fontSize: 17, lineHeight: 1.8, color: G.goudBleek, margin: '0.9rem 0 0' }}>{horoscoop.tekst_nl}</p>
                       )}
                       {typeof horoscoop.score === 'number' && (
-                        <div style={{ marginTop: '0.6rem', fontSize: 13, color: 'rgba(245,237,216,0.6)' }}>
+                        <div style={{ marginTop: '0.6rem', fontSize: 13, color: 'rgba(255,243,223,0.6)' }}>
                           {periode === 'maand' ? 'Maandenergie' : 'Dagenergie'} <Sterren n={horoscoop.score} />
                         </div>
                       )}
@@ -240,12 +240,12 @@ export const HoroscoopPage: React.FC = () => {
                           .map(g => (
                             <div key={g.area} style={{ background: 'rgba(255,255,255,0.03)', border: `0.5px solid ${G.rand}`, borderRadius: 12, padding: '0.9rem 1rem' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
-                                <span style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.08em', color: G.goud }}>
+                                <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.08em', color: G.goud }}>
                                   {g.extra?.emoji} {g.title.toUpperCase()}
                                 </span>
                                 <Sterren n={g.rating} />
                               </div>
-                              <p style={{ fontSize: 15, lineHeight: 1.55, margin: '0.5rem 0 0', color: 'rgba(245,237,216,0.85)' }}>{g.prediction}</p>
+                              <p style={{ fontSize: 15, lineHeight: 1.55, margin: '0.5rem 0 0', color: 'rgba(255,243,223,0.85)' }}>{g.prediction}</p>
                             </div>
                           ))}
                       </div>
@@ -254,16 +254,16 @@ export const HoroscoopPage: React.FC = () => {
                     {/* Maand: weekoverzicht en nieuwe/volle maan */}
                     {horoscoop.weken && Object.keys(horoscoop.weken).length > 0 && (
                       <div style={{ marginTop: '1.5rem' }}>
-                        <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.6rem' }}>WEEK VOOR WEEK</h3>
+                        <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.6rem' }}>WEEK VOOR WEEK</h3>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
                           {Object.entries(horoscoop.weken).sort(([a], [b]) => a.localeCompare(b)).map(([k, w], i) => (
                             <div key={k} style={{ background: 'rgba(255,255,255,0.03)', border: `0.5px solid ${G.rand}`, borderRadius: 12, padding: '0.8rem 1rem' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontFamily: "'Cinzel', serif", fontSize: 11, color: G.goud, letterSpacing: '0.08em' }}>WEEK {i + 1}</span>
+                                <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: G.goud, letterSpacing: '0.08em' }}>WEEK {i + 1}</span>
                                 {typeof w.energy_level === 'number' && <Sterren n={w.energy_level} />}
                               </div>
                               {w.theme && <div style={{ fontSize: 15, marginTop: '0.35rem' }}>{w.theme}</div>}
-                              {w.focus && <div style={{ fontSize: 13, marginTop: '0.2rem', color: 'rgba(245,237,216,0.6)' }}>{w.focus}</div>}
+                              {w.focus && <div style={{ fontSize: 13, marginTop: '0.2rem', color: 'rgba(255,243,223,0.6)' }}>{w.focus}</div>}
                             </div>
                           ))}
                         </div>
@@ -271,7 +271,7 @@ export const HoroscoopPage: React.FC = () => {
                     )}
                     {horoscoop.maancycli && horoscoop.maancycli.length > 0 && (
                       <div style={{ marginTop: '1.5rem' }}>
-                        <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>NIEUWE EN VOLLE MAAN</h3>
+                        <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>NIEUWE EN VOLLE MAAN</h3>
                         {horoscoop.maancycli.map(m => (
                           <p key={m.date + m.phase} style={{ fontSize: 15, lineHeight: 1.6, margin: '0 0 0.4rem' }}>
                             {m.phase === 'Full Moon' ? '🌕 Volle maan' : m.phase === 'New Moon' ? '🌑 Nieuwe maan' : m.phase}{' '}
@@ -286,7 +286,7 @@ export const HoroscoopPage: React.FC = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.2rem', marginTop: '1.5rem' }}>
                       {horoscoop.tips && horoscoop.tips.length > 0 && (
                         <div>
-                          <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>{periode === 'maand' ? 'TIPS VOOR DEZE MAAND' : 'TIPS VOOR VANDAAG'}</h3>
+                          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>{periode === 'maand' ? 'TIPS VOOR DEZE MAAND' : 'TIPS VOOR VANDAAG'}</h3>
                           <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: 15, lineHeight: 1.6 }}>
                             {horoscoop.tips.map(t => <li key={t}>{t}</li>)}
                           </ul>
@@ -294,7 +294,7 @@ export const HoroscoopPage: React.FC = () => {
                       )}
                       {horoscoop.geluk && (
                         <div>
-                          <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>GELUK</h3>
+                          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>GELUK</h3>
                           <div style={{ fontSize: 15, lineHeight: 1.7 }}>
                             {horoscoop.geluk.numbers?.length ? <div>Getallen: {horoscoop.geluk.numbers.join(', ')}</div> : null}
                             {horoscoop.geluk.colors?.length ? <div>Kleuren: {horoscoop.geluk.colors.join(', ')}</div> : null}
@@ -304,7 +304,7 @@ export const HoroscoopPage: React.FC = () => {
                       )}
                       {(horoscoop.maan?.prediction || horoscoop.maan?.fase) && (
                         <div>
-                          <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>
+                          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.5rem' }}>
                             {horoscoop.maan!.emoji} DE MAAN{horoscoop.maan!.sign ? ` IN ${horoscoop.maan!.sign.toUpperCase()}` : ''}
                           </h3>
                           <p style={{ fontSize: 15, lineHeight: 1.6, margin: 0 }}>{horoscoop.maan!.prediction ?? horoscoop.maan!.fase}</p>
@@ -313,13 +313,13 @@ export const HoroscoopPage: React.FC = () => {
                     </div>
                   </>
                 ) : fout ? (
-                  <p style={{ textAlign: 'center', color: 'rgba(245,237,216,0.6)', fontSize: 14, margin: 0 }}>{fout}</p>
+                  <p style={{ textAlign: 'center', color: 'rgba(255,243,223,0.6)', fontSize: 14, margin: 0 }}>{fout}</p>
                 ) : null}
               </div>
             )}
 
             {!geselecteerd && (
-              <p style={{ textAlign: 'center', color: 'rgba(245,237,216,0.35)', fontSize: 14, letterSpacing: '0.05em' }}>
+              <p style={{ textAlign: 'center', color: 'rgba(255,243,223,0.35)', fontSize: 14, letterSpacing: '0.05em' }}>
                 Kies je sterrenbeeld hierboven
               </p>
             )}
@@ -331,7 +331,7 @@ export const HoroscoopPage: React.FC = () => {
           <div>
             {/* Geboortejaar invoer */}
             <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 16, padding: '2rem', marginBottom: '2rem', maxWidth: 400, margin: '0 auto 2rem' }}>
-              <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 14, letterSpacing: '0.1em', color: G.goud, marginTop: 0, textAlign: 'center' }}>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 14, letterSpacing: '0.1em', color: G.goud, marginTop: 0, textAlign: 'center' }}>
                 BEREKEN JOUW TEKEN
               </h3>
               <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
@@ -344,7 +344,7 @@ export const HoroscoopPage: React.FC = () => {
                   style={{
                     flex: 1, background: 'rgba(255,255,255,0.05)', border: `0.5px solid ${G.rand}`,
                     borderRadius: 8, padding: '10px 14px', color: G.goudBleek,
-                    fontFamily: "'Crimson Pro', serif", fontSize: 15, outline: 'none',
+                    fontFamily: "'DM Sans', serif", fontSize: 15, outline: 'none',
                   }}
                 />
                 <button
@@ -352,7 +352,7 @@ export const HoroscoopPage: React.FC = () => {
                   style={{
                     background: G.goud, color: G.bg, border: 'none', borderRadius: 8,
                     padding: '10px 18px', cursor: 'pointer',
-                    fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em',
+                    fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em',
                   }}
                 >
                   Berekenen
@@ -362,10 +362,10 @@ export const HoroscoopPage: React.FC = () => {
               {chineesResultaat && (
                 <div style={{ textAlign: 'center', marginTop: '1.5rem', padding: '1.2rem', background: G.accent, borderRadius: 12, border: `0.5px solid ${G.rand}` }}>
                   <div style={{ fontSize: 52 }}>{chineesResultaat.emoji}</div>
-                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: 18, color: G.goud, letterSpacing: '0.12em', marginTop: '0.3rem' }}>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, color: G.goud, letterSpacing: '0.12em', marginTop: '0.3rem' }}>
                     {chineesResultaat.naam.toUpperCase()}
                   </div>
-                  <div style={{ fontSize: 12, color: 'rgba(245,237,216,0.45)', marginTop: '0.5rem', letterSpacing: '0.04em' }}>
+                  <div style={{ fontSize: 12, color: 'rgba(255,243,223,0.45)', marginTop: '0.5rem', letterSpacing: '0.04em' }}>
                     {chineesResultaat.jaren}
                   </div>
                 </div>
@@ -384,10 +384,10 @@ export const HoroscoopPage: React.FC = () => {
                   }}
                 >
                   <div style={{ fontSize: 32 }}>{t.emoji}</div>
-                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, color: G.goudBleek, letterSpacing: '0.08em', marginTop: '0.4rem' }}>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: G.goudBleek, letterSpacing: '0.08em', marginTop: '0.4rem' }}>
                     {t.naam.toUpperCase()}
                   </div>
-                  <div style={{ fontSize: 10, color: 'rgba(245,237,216,0.35)', marginTop: '0.3rem' }}>{t.jaren.split(',')[0]}...</div>
+                  <div style={{ fontSize: 10, color: 'rgba(255,243,223,0.35)', marginTop: '0.3rem' }}>{t.jaren.split(',')[0]}...</div>
                 </div>
               ))}
             </div>

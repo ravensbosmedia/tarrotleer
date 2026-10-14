@@ -41,7 +41,7 @@ function antwoordSleutels(v: QuizVraag, goed: boolean): QuizAntwoord[] {
 }
 
 const knopStijl: React.CSSProperties = {
-  fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', padding: '11px 28px', borderRadius: 24,
+  fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em', padding: '11px 28px', borderRadius: 24,
   border: `0.5px solid ${G.goud}`, background: G.goudBleek, color: G.goudDonker, cursor: 'pointer',
 };
 
@@ -57,8 +57,8 @@ function boodschap(score: number, total: number): string {
 const Hero: React.FC<{ titel: string; ondertitel?: string }> = ({ titel, ondertitel }) => (
   <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3rem 1rem 2rem' }}>
     <div style={{ maxWidth: 640, margin: '0 auto' }}>
-      <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>Mystieke Lenormand</p>
-      <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 400, color: G.tekst, marginBottom: ondertitel ? '0.6rem' : 0 }}>{titel}</h1>
+      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>Mystieke Lenormand</p>
+      <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, fontWeight: 400, color: G.tekst, marginBottom: ondertitel ? '0.6rem' : 0 }}>{titel}</h1>
       {ondertitel && <p style={{ fontSize: 17, fontStyle: 'italic', color: G.tekst2 }}>{ondertitel}</p>}
     </div>
   </div>
@@ -135,7 +135,7 @@ export const LenormandQuizPage: React.FC = () => {
       <div className="pendel-pagina">
         <Hero titel="Quiz" ondertitel="Elke ronde nieuwe vragen — uit de 36 kaarten en 1260 combinaties." />
         <div style={{ maxWidth: 640, margin: '0 auto', padding: '2.5rem 1rem' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, marginBottom: '0.7rem' }}>NIVEAU</p>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, marginBottom: '0.7rem' }}>NIVEAU</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.6rem', marginBottom: '1.8rem' }}>
             {NIVEAUS.map((n) => (
               <button key={n.id} onClick={() => setNiveau(n.id)} style={{
@@ -143,13 +143,13 @@ export const LenormandQuizPage: React.FC = () => {
                 border: `0.5px solid ${niveau === n.id ? G.goud : G.rand2}`,
                 background: niveau === n.id ? G.goudBleek : G.bg,
               }}>
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: niveau === n.id ? G.goudDonker : G.tekst }}>{n.label}</div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: niveau === n.id ? G.goudDonker : G.tekst }}>{n.label}</div>
                 <div style={{ fontSize: 13, color: G.tekst3, marginTop: 3, lineHeight: 1.35 }}>{n.uitleg}</div>
               </button>
             ))}
           </div>
 
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, marginBottom: '0.7rem' }}>WAAROVER?</p>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, marginBottom: '0.7rem' }}>WAAROVER?</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '0.6rem', marginBottom: '1.8rem' }}>
             {ONDERWERPEN.map((o) => {
               const uit = niveau === 'beginner' && o.id === 'combinaties';
@@ -160,18 +160,18 @@ export const LenormandQuizPage: React.FC = () => {
                 border: `0.5px solid ${onderwerp === o.id ? G.goud : G.rand2}`,
                 background: onderwerp === o.id ? G.goudBleek : G.bg,
               }}>
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: onderwerp === o.id ? G.goudDonker : G.tekst }}>{o.label}</div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: onderwerp === o.id ? G.goudDonker : G.tekst }}>{o.label}</div>
                 <div style={{ fontSize: 14, color: G.tekst3, marginTop: 3 }}>{uit ? 'Vanaf Gevorderd' : o.uitleg}</div>
               </button>
               );
             })}
           </div>
 
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, marginBottom: '0.7rem' }}>HOEVEEL VRAGEN?</p>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, marginBottom: '0.7rem' }}>HOEVEEL VRAGEN?</p>
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
             {AANTALLEN.map((n) => (
               <button key={n} onClick={() => setAantal(n)} style={{
-                fontFamily: "'Cinzel', serif", fontSize: 14, padding: '9px 22px', borderRadius: 20, cursor: 'pointer',
+                fontFamily: "'Cormorant Garamond', serif", fontSize: 14, padding: '9px 22px', borderRadius: 20, cursor: 'pointer',
                 border: `0.5px solid ${aantal === n ? G.goud : G.rand2}`,
                 background: aantal === n ? G.goudBleek : G.bg, color: aantal === n ? G.goudDonker : G.tekst2,
               }}>{n}</button>
@@ -202,11 +202,11 @@ export const LenormandQuizPage: React.FC = () => {
       <div className="pendel-pagina">
         <Hero titel="Quiz resultaat" />
         <div style={{ maxWidth: 640, margin: '0 auto', padding: '3rem 1rem', textAlign: 'center' }}>
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 56, fontWeight: 400, color: G.goudDonker, marginBottom: '0.3rem' }}>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 56, fontWeight: 400, color: G.goudDonker, marginBottom: '0.3rem' }}>
             {score}<span style={{ fontSize: 28, color: G.tekst3 }}>/{totaal}</span>
           </div>
           {nieuwRecord && (
-            <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: G.goud, letterSpacing: '0.1em', marginBottom: '0.5rem' }}>✦ Nieuw record!</div>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: G.goud, letterSpacing: '0.1em', marginBottom: '0.5rem' }}>✦ Nieuw record!</div>
           )}
           <p style={{ fontSize: 17, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, maxWidth: 400, margin: '0 auto 2rem' }}>
             {boodschap(score, totaal)}
@@ -257,11 +257,11 @@ export const LenormandQuizPage: React.FC = () => {
         </div>
 
         <div style={{ background: G.bg2, border: `0.5px solid ${G.rand2}`, borderRadius: 10, padding: '1.6rem', marginBottom: '1.2rem' }}>
-          <p style={{ fontFamily: "'Crimson Pro', serif", fontSize: 19, color: G.tekst, lineHeight: 1.65, margin: 0 }}>
+          <p style={{ fontFamily: "'DM Sans', serif", fontSize: 19, color: G.tekst, lineHeight: 1.65, margin: 0 }}>
             {vraag.vraag}
           </p>
           {vraag.citaat && (
-            <p style={{ fontFamily: "'Crimson Pro', serif", fontSize: 17, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.65, margin: '0.8rem 0 0', paddingLeft: '0.9rem', borderLeft: `2px solid ${G.goud}` }}>
+            <p style={{ fontFamily: "'DM Sans', serif", fontSize: 17, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.65, margin: '0.8rem 0 0', paddingLeft: '0.9rem', borderLeft: `2px solid ${G.goud}` }}>
               {vraag.citaat}
             </p>
           )}
@@ -292,7 +292,7 @@ export const LenormandQuizPage: React.FC = () => {
                 }}
               >
                 <span style={{
-                  fontFamily: "'Cinzel', serif",
+                  fontFamily: "'Cormorant Garamond', serif",
                   width: 26, height: 26, borderRadius: '50%',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 12, flexShrink: 0,
@@ -302,7 +302,7 @@ export const LenormandQuizPage: React.FC = () => {
                 }}>
                   {LETTERS[i]}
                 </span>
-                <span style={{ fontFamily: "'Crimson Pro', serif", fontSize: 16 }}>{optie}</span>
+                <span style={{ fontFamily: "'DM Sans', serif", fontSize: 16 }}>{optie}</span>
               </button>
             );
           })}

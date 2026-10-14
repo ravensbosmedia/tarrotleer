@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { datumNL } from '../../lib/account';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8',
-  bg: '#1A1209', bg2: '#2C2416', bg3: '#3A2E1C', rand: 'rgba(184,134,11,0.25)',
-  tekst2: 'rgba(245,237,216,0.72)', tekst3: 'rgba(245,237,216,0.5)',
+  goud: '#F1CB78', goudBleek: '#FFF3DF',
+  bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040', rand: 'rgba(241,203,120,0.25)',
+  tekst2: 'rgba(255,243,223,0.72)', tekst3: 'rgba(255,243,223,0.5)',
 };
 
 type Status = 'nieuw' | 'in_behandeling' | 'concept' | 'goedgekeurd' | 'afgewezen';
@@ -89,9 +89,9 @@ export const CursussenPage: React.FC = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'Crimson Pro', serif" }}>
+    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'DM Sans', serif" }}>
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '2.5rem 1rem' }}>
-        <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 24, letterSpacing: '0.15em', color: G.goud, textAlign: 'center', margin: '0 0 0.4rem' }}>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, letterSpacing: '0.15em', color: G.goud, textAlign: 'center', margin: '0 0 0.4rem' }}>
           CURSUS-UPLOADS
         </h1>
         <p style={{ textAlign: 'center', color: G.tekst3, margin: '0 0 2rem', fontSize: 15 }}>
@@ -105,7 +105,7 @@ export const CursussenPage: React.FC = () => {
           onDrop={(e) => { e.preventDefault(); setSleep(false); const f = e.dataTransfer.files[0]; if (f) upload(f); }}
           onClick={() => voortgang === null && invoerRef.current?.click()}
           style={{
-            border: `1.5px dashed ${sleep ? G.goud : G.rand}`, background: sleep ? 'rgba(184,134,11,0.08)' : G.bg2,
+            border: `1.5px dashed ${sleep ? G.goud : G.rand}`, background: sleep ? 'rgba(241,203,120,0.08)' : G.bg2,
             borderRadius: 16, padding: '2rem 1rem', textAlign: 'center', cursor: voortgang === null ? 'pointer' : 'default', marginBottom: '1rem',
           }}
         >

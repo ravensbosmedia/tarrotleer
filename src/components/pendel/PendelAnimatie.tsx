@@ -258,7 +258,7 @@ export const PendelAnimatie: React.FC<PendelAnimatieProps> = ({
   }, [onModeChange]);
 
   const btnStyle = (m: PendelMode): React.CSSProperties => ({
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'Cormorant Garamond', serif",
     fontSize: 11,
     letterSpacing: '0.05em',
     padding: '5px 12px',

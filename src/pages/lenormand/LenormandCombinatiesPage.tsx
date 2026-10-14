@@ -21,7 +21,7 @@ const Slot: React.FC<{
   onWis: () => void;
 }> = ({ kaart, label, onWis }) => (
   <div style={{ textAlign: 'center' }}>
-    <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: 8 }}>
+    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: 8 }}>
       {label}
     </div>
     {kaart ? (
@@ -83,10 +83,10 @@ export const LenormandCombinatiesPage: React.FC = () => {
       {/* Hero */}
       <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3.5rem 2rem 2.5rem' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.7rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.7rem' }}>
             Mystieke Lenormand
           </p>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 38, fontWeight: 400, color: G.tekst, marginBottom: '0.7rem' }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 38, fontWeight: 400, color: G.tekst, marginBottom: '0.7rem' }}>
             Kaartcombinaties
           </h1>
           <p style={{ fontSize: 18, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, maxWidth: 620 }}>
@@ -100,7 +100,7 @@ export const LenormandCombinatiesPage: React.FC = () => {
         {/* Gekozen paar + resultaat */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
           <Slot kaart={a} label="Eerste kaart" onWis={() => setA(null)} />
-          <div style={{ fontSize: 34, color: G.goud, opacity: 0.7, fontFamily: "'Cinzel', serif" }}>+</div>
+          <div style={{ fontSize: 34, color: G.goud, opacity: 0.7, fontFamily: "'Cormorant Garamond', serif" }}>+</div>
           <Slot kaart={b} label="Tweede kaart" onWis={() => setB(null)} />
         </div>
 
@@ -113,13 +113,13 @@ export const LenormandCombinatiesPage: React.FC = () => {
         {resultaat && (a && b) && (
           <div style={{ background: G.bg, border: `0.5px solid ${G.rand2}`, borderRadius: 12, padding: '1.8rem', marginBottom: '2.5rem', maxWidth: 760, margin: '0 auto 2.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 400, color: G.tekst, margin: 0 }}>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 400, color: G.tekst, margin: 0 }}>
                 {a!.naam} <span style={{ color: G.goud }}>+</span> {b!.naam}
               </h2>
             </div>
 
             {resultaat.heen?.k?.length ? (
-              <p style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.06em', color: G.goudDonker, margin: '0 0 0.8rem' }}>
+              <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.06em', color: G.goudDonker, margin: '0 0 0.8rem' }}>
                 {resultaat.heen.k.join(' · ')}
               </p>
             ) : null}
@@ -143,7 +143,7 @@ export const LenormandCombinatiesPage: React.FC = () => {
                   ['✦', 'Advies', resultaat.heen.ad],
                 ] as const).filter(([, , tekst]) => tekst).map(([icoon, titel, tekst]) => (
                   <div key={titel} style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 10, padding: '0.8rem 1rem' }}>
-                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em', color: G.goudDonker, textTransform: 'uppercase', marginBottom: 4 }}>
+                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em', color: G.goudDonker, textTransform: 'uppercase', marginBottom: 4 }}>
                       {icoon} {titel}
                     </div>
                     <p style={{ fontSize: 15, color: G.tekst, lineHeight: 1.6, margin: 0 }}>{tekst}</p>
@@ -167,7 +167,7 @@ export const LenormandCombinatiesPage: React.FC = () => {
             {/* Omgekeerde leesrichting, als die anders luidt */}
             {resultaat.terug && resultaat.terug.m && resultaat.terug.m !== resultaat.heen?.m && (
               <div style={{ borderTop: `0.5px solid ${G.rand}`, paddingTop: '1.1rem' }}>
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.10em', color: G.tekst3, textTransform: 'uppercase', marginBottom: 5 }}>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.10em', color: G.tekst3, textTransform: 'uppercase', marginBottom: 5 }}>
                   Omgekeerd gelezen ({b!.naam} + {a!.naam})
                 </div>
                 <p style={{ fontSize: 14, color: G.tekst2, lineHeight: 1.7, margin: 0 }}>

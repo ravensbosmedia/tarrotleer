@@ -6,9 +6,9 @@ import { Markdown } from '../../components/Markdown';
 import { datumNL, useAccount } from '../../lib/account';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8',
-  bg: '#1A1209', bg2: '#2C2416', bg3: '#3A2E1C', rand: 'rgba(184,134,11,0.25)',
-  tekst2: 'rgba(245,237,216,0.72)', tekst3: 'rgba(245,237,216,0.5)',
+  goud: '#F1CB78', goudBleek: '#FFF3DF',
+  bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040', rand: 'rgba(241,203,120,0.25)',
+  tekst2: 'rgba(255,243,223,0.72)', tekst3: 'rgba(255,243,223,0.5)',
 };
 
 type HStatus = 'te_beoordelen' | 'aangepast' | 'goedgekeurd';
@@ -26,14 +26,14 @@ const C_STATUS: Record<CStatus, { label: string; kleur: string }> = {
   goedgekeurd:    { label: 'Goedgekeurd',    kleur: '#5FA777' },
 };
 
-const pagina: React.CSSProperties = { minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'Crimson Pro', serif" };
-const titelStijl: React.CSSProperties = { fontFamily: "'Cinzel', serif", fontSize: 22, letterSpacing: '0.12em', color: G.goud, margin: '0 0 0.3rem' };
+const pagina: React.CSSProperties = { minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'DM Sans', serif" };
+const titelStijl: React.CSSProperties = { fontFamily: "'Cormorant Garamond', serif", fontSize: 22, letterSpacing: '0.12em', color: G.goud, margin: '0 0 0.3rem' };
 const invoer: React.CSSProperties = {
   padding: '7px 10px', fontSize: 15, borderRadius: 8, border: `0.5px solid ${G.rand}`,
   background: G.bg, color: G.goudBleek, fontFamily: 'inherit',
 };
 const knop: React.CSSProperties = {
-  fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', padding: '8px 16px', borderRadius: 8,
+  fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', padding: '8px 16px', borderRadius: 8,
   border: 'none', background: G.goud, color: G.bg, cursor: 'pointer',
 };
 const knopLicht: React.CSSProperties = { ...knop, background: 'transparent', color: G.goudBleek, border: `0.5px solid ${G.rand}` };
@@ -187,7 +187,7 @@ export const AcademieOverzichtPage: React.FC = () => {
                   <Balk goed={c.goedgekeurd || 0} aangepast={c.aangepast || 0} totaal={c.hoofdstukken} />
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 13, color: G.tekst2 }}>
                     <span>{c.goedgekeurd || 0}/{c.hoofdstukken} door iedereen goedgekeurd</span>
-                    {c.live ? <span style={{ fontSize: 12, color: '#9bd49b', fontFamily: "'Cinzel', serif" }}>● LIVE</span> : <Badge {...C_STATUS[c.status]} />}
+                    {c.live ? <span style={{ fontSize: 12, color: '#9bd49b', fontFamily: "'Cormorant Garamond', serif" }}>● LIVE</span> : <Badge {...C_STATUS[c.status]} />}
                   </div>
                   <div style={{ marginTop: 6, fontSize: 12, color: G.tekst3, lineHeight: 1.6 }}>
                     {beheerders.map((b) => (
@@ -290,7 +290,7 @@ export const AcademieCursusPage: React.FC = () => {
         </p>
         <div style={{ fontSize: 13, color: G.tekst3 }}>Cursus {c.nr}</div>
         <input defaultValue={c.titel} onBlur={(e) => e.target.value !== c.titel && wijzig({ titel: e.target.value })}
-          style={{ ...invoer, width: '100%', fontSize: 22, fontFamily: "'Cinzel', serif", margin: '4px 0 10px' }} aria-label="Titel van de cursus" />
+          style={{ ...invoer, width: '100%', fontSize: 22, fontFamily: "'Cormorant Garamond', serif", margin: '4px 0 10px' }} aria-label="Titel van de cursus" />
         <textarea defaultValue={c.beschrijving} placeholder="Korte beschrijving van de cursus (voor het overzicht)"
           onBlur={(e) => e.target.value !== c.beschrijving && wijzig({ beschrijving: e.target.value })}
           style={{ ...invoer, width: '100%', minHeight: 60, resize: 'vertical' }} />
@@ -312,7 +312,7 @@ export const AcademieCursusPage: React.FC = () => {
           return (
             <div style={{ background: G.bg2, border: `0.5px solid ${c.live ? H_STATUS.goedgekeurd.kleur : G.rand}`, borderRadius: 12, padding: '1rem 1.2rem', margin: '0 0 1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                <strong style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>✓ GOEDKEURING EN LIVE ZETTEN</strong>
+                <strong style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>✓ GOEDKEURING EN LIVE ZETTEN</strong>
                 <span style={{ fontSize: 14, color: c.live ? '#9bd49b' : G.tekst3 }}>
                   {c.live ? `● Live voor klanten sinds ${datumNL(c.live_sinds)}` : '○ Niet live (alleen zichtbaar voor beheerders)'}
                 </span>
@@ -346,7 +346,7 @@ export const AcademieCursusPage: React.FC = () => {
         {/* Beoordeling + pakket voor ChatGPT */}
         <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 12, padding: '1rem 1.2rem', margin: '0 0 1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 8 }}>
-            <strong style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>💡 BEOORDELING EN ADVIES</strong>
+            <strong style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>💡 BEOORDELING EN ADVIES</strong>
             <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               <a href={`/api/admin/academie/${c.slug}/chatgpt-pakket`} style={{ ...knop, textDecoration: 'none' }} title="Inhoud herwerken: opdracht, eisen, taaleis, advies en hoofdstukken">⬇ Pakket herwerken (.zip)</a>
               <a href={`/academie/${c.slug}/print`} target="_blank" rel="noopener" style={{ ...knop, textDecoration: 'none', background: '#A78BCA' }} title="Hele cursus of één hoofdstuk afdrukken of opslaan als PDF">🖨 Printversie / PDF</a>
@@ -487,7 +487,7 @@ export const AcademieHoofdstukPage: React.FC = () => {
   // Geen AI-aanroep op de server (kost tegoed): we maken een kant-en-klare opdracht voor ChatGPT in de browser
   function chatgptOpdracht(): string {
     if (!h) return '';
-    return `Je bent een ervaren Nederlandse docent en redacteur voor een spirituele online academie (Mystieke Kaarten).
+    return `Je bent een ervaren Nederlandse docent en redacteur voor een spirituele online academie (Zen Flow).
 Herschrijf het hoofdstuk hieronder zodat het ECHTE, specifieke inhoud heeft over het onderwerp in de titel, in plaats van algemene sjabloonzinnen.
 
 Regels:
@@ -565,7 +565,7 @@ ${inhoud}`;
   );
   const voorbeeld = (
     <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 10, padding: '1rem 1.3rem', minHeight: '65vh', overflow: 'auto' }}>
-      <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 22, color: G.goudBleek, margin: '0 0 0.5rem' }}>Hoofdstuk {h.nr} — {titel}</h1>
+      <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: G.goudBleek, margin: '0 0 0.5rem' }}>Hoofdstuk {h.nr} — {titel}</h1>
       <Markdown tekst={inhoud} />
     </div>
   );
@@ -620,7 +620,7 @@ ${inhoud}`;
         </label>
 
         <details open={!!advies} style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 10, padding: '0.7rem 1rem', marginBottom: '0.8rem' }}>
-          <summary style={{ cursor: 'pointer', fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.06em', color: G.goud }}>
+          <summary style={{ cursor: 'pointer', fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.06em', color: G.goud }}>
             💡 Advies voor dit hoofdstuk {advies ? '' : '(nog leeg)'}
           </summary>
           <textarea value={advies} onChange={(e) => setAdvies(e.target.value)} placeholder="Wat moet er in dit hoofdstuk beter? Dit advies gaat mee in het pakket voor ChatGPT."
@@ -684,7 +684,7 @@ ${inhoud}`;
 
         {/* Verbeteren met ChatGPT in de browser (geen kosten op de server) */}
         <div style={{ marginTop: '1.2rem', background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 10, padding: '1rem 1.3rem' }}>
-          <strong style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>✦ VERBETEREN MET CHATGPT</strong>
+          <strong style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em', color: G.goud }}>✦ VERBETEREN MET CHATGPT</strong>
           <ol style={{ fontSize: 14, color: G.tekst2, margin: '6px 0 10px', paddingLeft: '1.2rem', lineHeight: 1.6 }}>
             <li>Klik op <strong>Kopieer opdracht</strong>: de schrijfopdracht en de huidige tekst gaan naar je klembord.</li>
             <li>Plak in ChatGPT (in je browser) en kopieer het antwoord.</li>

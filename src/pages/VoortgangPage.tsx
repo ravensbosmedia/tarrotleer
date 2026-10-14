@@ -25,9 +25,9 @@ function lenormandGroep(sleutel: string): string {
 }
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8',
-  bg: '#1A1209', bg2: '#2C2416', bg3: '#3A2E1C', rand: 'rgba(184,134,11,0.25)',
-  tekst2: 'rgba(245,237,216,0.72)', tekst3: 'rgba(245,237,216,0.5)',
+  goud: '#F1CB78', goudBleek: '#FFF3DF',
+  bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040', rand: 'rgba(241,203,120,0.25)',
+  tekst2: 'rgba(255,243,223,0.72)', tekst3: 'rgba(255,243,223,0.5)',
 };
 
 // Beheersing per kaart/vraag: label + kleur (kleur is nooit de enige aanwijzing; het % staat erbij)
@@ -35,7 +35,7 @@ const NIVEAU = {
   sterk:    { label: 'Sterk',      kleur: '#5FA777' },
   redelijk: { label: 'Redelijk',   kleur: '#C9A227' },
   zwak:     { label: 'Oefenen',    kleur: '#C8604F' },
-  nieuw:    { label: 'Nog niet gevraagd', kleur: 'rgba(245,237,216,0.18)' },
+  nieuw:    { label: 'Nog niet gevraagd', kleur: 'rgba(255,243,223,0.18)' },
 };
 function niveau(pct: number | null): keyof typeof NIVEAU {
   if (pct === null) return 'nieuw';
@@ -60,12 +60,12 @@ const MODULES = [
 ];
 const AFGEROND_PCT = 70;
 
-const kop: React.CSSProperties = { fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.12em', color: G.goud, margin: '0 0 1rem' };
+const kop: React.CSSProperties = { fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.12em', color: G.goud, margin: '0 0 1rem' };
 const kaart: React.CSSProperties = { background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 16, padding: '1.4rem', marginBottom: '1.2rem' };
 
 const Tegel: React.FC<{ waarde: string; label: string; sub?: string }> = ({ waarde, label, sub }) => (
   <div style={{ background: G.bg3, borderRadius: 12, padding: '0.9rem 1rem', minWidth: 0 }}>
-    <div style={{ fontFamily: "'Cinzel', serif", fontSize: 26, color: G.goudBleek, lineHeight: 1.1 }}>{waarde}</div>
+    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, color: G.goudBleek, lineHeight: 1.1 }}>{waarde}</div>
     <div style={{ fontSize: 14, color: G.tekst2, marginTop: 4 }}>{label}</div>
     {sub && <div style={{ fontSize: 12, color: G.tekst3, marginTop: 2 }}>{sub}</div>}
   </div>
@@ -274,9 +274,9 @@ export const VoortgangPage: React.FC = () => {
   const lenGeoefend = [...lenKaart.values()].length;
 
   return (
-    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'Crimson Pro', serif" }}>
+    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'DM Sans', serif" }}>
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '2.5rem 1rem' }}>
-        <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 24, letterSpacing: '0.15em', color: G.goud, textAlign: 'center', margin: '0 0 0.4rem' }}>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, letterSpacing: '0.15em', color: G.goud, textAlign: 'center', margin: '0 0 0.4rem' }}>
           MIJN VOORTGANG
         </h1>
         <p style={{ textAlign: 'center', color: G.tekst3, margin: '0 0 2rem', fontSize: 15 }}>

@@ -70,8 +70,8 @@ export const LenormandFlashcardsPage: React.FC = () => {
       {/* Hero */}
       <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3rem 2rem 2rem' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>Mystieke Lenormand</p>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 400, color: G.tekst, marginBottom: '0.6rem' }}>Flashcards</h1>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>Mystieke Lenormand</p>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, fontWeight: 400, color: G.tekst, marginBottom: '0.6rem' }}>Flashcards</h1>
           <p style={{ fontSize: 17, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7 }}>
             Leer de 36 symbolen en hun betekenissen. Klik op de kaart om de uitleg te zien.
           </p>
@@ -111,7 +111,7 @@ export const LenormandFlashcardsPage: React.FC = () => {
             </div>
           ) : (
             <div style={{ width: '100%' }}>
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 400, color: G.tekst, textAlign: 'center', marginBottom: '0.5rem' }}>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 400, color: G.tekst, textAlign: 'center', marginBottom: '0.5rem' }}>
                 {kaart.naam}
               </h2>
 
@@ -132,14 +132,14 @@ export const LenormandFlashcardsPage: React.FC = () => {
                   { label: '💼 Werk', tekst: kaart.werk },
                 ].map(({ label, tekst }) => (
                   <div key={label} style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 6, padding: '0.8rem' }}>
-                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: 3 }}>{label}</div>
+                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: 3 }}>{label}</div>
                     <p style={{ fontSize: 12, color: G.tekst2, margin: 0, lineHeight: 1.6 }}>{tekst}</p>
                   </div>
                 ))}
               </div>
 
               <div style={{ marginTop: '0.8rem', background: G.goudBleek, border: `0.5px solid ${G.rand2}`, borderRadius: 6, padding: '0.8rem' }}>
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.08em', color: G.goud, textTransform: 'uppercase', marginBottom: 3 }}>Combinatietip</div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.08em', color: G.goud, textTransform: 'uppercase', marginBottom: 3 }}>Combinatietip</div>
                 <p style={{ fontSize: 12, color: G.tekst2, margin: 0, lineHeight: 1.6 }}>{kaart.combinatieTip}</p>
               </div>
             </div>
@@ -148,22 +148,22 @@ export const LenormandFlashcardsPage: React.FC = () => {
 
         {/* Navigatie */}
         <div style={{ display: 'flex', gap: '0.6rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button onClick={vorige} style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 18px', borderRadius: 20, border: `0.5px solid ${G.rand2}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
+          <button onClick={vorige} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 18px', borderRadius: 20, border: `0.5px solid ${G.rand2}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
             ← Vorige
           </button>
           <button
             onClick={() => beoordeel(false)}
-            style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 20px', borderRadius: 20, border: '0.5px solid #FDBA74', background: '#FFF7ED', color: '#C2410C', cursor: 'pointer' }}
+            style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 20px', borderRadius: 20, border: '0.5px solid #FDBA74', background: '#FFF7ED', color: '#C2410C', cursor: 'pointer' }}
           >
             ↺ Nog oefenen
           </button>
           <button
             onClick={() => beoordeel(true)}
-            style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 20px', borderRadius: 20, border: '0.5px solid #86EFAC', background: '#F0FDF4', color: '#15803D', cursor: 'pointer' }}
+            style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 20px', borderRadius: 20, border: '0.5px solid #86EFAC', background: '#F0FDF4', color: '#15803D', cursor: 'pointer' }}
           >
             ✓ Ken ik
           </button>
-          <button onClick={herstart} style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 18px', borderRadius: 20, border: `0.5px solid ${G.rand}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
+          <button onClick={herstart} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 18px', borderRadius: 20, border: `0.5px solid ${G.rand}`, background: 'transparent', color: G.tekst3, cursor: 'pointer' }}>
             Herstarten
           </button>
         </div>
@@ -175,7 +175,7 @@ export const LenormandFlashcardsPage: React.FC = () => {
         {/* Voortgang compleet */}
         {gezien.size === deck.length && (
           <div style={{ marginTop: '1.5rem', background: G.goudBleek, border: `0.5px solid ${G.rand2}`, borderRadius: 8, padding: '1.2rem', textAlign: 'center' }}>
-            <div style={{ fontFamily: "'Cinzel', serif", fontSize: 16, color: G.goudDonker, marginBottom: '0.3rem' }}>Alle 36 kaarten gezien ✦</div>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, color: G.goudDonker, marginBottom: '0.3rem' }}>Alle 36 kaarten gezien ✦</div>
             <p style={{ fontSize: 13, color: G.tekst2, margin: 0 }}>Je hebt het volledige deck doorlopen. Doe de quiz om je kennis te testen!</p>
           </div>
         )}

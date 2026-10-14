@@ -26,15 +26,15 @@ interface Suggestie { naam: string; land: string }
 const invoerStijl: React.CSSProperties = {
   width:'100%', background:'rgba(255,255,255,0.05)', border:`0.5px solid rgba(184,134,11,0.25)`,
   borderRadius:8, padding:'10px 14px', color:'#F5EDD8',
-  fontFamily:"'Crimson Pro', serif", fontSize:15, outline:'none', boxSizing:'border-box',
+  fontFamily:"'DM Sans', serif", fontSize:15, outline:'none', boxSizing:'border-box',
 };
 const label = (tekst: string, sub?: string): React.ReactNode => (
-  <label style={{display:'block', fontFamily:"'Cinzel', serif", fontSize:10, letterSpacing:'0.1em', color:G.goud, marginBottom:'0.4rem', opacity:0.8}}>
+  <label style={{display:'block', fontFamily:"'Cormorant Garamond', serif", fontSize:10, letterSpacing:'0.1em', color:G.goud, marginBottom:'0.4rem', opacity:0.8}}>
     {tekst}{sub && <span style={{color:'rgba(245,237,216,0.3)', fontSize:9, marginLeft:6}}>{sub}</span>}
   </label>
 );
 const sectieHeader = (tekst: string) => (
-  <div style={{fontFamily:"'Cinzel', serif", fontSize:11, letterSpacing:'0.12em', color:G.goud, marginBottom:'1rem', opacity:0.8, textTransform:'uppercase' as const}}>{tekst}</div>
+  <div style={{fontFamily:"'Cormorant Garamond', serif", fontSize:11, letterSpacing:'0.12em', color:G.goud, marginBottom:'1rem', opacity:0.8, textTransform:'uppercase' as const}}>{tekst}</div>
 );
 
 export const NatalChartPage: React.FC = () => {
@@ -83,19 +83,19 @@ export const NatalChartPage: React.FC = () => {
   }
 
   const tabStijl = (id: typeof actieveTab): React.CSSProperties => ({
-    fontFamily:"'Cinzel', serif", fontSize:11, letterSpacing:'0.08em', padding:'7px 16px', borderRadius:16,
+    fontFamily:"'Cormorant Garamond', serif", fontSize:11, letterSpacing:'0.08em', padding:'7px 16px', borderRadius:16,
     border:`0.5px solid ${actieveTab===id ? G.goud : G.rand}`, background: actieveTab===id ? G.goud : 'transparent',
     color: actieveTab===id ? G.bg : G.goudBleek, cursor:'pointer', transition:'all 0.18s',
   });
 
   return (
-    <div style={{minHeight:'100vh', background:G.bg, color:G.goudBleek, fontFamily:"'Crimson Pro', serif"}}>
+    <div style={{minHeight:'100vh', background:G.bg, color:G.goudBleek, fontFamily:"'DM Sans', serif"}}>
       <div style={{maxWidth:1000, margin:'0 auto', padding:'2.5rem 1.5rem'}}>
 
         {/* Header */}
         <div style={{textAlign:'center', marginBottom:'2.5rem'}}>
           <div style={{fontSize:48, marginBottom:'0.4rem'}}>☌</div>
-          <h1 style={{fontFamily:"'Cinzel', serif", fontSize:26, letterSpacing:'0.15em', color:G.goud, margin:0}}>GEBOORTEHOROSCOOP</h1>
+          <h1 style={{fontFamily:"'Cormorant Garamond', serif", fontSize:26, letterSpacing:'0.15em', color:G.goud, margin:0}}>GEBOORTEHOROSCOOP</h1>
           <p style={{color:'rgba(245,237,216,0.45)', fontSize:13, marginTop:'0.4rem'}}>Exacte planeetposities · Aspecten · Interpretaties · Swiss Ephemeris</p>
         </div>
 
@@ -113,7 +113,7 @@ export const NatalChartPage: React.FC = () => {
                 <div style={{position:'absolute',top:'100%',left:0,right:0,zIndex:50,background:G.bg3,border:`0.5px solid ${G.rand}`,borderRadius:8,marginTop:2,overflow:'hidden',boxShadow:'0 8px 24px rgba(0,0,0,0.5)'}}>
                   {suggesties.map((s,i) => (
                     <button key={i} onClick={() => kiesStad(s)}
-                      style={{display:'block',width:'100%',textAlign:'left',padding:'10px 14px',background:'none',border:'none',color:G.goudBleek,cursor:'pointer',borderBottom:i<suggesties.length-1?`0.5px solid ${G.rand}`:'none',fontFamily:"'Crimson Pro', serif",fontSize:14}}
+                      style={{display:'block',width:'100%',textAlign:'left',padding:'10px 14px',background:'none',border:'none',color:G.goudBleek,cursor:'pointer',borderBottom:i<suggesties.length-1?`0.5px solid ${G.rand}`:'none',fontFamily:"'DM Sans', serif",fontSize:14}}
                       onMouseEnter={e=>(e.currentTarget.style.background=G.accent)} onMouseLeave={e=>(e.currentTarget.style.background='none')}>
                       {s.naam}{s.land && <span style={{color:'rgba(245,237,216,0.4)',fontSize:12,marginLeft:8}}>{s.land}</span>}
                     </button>
@@ -131,7 +131,7 @@ export const NatalChartPage: React.FC = () => {
             </div>
           </div>
           {fout && <p style={{color:'#FF6B6B',fontSize:14,margin:'0 0 1rem'}}>{fout}</p>}
-          <button onClick={bereken} disabled={laden} style={{width:'100%',background:laden?'rgba(184,134,11,0.4)':G.goud,color:G.bg,border:'none',borderRadius:10,padding:'12px',fontFamily:"'Cinzel', serif",fontSize:13,letterSpacing:'0.12em',cursor:laden?'default':'pointer',transition:'all 0.18s'}}>
+          <button onClick={bereken} disabled={laden} style={{width:'100%',background:laden?'rgba(184,134,11,0.4)':G.goud,color:G.bg,border:'none',borderRadius:10,padding:'12px',fontFamily:"'Cormorant Garamond', serif",fontSize:13,letterSpacing:'0.12em',cursor:laden?'default':'pointer',transition:'all 0.18s'}}>
             {laden ? 'Berekenen via Swiss Ephemeris...' : 'BEREKEN GEBOORTEHOROSCOOP'}
           </button>
         </div>
@@ -141,7 +141,7 @@ export const NatalChartPage: React.FC = () => {
           <div>
             {/* Info + tabs */}
             <div style={{textAlign:'center',marginBottom:'1.5rem'}}>
-              <div style={{fontFamily:"'Cinzel', serif",fontSize:18,color:G.goud}}>{resultaat.naam}</div>
+              <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:18,color:G.goud}}>{resultaat.naam}</div>
               <div style={{fontSize:13,color:'rgba(245,237,216,0.5)',marginTop:'0.3rem'}}>
                 {resultaat.geboortedatum} · {resultaat.geboortetijd} · {resultaat.geboorteplaats} · {resultaat.tijdzone}
               </div>
@@ -167,9 +167,9 @@ export const NatalChartPage: React.FC = () => {
                   return (
                     <div key={key} style={{background:G.bg2,border:`0.5px solid ${G.rand}`,borderRadius:16,padding:'2rem',display:'grid',gridTemplateColumns:'180px 1fr',gap:'2rem',alignItems:'start'}}>
                       <div style={{textAlign:'center'}}>
-                        <div style={{fontFamily:"'Cinzel', serif",fontSize:9,letterSpacing:'0.12em',color:kleur,opacity:0.8,marginBottom:'0.8rem'}}>{lbl}</div>
+                        <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:9,letterSpacing:'0.12em',color:kleur,opacity:0.8,marginBottom:'0.8rem'}}>{lbl}</div>
                         <div style={{fontSize:44}}>{data.symbool}</div>
-                        <div style={{fontFamily:"'Cinzel', serif",fontSize:16,color:kleur,marginTop:'0.5rem',letterSpacing:'0.08em'}}>{data.teken}</div>
+                        <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:16,color:kleur,marginTop:'0.5rem',letterSpacing:'0.08em'}}>{data.teken}</div>
                         <div style={{fontSize:12,color:'rgba(245,237,216,0.4)',marginTop:'0.3rem'}}>{data.graad}°</div>
                         <div style={{fontSize:11,color:'rgba(245,237,216,0.3)',marginTop:'0.3rem'}}>{sub}</div>
                       </div>
@@ -195,7 +195,7 @@ export const NatalChartPage: React.FC = () => {
                   return (
                     <details key={p.naam} style={{background:G.bg2,border:`0.5px solid ${G.rand}`,borderRadius:12,overflow:'hidden'}}>
                       <summary style={{padding:'1rem 1.2rem',cursor:'pointer',display:'flex',alignItems:'center',gap:'1rem',listStyle:'none'}}>
-                        <span style={{fontFamily:"'Cinzel', serif",fontSize:12,color:PLANEET_KLEUR[p.naam]??G.goudBleek,minWidth:100,letterSpacing:'0.06em'}}>
+                        <span style={{fontFamily:"'Cormorant Garamond', serif",fontSize:12,color:PLANEET_KLEUR[p.naam]??G.goudBleek,minWidth:100,letterSpacing:'0.06em'}}>
                           {p.naam}{p.retrograde && <span style={{fontSize:10,opacity:0.6,marginLeft:4}}>℞</span>}
                         </span>
                         <span style={{fontSize:22}}>{p.symbool}</span>
@@ -208,7 +208,7 @@ export const NatalChartPage: React.FC = () => {
                           {interp && <p style={{fontSize:14,lineHeight:1.8,color:'rgba(245,237,216,0.85)',margin:'0 0 0.8rem'}}>{interp}</p>}
                           {huisInfo && (
                             <div style={{background:'rgba(255,255,255,0.03)',borderRadius:8,padding:'0.8rem 1rem',fontSize:13,color:'rgba(245,237,216,0.6)'}}>
-                              <span style={{color:G.goud,fontFamily:"'Cinzel', serif",fontSize:10,letterSpacing:'0.06em'}}>HUIS {p.huis} — {huisInfo.naam.toUpperCase()}</span>
+                              <span style={{color:G.goud,fontFamily:"'Cormorant Garamond', serif",fontSize:10,letterSpacing:'0.06em'}}>HUIS {p.huis} — {huisInfo.naam.toUpperCase()}</span>
                               <br/>{huisInfo.thema}
                             </div>
                           )}
@@ -231,7 +231,7 @@ export const NatalChartPage: React.FC = () => {
                   </p>
                   <div style={{display:'flex',gap:'0.8rem',marginTop:'1rem',flexWrap:'wrap'}}>
                     {Object.values(ASPECT_TYPES).map(a => (
-                      <span key={a.naam} style={{padding:'3px 10px',borderRadius:10,border:`0.5px solid ${a.kleur}44`,background:`${a.kleur}15`,color:a.kleur,fontSize:11,fontFamily:"'Cinzel', serif",letterSpacing:'0.06em'}}>
+                      <span key={a.naam} style={{padding:'3px 10px',borderRadius:10,border:`0.5px solid ${a.kleur}44`,background:`${a.kleur}15`,color:a.kleur,fontSize:11,fontFamily:"'Cormorant Garamond', serif",letterSpacing:'0.06em'}}>
                         {a.naam} {a.hoek}°
                       </span>
                     ))}
@@ -248,15 +248,15 @@ export const NatalChartPage: React.FC = () => {
                       <div key={i} style={{background:G.bg2,border:`0.5px solid ${aspInfo?.kleur??G.rand}22`,borderLeft:`3px solid ${aspInfo?.kleur??G.goud}`,borderRadius:10,padding:'0.9rem 1.2rem',display:'grid',gridTemplateColumns:'1fr auto',gap:'1rem',alignItems:'center'}}>
                         <div>
                           <div style={{display:'flex',alignItems:'center',gap:'0.6rem',marginBottom:'0.4rem'}}>
-                            <span style={{fontFamily:"'Cinzel', serif",fontSize:12,color:PLANEET_KLEUR[a.planeet1]??G.goudBleek}}>{a.planeet1}</span>
+                            <span style={{fontFamily:"'Cormorant Garamond', serif",fontSize:12,color:PLANEET_KLEUR[a.planeet1]??G.goudBleek}}>{a.planeet1}</span>
                             <span style={{color:aspInfo?.kleur??G.goud,fontSize:13,fontWeight:700}}>{a.type_nl}</span>
-                            <span style={{fontFamily:"'Cinzel', serif",fontSize:12,color:PLANEET_KLEUR[a.planeet2]??G.goudBleek}}>{a.planeet2}</span>
+                            <span style={{fontFamily:"'Cormorant Garamond', serif",fontSize:12,color:PLANEET_KLEUR[a.planeet2]??G.goudBleek}}>{a.planeet2}</span>
                           </div>
                           {tekst && <div style={{fontSize:13,color:'rgba(245,237,216,0.65)',lineHeight:1.6}}>{tekst}</div>}
                           {aspInfo && <div style={{fontSize:11,color:'rgba(245,237,216,0.35)',marginTop:'0.3rem'}}>{aspInfo.beschrijving}</div>}
                         </div>
                         <div style={{textAlign:'right',minWidth:70}}>
-                          <div style={{fontFamily:"'Cinzel', serif",fontSize:11,color:aspInfo?.kleur??G.goud}}>{a.hoek}°</div>
+                          <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:11,color:aspInfo?.kleur??G.goud}}>{a.hoek}°</div>
                           <div style={{fontSize:11,color:'rgba(245,237,216,0.35)'}}>orbit {a.orbit}°</div>
                           <div style={{fontSize:10,color:'rgba(245,237,216,0.25)',marginTop:'0.2rem'}}>{aspInfo?.energie}</div>
                         </div>
@@ -277,13 +277,13 @@ export const NatalChartPage: React.FC = () => {
                     <div key={h.huis} style={{background:G.bg2,border:`0.5px solid ${G.rand}`,borderRadius:12,padding:'1.2rem 1.5rem'}}>
                       <div style={{display:'grid',gridTemplateColumns:'60px 1fr',gap:'1rem',alignItems:'start'}}>
                         <div style={{textAlign:'center'}}>
-                          <div style={{fontFamily:"'Cinzel', serif",fontSize:9,color:G.goud,opacity:0.7}}>HUIS</div>
-                          <div style={{fontFamily:"'Cinzel', serif",fontSize:22,color:G.goud}}>{h.huis}</div>
+                          <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:9,color:G.goud,opacity:0.7}}>HUIS</div>
+                          <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:22,color:G.goud}}>{h.huis}</div>
                           <div style={{fontSize:20}}>{h.symbool}</div>
                           <div style={{fontSize:11,color:'rgba(245,237,216,0.5)'}}>{h.teken}</div>
                         </div>
                         <div>
-                          <div style={{fontFamily:"'Cinzel', serif",fontSize:12,color:G.goudBleek,letterSpacing:'0.06em',marginBottom:'0.3rem'}}>{info?.naam}</div>
+                          <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:12,color:G.goudBleek,letterSpacing:'0.06em',marginBottom:'0.3rem'}}>{info?.naam}</div>
                           <div style={{fontSize:12,color:G.goud,marginBottom:'0.5rem',opacity:0.8}}>{info?.thema}</div>
                           <div style={{fontSize:13,color:'rgba(245,237,216,0.7)',lineHeight:1.7}}>{info?.beschrijving}</div>
                           {planeten.length>0 && (
@@ -306,7 +306,7 @@ export const NatalChartPage: React.FC = () => {
         )}
         {/* Gerelateerde tools */}
         <div style={{ borderTop: '0.5px solid rgba(184,134,11,0.15)', paddingTop: '1.25rem', paddingBottom: '2rem', marginTop: '0.5rem' }}>
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, color: 'rgba(184,134,11,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Gerelateerde tools</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: 'rgba(184,134,11,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Gerelateerde tools</div>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {[
               { to: '/sterrenbeelden', label: 'Sterrenbeelden' },
@@ -314,7 +314,7 @@ export const NatalChartPage: React.FC = () => {
               { to: '/cursus/module-06', label: 'Cursus: Planeten' },
               { to: '/cursus/module-04', label: 'Cursus: Sterrenbeelden' },
             ].map(l => (
-              <a key={l.to} href={l.to} style={{ fontSize: 12, color: 'rgba(184,134,11,0.8)', border: '0.5px solid rgba(184,134,11,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: "'Cinzel', serif", letterSpacing: '0.05em' }}>{l.label}</a>
+              <a key={l.to} href={l.to} style={{ fontSize: 12, color: 'rgba(184,134,11,0.8)', border: '0.5px solid rgba(184,134,11,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.05em' }}>{l.label}</a>
             ))}
           </div>
         </div>

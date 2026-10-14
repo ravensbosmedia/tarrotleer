@@ -211,6 +211,7 @@ export function installeerAccounts(app: express.Express, root: string) {
   app.use((req, res, next) => {
     const lid = lidUitSessie(req);
     if (lid) { req.lid = lid; return next(); }
+    if (req.path === '/favicon.svg') return next();   // icoon ook op het inlogscherm
     if (req.path.startsWith('/api/')) { res.status(401).json({ error: 'Log eerst in' }); return; }
     res.status(401).type('html').send(TOEGANG_PAGINA);
   });
@@ -353,33 +354,39 @@ export function installeerAccounts(app: express.Express, root: string) {
 
 const TOEGANG_PAGINA = `<!doctype html><html lang="nl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mystieke Kaarten — Inloggen</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Pro:wght@400;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0D0C22">
+<title>Zen Flow — Inloggen</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
-  font-family:'Crimson Pro',Georgia,serif;background:radial-gradient(circle at 50% 25%,#3A2E1C,#1A1209 70%);color:#F5EDD8}
-  .box{background:rgba(44,36,22,.92);border:.5px solid rgba(184,134,11,.4);border-radius:18px;padding:34px 30px;
-  width:100%;max-width:370px;box-shadow:0 14px 44px rgba(0,0,0,.55)}
-  h1{font-family:Cinzel,serif;color:#B8860B;font-size:21px;letter-spacing:.14em;margin:0 0 4px;text-align:center}
-  .sub{color:rgba(245,237,216,.6);font-size:15px;margin:0 0 22px;text-align:center}
-  .tabs{display:flex;gap:6px;margin-bottom:18px}
-  .tabs button{flex:1;font-family:Cinzel,serif;font-size:12px;letter-spacing:.08em;padding:8px;border-radius:9px;cursor:pointer;
-  border:.5px solid rgba(184,134,11,.35);background:transparent;color:rgba(245,237,216,.75)}
-  .tabs button.aan{background:#B8860B;color:#1A1209;border-color:#B8860B}
-  label{display:block;font-size:14px;color:rgba(245,237,216,.75);margin:12px 0 4px}
-  input{width:100%;padding:11px 12px;font-size:16px;border-radius:9px;border:.5px solid rgba(184,134,11,.4);
-  background:#1A1209;color:#F5EDD8;outline:none;font-family:inherit}
-  input:focus{border-color:#B8860B}
-  .knop{margin-top:20px;width:100%;padding:12px;font-family:Cinzel,serif;font-size:13px;letter-spacing:.1em;border:0;border-radius:10px;
-  cursor:pointer;background:linear-gradient(135deg,#B8860B,#D4A537);color:#1A1209;font-weight:600}
-  .knop:disabled{opacity:.6;cursor:wait}
-  .fout{color:#ff9a8a;font-size:14px;min-height:18px;margin-top:10px;text-align:center}
-  .klein{font-size:13px;color:rgba(245,237,216,.5);text-align:center;margin-top:14px}
+  font:15px/1.5 'DM Sans',sans-serif;color:#FFF3DF;
+  background:radial-gradient(ellipse at 15% 20%,#5f286a55,transparent 45%),radial-gradient(ellipse at 85% 80%,#632a6d55,transparent 45%),#0D0C22}
+  .box{background:#20162F;border:1px solid #C292BD;border-radius:13px;padding:36px 30px;width:100%;max-width:400px;box-shadow:0 0 70px #AC55B23B}
+  .merk{text-align:center;color:#F5D392;font:21px/1 Georgia,serif;letter-spacing:1.8px;margin-bottom:6px}
+  .merk span{font-size:40px;display:block;margin-bottom:4px;text-shadow:0 0 20px #FFC04C66}
+  h1{font:500 30px/1.1 'Cormorant Garamond',Georgia,serif;margin:14px 0 6px;text-align:center}
+  .sub{color:#E0D5E9;font-size:14px;margin:0 0 22px;text-align:center}
+  .tabs{display:flex;gap:8px;margin-bottom:16px}
+  .tabs button{flex:1;font:600 12px 'DM Sans',sans-serif;text-transform:uppercase;padding:10px;border-radius:28px;cursor:pointer;min-height:44px;
+  border:1px solid #B67AC9;background:transparent;color:#FFF3DF}
+  .tabs button.aan{background:linear-gradient(#322040,#160D24);border-color:#EFB4FF;box-shadow:0 0 12px #BF60ED66}
+  label{display:block;font-size:12px;color:#E1D2E8;margin:15px 0 0}
+  input{width:100%;margin-top:7px;padding:12px 14px;font:15px 'DM Sans',sans-serif;border-radius:5px;border:1px solid #79527C;background:#130E1C;color:#fff;outline:none}
+  input:focus-visible{outline:3px solid #F1CB78;outline-offset:2px}
+  .knop{margin-top:22px;width:100%;min-height:44px;padding:13px 22px;font:700 12px 'DM Sans',sans-serif;text-transform:uppercase;border:1px solid #FFF2C3;border-radius:28px;
+  cursor:pointer;background:linear-gradient(#FFEEB5,#FFC653 58%,#EEB153);color:#1C0D06;box-shadow:inset 0 0 7px #FFF1AF,0 0 16px #FFA33B77;transition:.2s}
+  .knop:hover{filter:brightness(1.12);transform:translateY(-2px)}
+  .knop:disabled{opacity:.48;cursor:wait;transform:none}
+  .fout{color:#F1CB78;font-size:13px;min-height:18px;margin-top:12px;text-align:center}
+  .klein{font-size:12px;color:#B9A9CC;text-align:center;margin-top:14px}
+  .klein a{color:#F1CB78;text-decoration:none}
   .verborgen{display:none}
 </style></head><body>
 <div class="box">
-  <h1>✦ MYSTIEKE KAARTEN</h1>
-  <p class="sub">Leer tarot, lenormand, numerologie en astrologie</p>
+  <div class="merk"><span>☾</span>ZEN FLOW</div>
+  <h1>Welkom terug</h1>
+  <p class="sub">Log in op jouw Zen Flow-leeromgeving</p>
   <div class="tabs">
     <button type="button" id="t-in" class="aan" onclick="kies('in')">Inloggen</button>
     <button type="button" id="t-aan" onclick="kies('aan')">Account maken</button>
@@ -392,6 +399,7 @@ const TOEGANG_PAGINA = `<!doctype html><html lang="nl"><head><meta charset="utf-
     <div class="fout" id="fout"></div>
   </form>
   <p class="klein" id="uitleg">Nog geen account? Aanmelden is gratis.</p>
+  <p class="klein"><a href="https://zen-flow.nl">← Naar zen-flow.nl</a></p>
 </div>
 <script>
 let modus='in';

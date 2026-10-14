@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { useAccount, uitloggen, ABONNEMENT_LABEL, datumNL } from '../lib/account';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8',
-  bg: '#1A1209', bg2: '#2C2416', rand: 'rgba(184,134,11,0.25)',
+  goud: '#F1CB78', goudBleek: '#FFF3DF',
+  bg: '#0D0C22', bg2: '#20162F', rand: 'rgba(241,203,120,0.25)',
 };
 
 const kop: React.CSSProperties = {
-  fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.8rem',
+  fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.1em', color: G.goud, margin: '0 0 0.8rem',
 };
 const kaart: React.CSSProperties = {
   background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 16, padding: '1.5rem', marginBottom: '1.2rem',
@@ -18,7 +18,7 @@ const veld: React.CSSProperties = {
   background: G.bg, color: G.goudBleek, fontFamily: 'inherit', marginTop: 4,
 };
 const knop: React.CSSProperties = {
-  fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.08em', padding: '9px 18px', borderRadius: 9,
+  fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.08em', padding: '9px 18px', borderRadius: 9,
   border: 'none', background: G.goud, color: G.bg, cursor: 'pointer', marginTop: '1rem',
 };
 
@@ -41,9 +41,9 @@ export const AccountPage: React.FC = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'Crimson Pro', serif" }}>
+    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'DM Sans', serif" }}>
       <div style={{ maxWidth: 640, margin: '0 auto', padding: '2.5rem 1rem' }}>
-        <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 24, letterSpacing: '0.15em', color: G.goud, textAlign: 'center', margin: '0 0 2rem' }}>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, letterSpacing: '0.15em', color: G.goud, textAlign: 'center', margin: '0 0 2rem' }}>
           MIJN ACCOUNT
         </h1>
 

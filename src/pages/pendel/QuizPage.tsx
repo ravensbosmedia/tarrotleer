@@ -98,10 +98,10 @@ export const QuizPage: React.FC = () => {
       <div className="pendel-pagina">
         <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3rem 2rem 2rem' }}>
           <div style={{ maxWidth: 720, margin: '0 auto' }}>
-            <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>
               Test je kennis
             </p>
-            <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 32, fontWeight: 400, color: G.tekst }}>
+            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, fontWeight: 400, color: G.tekst }}>
               Pendelquiz
             </h1>
           </div>
@@ -115,7 +115,7 @@ export const QuizPage: React.FC = () => {
             padding: '2.5rem',
             textAlign: 'center',
           }}>
-            <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.10em', color: G.goud, marginBottom: '1rem', textTransform: 'uppercase' }}>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.10em', color: G.goud, marginBottom: '1rem', textTransform: 'uppercase' }}>
               Resultaat
             </p>
             <p style={{ fontSize: 56, fontWeight: 300, color: G.tekst, marginBottom: '0.4rem', lineHeight: 1 }}>
@@ -138,7 +138,7 @@ export const QuizPage: React.FC = () => {
               marginBottom: '1.8rem',
               fontSize: 14,
               color: G.goudDonker,
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               letterSpacing: '0.04em',
             }}>
               Beste score: {Math.max(scorePct, highscore)}%
@@ -151,7 +151,7 @@ export const QuizPage: React.FC = () => {
               <button
                 onClick={initialiseer}
                 style={{
-                  fontFamily: "'Cinzel', serif",
+                  fontFamily: "'Cormorant Garamond', serif",
                   fontSize: 13, letterSpacing: '0.08em',
                   padding: '11px 28px',
                   background: G.goud, color: '#fff',
@@ -176,16 +176,16 @@ export const QuizPage: React.FC = () => {
       {/* Header */}
       <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3rem 2rem 2rem' }}>
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.6rem' }}>
             Test je kennis
           </p>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 32, fontWeight: 400, color: G.tekst, marginBottom: '0.3rem' }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, fontWeight: 400, color: G.tekst, marginBottom: '0.3rem' }}>
             Pendelquiz
           </h1>
           <p style={{ fontSize: 16, fontStyle: 'italic', color: G.tekst2 }}>
             {vragen.length} vragen over de pendelleer
             {highscore > 0 && (
-              <span style={{ marginLeft: 12, fontSize: 13, color: G.goudDonker, fontStyle: 'normal', fontFamily: "'Cinzel', serif" }}>
+              <span style={{ marginLeft: 12, fontSize: 13, color: G.goudDonker, fontStyle: 'normal', fontFamily: "'Cormorant Garamond', serif" }}>
                 Beste: {highscore}%
               </span>
             )}
@@ -196,10 +196,10 @@ export const QuizPage: React.FC = () => {
       <div style={{ maxWidth: 620, margin: '2.5rem auto', padding: '0 2rem' }}>
         {/* Voortgangsinfo */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <span style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', color: G.tekst3 }}>
+          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', color: G.tekst3 }}>
             Vraag {huidigIndex + 1} van {vragen.length}
           </span>
-          <span style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', color: G.goud }}>
+          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', color: G.goud }}>
             Score: {score}
           </span>
         </div>
@@ -251,7 +251,7 @@ export const QuizPage: React.FC = () => {
                     background: bg,
                     textAlign: 'left',
                     transition: 'all 0.15s',
-                    fontFamily: "'Crimson Pro', serif",
+                    fontFamily: "'DM Sans', serif",
                   }}
                   onMouseOver={e => { if (gekozen === null) e.currentTarget.style.background = G.goudBleek; }}
                   onMouseOut={e => { if (gekozen === null) e.currentTarget.style.background = G.bg; }}
@@ -260,7 +260,7 @@ export const QuizPage: React.FC = () => {
                     width: 24, height: 24, borderRadius: '50%',
                     background: G.bg3, color: G.tekst3,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontFamily: "'Cinzel', serif", fontSize: 11,
+                    fontFamily: "'Cormorant Garamond', serif", fontSize: 11,
                     flexShrink: 0,
                   }}>
                     {LETTERS[i]}
@@ -282,7 +282,7 @@ export const QuizPage: React.FC = () => {
               color: gekozen === vraag.correct ? '#2E7D32' : '#C62828',
               fontSize: 15,
               lineHeight: 1.6,
-              fontFamily: "'Crimson Pro', serif",
+              fontFamily: "'DM Sans', serif",
             }}>
               <strong>{gekozen === vraag.correct ? '✓ Goed! ' : '✗ Helaas. '}</strong>
               {vraag.uitleg}
@@ -298,7 +298,7 @@ export const QuizPage: React.FC = () => {
               style={{
                 fontSize: 13, color: G.tekst3,
                 background: 'none', border: 'none', cursor: 'pointer',
-                fontFamily: "'Crimson Pro', serif",
+                fontFamily: "'DM Sans', serif",
                 textDecoration: 'underline',
               }}
             >
@@ -307,7 +307,7 @@ export const QuizPage: React.FC = () => {
             <button
               onClick={volgende}
               style={{
-                fontFamily: "'Cinzel', serif",
+                fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 13, letterSpacing: '0.06em',
                 padding: '10px 24px',
                 background: G.goud, color: '#fff',

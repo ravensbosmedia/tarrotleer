@@ -11,8 +11,8 @@ interface Stijl { kop2: React.CSSProperties; kop3: React.CSSProperties; tekst: R
 export type BlokSoort = 'In het kort' | 'Onthoud dit' | 'Voorbeeld' | 'Oefening' | 'Denk na' | 'Let op';
 const BLOK_SOORTEN: BlokSoort[] = ['In het kort', 'Onthoud dit', 'Voorbeeld', 'Oefening', 'Denk na', 'Let op'];
 export const BLOK_STIJL: Record<BlokSoort, { icoon: string; kleur: string }> = {
-  'In het kort': { icoon: '🗝️', kleur: '#B8860B' },
-  'Onthoud dit': { icoon: '✨', kleur: '#B8860B' },
+  'In het kort': { icoon: '🗝️', kleur: '#E0B04A' },
+  'Onthoud dit': { icoon: '✨', kleur: '#E0B04A' },
   'Voorbeeld':   { icoon: '📖', kleur: '#8FA3B8' },
   'Oefening':    { icoon: '✍️', kleur: '#5FA777' },
   'Denk na':     { icoon: '💭', kleur: '#A78BCA' },
@@ -110,7 +110,7 @@ function blokken(md: string, stijl: Stijl, prefix = 'b', blokWeergave?: BlokWeer
         const { icoon, kleur } = BLOK_STIJL[soort];
         uit.push(
           <div key={k} style={{ border: `1px solid ${kleur}55`, borderLeft: `4px solid ${kleur}`, background: `${kleur}14`, borderRadius: 10, padding: '0.8rem 1rem', margin: '1rem 0' }}>
-            <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.06em', color: kleur, marginBottom: 6 }}>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.06em', color: kleur, marginBottom: 6 }}>
               {icoon} {soort.toUpperCase()}{extra ? <span style={{ fontFamily: 'inherit', textTransform: 'none', opacity: 0.8 }}> {extra}</span> : null}
             </div>
             {inhoud}
@@ -159,7 +159,7 @@ function blokken(md: string, stijl: Stijl, prefix = 'b', blokWeergave?: BlokWeer
       uit.push(
         <div key={k} style={{ overflowX: 'auto', margin: '0.8rem 0 1rem' }}>
           <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 15, lineHeight: 1.5, color: stijl.tekst.color }}>
-            <thead><tr>{kopCellen.map((c, j) => <th key={j} style={{ ...cel, background: 'rgba(184,134,11,0.12)', fontWeight: 600 }}>{inline(c, stijl, `${k}h${j}`)}</th>)}</tr></thead>
+            <thead><tr>{kopCellen.map((c, j) => <th key={j} style={{ ...cel, background: stijl.donker ? 'rgba(239,180,255,0.12)' : 'rgba(91,46,122,0.08)', fontWeight: 600 }}>{inline(c, stijl, `${k}h${j}`)}</th>)}</tr></thead>
             <tbody>{rijen.map((rij, ri) => <tr key={ri} style={{ breakInside: 'avoid' }}>{kopCellen.map((_, j) => <td key={j} style={cel}>{inline(rij[j] || '', stijl, `${k}r${ri}-${j}`)}</td>)}</tr>)}</tbody>
           </table>
         </div>,
@@ -202,13 +202,14 @@ function blokken(md: string, stijl: Stijl, prefix = 'b', blokWeergave?: BlokWeer
 }
 
 export const Markdown: React.FC<{ tekst: string; donker?: boolean; blokWeergave?: BlokWeergave; uitgeklapt?: boolean }> = ({ tekst, donker = true, blokWeergave, uitgeklapt }) => {
-  const kleur = donker ? '#F5EDD8' : '#2C2416';
+  const kleur = donker ? '#FFF3DF' : '#20162F';
+  const accent = donker ? '#F1CB78' : '#5B2E7A';   // Zen Flow: goud op het scherm, paars op papier
   const stijl: Stijl = {
-    kop2: { fontFamily: "'Cinzel', serif", fontSize: 18, letterSpacing: '0.06em', color: '#B8860B', margin: '1.6rem 0 0.6rem' },
-    kop3: { fontFamily: "'Cinzel', serif", fontSize: 15, color: '#B8860B', margin: '1.2rem 0 0.4rem' },
+    kop2: { fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 500, color: accent, margin: '1.6rem 0 0.6rem' },
+    kop3: { fontFamily: "'Cormorant Garamond', serif", fontSize: 19, fontWeight: 500, color: accent, margin: '1.2rem 0 0.4rem' },
     tekst: { fontSize: 16, lineHeight: 1.75, color: kleur, margin: '0 0 0.9rem' },
-    link: '#D4A537',
-    rand: 'rgba(184,134,11,0.3)',
+    link: donker ? '#FFC653' : '#5B2E7A',
+    rand: donker ? 'rgba(239,180,255,0.3)' : 'rgba(91,46,122,0.3)',
     donker,
     open: uitgeklapt,
   };

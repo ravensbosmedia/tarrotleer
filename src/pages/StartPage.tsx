@@ -102,12 +102,12 @@ export const StartPage: React.FC = () => {
         background: 'radial-gradient(circle at 50% 0%, rgba(184,134,11,0.07), transparent 60%)',
       }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ fontSize: 40, marginBottom: '0.6rem', opacity: 0.9 }}>✦</div>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.18em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.8rem' }}>
-            Leeromgeving voor de mystieke kunsten
+          <div style={{ fontSize: 46, marginBottom: '0.4rem', opacity: 0.9, fontFamily: 'Georgia, serif' }}>☾</div>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.18em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.8rem' }}>
+            Leerplatform voor jouw spirituele reis
           </p>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 46, fontWeight: 400, color: G.tekst, marginBottom: '1rem', lineHeight: 1.15 }}>
-            Mystieke Kaarten
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 46, fontWeight: 400, color: G.tekst, marginBottom: '1rem', lineHeight: 1.15 }}>
+            Zen Flow
           </h1>
           <p style={{ fontSize: 19, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, maxWidth: 620, margin: '0 auto' }}>
             Leer en oefen Lenormand, Tarot, Pendel, Numerologie en Astrologie.
@@ -134,7 +134,7 @@ export const StartPage: React.FC = () => {
                 }}>
                   {groep.icoon}
                 </div>
-                <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 400, color: G.tekst, margin: 0 }}>
+                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 400, color: G.tekst, margin: 0 }}>
                   {groep.titel}
                 </h2>
               </div>
@@ -147,7 +147,7 @@ export const StartPage: React.FC = () => {
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem', marginTop: 'auto' }}>
                 {groep.links.map((l) => (
                   <Link key={l.to} to={l.to} style={{
-                    fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.03em',
+                    fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.03em',
                     padding: '6px 13px', borderRadius: 16, textDecoration: 'none',
                     color: G.tekst2, background: G.bg2, border: `0.5px solid ${G.rand}`,
                     transition: 'all 0.14s', whiteSpace: 'nowrap',

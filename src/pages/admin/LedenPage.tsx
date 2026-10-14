@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Lid, Abonnement, ABONNEMENT_LABEL, datumNL } from '../../lib/account';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8',
-  bg: '#1A1209', bg2: '#2C2416', rand: 'rgba(184,134,11,0.25)',
+  goud: '#F1CB78', goudBleek: '#FFF3DF',
+  bg: '#0D0C22', bg2: '#20162F', rand: 'rgba(241,203,120,0.25)',
 };
 
 type LidMetTelling = Lid & { voortgang_items: number };
@@ -55,9 +55,9 @@ export const LedenPage: React.FC = () => {
   }, [leden]);
 
   return (
-    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'Crimson Pro', serif" }}>
+    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'DM Sans', serif" }}>
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '2.5rem 1rem' }}>
-        <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 24, letterSpacing: '0.15em', color: G.goud, textAlign: 'center', margin: '0 0 0.5rem' }}>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, letterSpacing: '0.15em', color: G.goud, textAlign: 'center', margin: '0 0 0.5rem' }}>
           LEDEN
         </h1>
         {leden && (
@@ -84,7 +84,7 @@ export const LedenPage: React.FC = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.8rem', flexWrap: 'wrap', alignItems: 'baseline' }}>
                   <div>
                     <strong style={{ fontSize: 17 }}>{l.naam}</strong>
-                    {l.rol === 'admin' && <span style={{ fontSize: 11, marginLeft: 8, color: G.goud, fontFamily: "'Cinzel', serif" }}>BEHEERDER</span>}
+                    {l.rol === 'admin' && <span style={{ fontSize: 11, marginLeft: 8, color: G.goud, fontFamily: "'Cormorant Garamond', serif" }}>BEHEERDER</span>}
                     <div style={{ opacity: 0.7, fontSize: 15, wordBreak: 'break-all' }}>{l.email}</div>
                   </div>
                   <div style={{ fontSize: 13, opacity: 0.55, textAlign: 'right' }}>

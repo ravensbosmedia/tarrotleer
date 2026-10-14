@@ -203,13 +203,13 @@ const LichaamDiagram: React.FC<{ actief: number | null; onKlik: (nr: number) => 
             {/* Nummer */}
             <text x={pos.x} y={pos.y + 4} textAnchor="middle"
               fontSize={isActief ? 10 : 9}
-              fill="white" fontFamily="'Cinzel', serif" fontWeight="bold">
+              fill="white" fontFamily="'Cormorant Garamond', serif" fontWeight="bold">
               {ch.nr}
             </text>
             {/* Label rechts */}
             <text x={pos.x + 20} y={pos.y + 4} textAnchor="start"
               fontSize={9.5} fill={isActief ? G.goud : G.tekst3}
-              fontFamily="'Cinzel', serif" style={{ transition: 'fill 0.2s' }}>
+              fontFamily="'Cormorant Garamond', serif" style={{ transition: 'fill 0.2s' }}>
               {ch.naam}
             </text>
           </g>
@@ -237,10 +237,10 @@ export const ChakrasPage: React.FC = () => {
       {/* ── Hero ── */}
       <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3.5rem 2rem 2.5rem' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.7rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.7rem' }}>
             Energiecentra van het lichaam
           </p>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 38, fontWeight: 400, color: G.tekst, marginBottom: '0.7rem' }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 38, fontWeight: 400, color: G.tekst, marginBottom: '0.7rem' }}>
             De 7 Chakra's
           </h1>
           <p style={{ fontSize: 18, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, maxWidth: 580 }}>
@@ -254,7 +254,7 @@ export const ChakrasPage: React.FC = () => {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '3rem' }}>
 
           <div style={{ background: G.bg2, border: `0.5px solid ${G.rand2}`, borderRadius: 8, padding: '1.8rem' }}>
-            <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 18, fontWeight: 400, color: G.tekst, marginBottom: '1rem' }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 400, color: G.tekst, marginBottom: '1rem' }}>
               Hoe pendel je boven een chakra?
             </h2>
             <ol style={{ paddingLeft: '1.3rem', color: G.tekst2, lineHeight: 1.9, fontSize: 15 }}>
@@ -268,7 +268,7 @@ export const ChakrasPage: React.FC = () => {
           </div>
 
           <div style={{ background: G.bg2, border: `0.5px solid ${G.rand2}`, borderRadius: 8, padding: '1.8rem' }}>
-            <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 18, fontWeight: 400, color: G.tekst, marginBottom: '1rem' }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 400, color: G.tekst, marginBottom: '1rem' }}>
               Wat betekent de beweging?
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: 15, color: G.tekst2 }}>
@@ -306,10 +306,10 @@ export const ChakrasPage: React.FC = () => {
 
         {/* ── Interactief gedeelte ── */}
         <div style={{ borderTop: `0.5px solid ${G.rand}`, paddingTop: '2.5rem' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
             Interactief
           </p>
-          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 400, color: G.tekst, marginBottom: '0.4rem' }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 400, color: G.tekst, marginBottom: '0.4rem' }}>
             Klik op een chakra om meer te leren
           </h2>
           <p style={{ fontSize: 15, fontStyle: 'italic', color: G.tekst2, marginBottom: '2rem' }}>
@@ -350,12 +350,12 @@ export const ChakrasPage: React.FC = () => {
                       width: 44, height: 44, borderRadius: '50%',
                       background: actiefChakra.kleur, flexShrink: 0,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: 'white', fontFamily: "'Cinzel', serif", fontWeight: 'bold', fontSize: 16,
+                      color: 'white', fontFamily: "'Cormorant Garamond', serif", fontWeight: 'bold', fontSize: 16,
                     }}>
                       {actiefChakra.nr}
                     </div>
                     <div>
-                      <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 20, fontWeight: 400, color: G.tekst, margin: 0 }}>
+                      <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, color: G.tekst, margin: 0 }}>
                         {actiefChakra.naam}
                       </h3>
                       <span style={{ fontSize: 13, color: G.tekst3, fontStyle: 'italic' }}>
@@ -366,26 +366,26 @@ export const ChakrasPage: React.FC = () => {
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
                     <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 6, padding: '1rem' }}>
-                      <p style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Locatie</p>
+                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Locatie</p>
                       <p style={{ fontSize: 14, color: G.tekst2, margin: 0 }}>{actiefChakra.locatie}</p>
                     </div>
                     <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 6, padding: '1rem' }}>
-                      <p style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Thema</p>
+                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Thema</p>
                       <p style={{ fontSize: 14, color: G.tekst2, margin: 0 }}>{actiefChakra.thema}</p>
                     </div>
                     <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 6, padding: '1rem' }}>
-                      <p style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Organen</p>
+                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Organen</p>
                       <p style={{ fontSize: 13, color: G.tekst2, margin: 0 }}>{actiefChakra.organen}</p>
                     </div>
                     <div style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 6, padding: '1rem' }}>
-                      <p style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Toon</p>
+                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Toon</p>
                       <p style={{ fontSize: 14, color: G.tekst2, margin: 0 }}>{actiefChakra.toon}</p>
                     </div>
                   </div>
 
                   {/* Eigenschappen */}
                   <div style={{ marginBottom: '1.5rem' }}>
-                    <p style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: '0.6rem' }}>Kwaliteiten</p>
+                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', marginBottom: '0.6rem' }}>Kwaliteiten</p>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                       {actiefChakra.eigenschappen.map((e, i) => (
                         <span key={i} style={{
@@ -401,7 +401,7 @@ export const ChakrasPage: React.FC = () => {
 
                   {/* Pendel oefening */}
                   <div style={{ background: G.bg2, border: `0.5px solid ${G.rand2}`, borderRadius: 8, padding: '1.4rem' }}>
-                    <p style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.06em', color: G.goud, marginBottom: '0.4rem' }}>
+                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.06em', color: G.goud, marginBottom: '0.4rem' }}>
                       Pendel oefening — {actiefChakra.naam}
                     </p>
                     <p style={{ fontSize: 13, color: G.tekst3, fontStyle: 'italic', marginBottom: '1.2rem' }}>
@@ -425,7 +425,7 @@ export const ChakrasPage: React.FC = () => {
                           key={b}
                           onClick={() => setPendelBeweging(b)}
                           style={{
-                            fontFamily: "'Crimson Pro', serif",
+                            fontFamily: "'DM Sans', serif",
                             fontSize: 14, textAlign: 'left',
                             padding: '8px 12px', borderRadius: 6,
                             border: `0.5px solid ${pendelBeweging === b ? kleur : G.rand2}`,
@@ -461,10 +461,10 @@ export const ChakrasPage: React.FC = () => {
 
         {/* ── Alle chakra's overzicht ── */}
         <div style={{ borderTop: `0.5px solid ${G.rand}`, paddingTop: '2.5rem', marginTop: '3rem' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
             Compleet overzicht
           </p>
-          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 400, color: G.tekst, marginBottom: '2rem' }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 400, color: G.tekst, marginBottom: '2rem' }}>
             Alle 7 chakra's
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
@@ -480,7 +480,7 @@ export const ChakrasPage: React.FC = () => {
           background: G.goudBleek, border: `0.5px solid ${G.rand2}`,
           borderRadius: 8, padding: '1.5rem 1.8rem',
         }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.06em', color: G.goudDonker, marginBottom: '0.5rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.06em', color: G.goudDonker, marginBottom: '0.5rem' }}>
             Belangrijke opmerking
           </p>
           <p style={{ fontSize: 15, color: G.tekst2, lineHeight: 1.7, margin: 0 }}>
@@ -515,12 +515,12 @@ const ChakraKaart: React.FC<{ chakra: Chakra; actief: boolean; onClick: () => vo
           width: 32, height: 32, borderRadius: '50%',
           background: chakra.kleur, flexShrink: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'white', fontFamily: "'Cinzel', serif", fontWeight: 'bold', fontSize: 13,
+          color: 'white', fontFamily: "'Cormorant Garamond', serif", fontWeight: 'bold', fontSize: 13,
         }}>
           {chakra.nr}
         </div>
         <div>
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 14, color: G.tekst }}>{chakra.naam}</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 14, color: G.tekst }}>{chakra.naam}</div>
           <div style={{ fontSize: 12, color: G.tekst3, fontStyle: 'italic' }}>{chakra.sanskrit}</div>
         </div>
       </div>

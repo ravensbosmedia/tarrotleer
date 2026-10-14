@@ -143,3 +143,12 @@ Sinds 14-10-2026 ook bereikbaar op https://leren.zen-flow.nl (nginx `server_name
 
 ## Trainersvideo's
 Per cursus uploaden in Academie (beheer) (mp4/webm, tot 2 GB; nginx-locatie `/api/admin/academie/<slug>/video`). Bestanden in `data/academie-video/` (buiten academie-media; verwijderen = naar `archief/`), tabel `academie_videos` met hoofdstukken en tijdmarkeringen (`hoofdstuk | m:ss | omschrijving`). Afspelen via `/api/admin/academie/video/:id/bestand` (alleen beheerders, met Range). In de cursusspeler zien beheerders per hoofdstuk de video met springknoppen.
+
+## Zen Flow-stijl (sinds 14-10-2026)
+De leeromgeving gaat over naar de stijl van https://zen-flow.nl (stijlgids: `/home/ubuntu/zen-flow-voorpagina/bron/documentatie/STIJLGIDS.md`): middernacht `#0D0C22`, paneel `#20162F`, goud `#F1CB78`, tekst `#FFF3DF` / `#E0D5E9`, paarse randen `#EFB4FF`/`#C292BD`, gouden knop `linear-gradient(#FFEEB5,#FFC653 58%,#EEB153)`; koppen Cormorant Garamond, tekst DM Sans.
+Omzetten gaat in fasen met `scripts/zenflow-stijl.py` (eerst proefrun, dan `--toepassen`):
+- **Fase 1 (gedaan):** lettertypen overal; kleuren in de donkere pagina's (Academie, account, voortgang, horoscoop, cursusmodules, numerologie, beheer); menu, inlogscherm (`accounts.ts`), favicon, titel, naam "Zen Flow". Met de hand: `Markdown.tsx` (goud op scherm, paars op papier) en `AcademiePrint.tsx` (paarse accenten op wit).
+- **Fase 2:** de lichte crème pagina's (start, pendel, Lenormand, numerologie-analyse) naar donker.
+- **Fase 3:** de Tailwind-tarotpagina's (wit/paars) naar donker.
+Niet aanpassen: "Mystieke Lenormand" (naam van het kaartspel). De kopafbeeldingen van de Academie bevatten nog de tekst "Mystieke Kaarten" (in de afbeelding zelf).
+

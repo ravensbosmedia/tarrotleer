@@ -2,12 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const G = {
-  goud: '#B8860B',
-  goudBleek: '#F5EDD8',
-  goudDonker: '#7A5C00',
-  bg: '#1A1208',
-  bg2: '#2C2416',
-  bg3: '#3A2E1C',
+  goud: '#F1CB78',
+  goudBleek: '#FFF3DF',
+  goudDonker: '#E0B04A',
+  bg: '#0D0C22',
+  bg2: '#20162F',
+  bg3: '#2D2040',
 };
 
 const MODULES = [
@@ -103,24 +103,24 @@ const MODULES = [
 
 export const CursusHubPage: React.FC = () => {
   return (
-    <div style={{ background: G.bg, minHeight: '100vh', color: G.goudBleek, fontFamily: "'Crimson Pro', Georgia, serif" }}>
+    <div style={{ background: G.bg, minHeight: '100vh', color: G.goudBleek, fontFamily: "'DM Sans', sans-serif" }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '3rem 1.5rem' }}>
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <div style={{ fontSize: 48, marginBottom: '1rem' }}>✦</div>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 28, color: G.goud, letterSpacing: '0.08em', marginBottom: '0.5rem' }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: G.goud, letterSpacing: '0.08em', marginBottom: '0.5rem' }}>
             AuraLine Cursus
           </h1>
-          <p style={{ color: 'rgba(245,237,216,0.70)', fontSize: 16, maxWidth: 600, margin: '0 auto', lineHeight: 1.6 }}>
+          <p style={{ color: 'rgba(255,243,223,0.70)', fontSize: 16, maxWidth: 600, margin: '0 auto', lineHeight: 1.6 }}>
             Leerplatform voor adviseurs. Leer alle berekeningen, betekenissen en technieken die AuraLine gebruikt — zodat je de output kunt duiden en uitleggen.
           </p>
         </div>
 
         {/* Werkvolgorde */}
-        <div style={{ background: 'rgba(184,134,11,0.08)', border: '0.5px solid rgba(184,134,11,0.25)', borderRadius: 10, padding: '1.25rem 1.5rem', marginBottom: '2.5rem' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 11, color: G.goud, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Aanbevolen werkvolgorde</p>
-          <p style={{ fontSize: 14, color: 'rgba(245,237,216,0.75)', lineHeight: 1.7, margin: 0 }}>
+        <div style={{ background: 'rgba(241,203,120,0.08)', border: '0.5px solid rgba(241,203,120,0.25)', borderRadius: 10, padding: '1.25rem 1.5rem', marginBottom: '2.5rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: G.goud, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Aanbevolen werkvolgorde</p>
+          <p style={{ fontSize: 14, color: 'rgba(255,243,223,0.75)', lineHeight: 1.7, margin: 0 }}>
             Start met <strong style={{ color: G.goudBleek }}>Module 1-3</strong> voor je eigen geboortedatum + naam →
             doe <strong style={{ color: G.goudBleek }}>Module 4-6</strong> voor astrologische context →
             <strong style={{ color: G.goudBleek }}> Module 7</strong> voor compatibiliteit →
@@ -138,7 +138,7 @@ export const CursusHubPage: React.FC = () => {
             >
               <div style={{
                 background: G.bg2,
-                border: `0.5px solid rgba(184,134,11,0.20)`,
+                border: `0.5px solid rgba(241,203,120,0.20)`,
                 borderRadius: 12,
                 padding: '1.5rem',
                 cursor: 'pointer',
@@ -148,7 +148,7 @@ export const CursusHubPage: React.FC = () => {
                 flexDirection: 'column',
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G.goud; (e.currentTarget as HTMLElement).style.background = G.bg3; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(184,134,11,0.20)'; (e.currentTarget as HTMLElement).style.background = G.bg2; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(241,203,120,0.20)'; (e.currentTarget as HTMLElement).style.background = G.bg2; }}
               >
                 {/* Module nummer + emoji */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
@@ -163,28 +163,28 @@ export const CursusHubPage: React.FC = () => {
                     {mod.emoji}
                   </div>
                   <div>
-                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, color: 'rgba(184,134,11,0.6)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, color: 'rgba(241,203,120,0.6)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
                       Module {mod.nr}
                     </div>
-                    <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: G.goudBleek, lineHeight: 1.3 }}>
+                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: G.goudBleek, lineHeight: 1.3 }}>
                       {mod.titel}
                     </div>
                   </div>
                 </div>
 
-                <p style={{ fontSize: 12, color: 'rgba(184,134,11,0.75)', marginBottom: '0.5rem', fontFamily: "'Cinzel', serif", letterSpacing: '0.06em' }}>
+                <p style={{ fontSize: 12, color: 'rgba(241,203,120,0.75)', marginBottom: '0.5rem', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.06em' }}>
                   {mod.subtitel}
                 </p>
 
-                <p style={{ fontSize: 13.5, color: 'rgba(245,237,216,0.70)', lineHeight: 1.6, flex: 1, marginBottom: '1rem' }}>
+                <p style={{ fontSize: 13.5, color: 'rgba(255,243,223,0.70)', lineHeight: 1.6, flex: 1, marginBottom: '1rem' }}>
                   {mod.beschrijving}
                 </p>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 12, color: 'rgba(245,237,216,0.40)' }}>
+                  <span style={{ fontSize: 12, color: 'rgba(255,243,223,0.40)' }}>
                     {mod.lessen} {mod.lessen === 1 ? 'les' : 'lessen'}
                   </span>
-                  <span style={{ fontSize: 12, color: G.goud, fontFamily: "'Cinzel', serif", letterSpacing: '0.06em' }}>
+                  <span style={{ fontSize: 12, color: G.goud, fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.06em' }}>
                     Start →
                   </span>
                 </div>
@@ -194,7 +194,7 @@ export const CursusHubPage: React.FC = () => {
         </div>
 
         {/* Footer info */}
-        <div style={{ marginTop: '3rem', textAlign: 'center', color: 'rgba(245,237,216,0.35)', fontSize: 12 }}>
+        <div style={{ marginTop: '3rem', textAlign: 'center', color: 'rgba(255,243,223,0.35)', fontSize: 12 }}>
           <p>Elke module heeft theorie, berekening, voorbeeld, oefeningen en een quiz.</p>
         </div>
       </div>

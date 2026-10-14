@@ -12,7 +12,7 @@ const G = {
 
 const InfoRij: React.FC<{ label: string; tekst: string; kleur?: string }> = ({ label, tekst, kleur }) => (
   <div style={{ marginBottom: '0.75rem' }}>
-    <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.10em', color: kleur ?? G.tekst3, textTransform: 'uppercase', marginBottom: 3 }}>{label}</div>
+    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.10em', color: kleur ?? G.tekst3, textTransform: 'uppercase', marginBottom: 3 }}>{label}</div>
     <div style={{ fontSize: 14, color: G.tekst2, lineHeight: 1.65 }}>{tekst}</div>
   </div>
 );
@@ -39,10 +39,10 @@ const KaartModal: React.FC<{ kaart: LenormandKaart; onSluit: () => void }> = ({ 
       <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
         <LenormandKaartVisueel kaart={kaart} grootte={140} />
         <div style={{ flex: 1 }}>
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.3rem' }}>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.3rem' }}>
             Kaart {kaart.id}
           </div>
-          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 26, fontWeight: 400, color: G.tekst, marginBottom: '0.5rem' }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, fontWeight: 400, color: G.tekst, marginBottom: '0.5rem' }}>
             {kaart.naam}
           </h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: '1rem' }}>
@@ -75,11 +75,11 @@ const KaartModal: React.FC<{ kaart: LenormandKaart; onSluit: () => void }> = ({ 
       {/* Positief / Negatief */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
         <div style={{ background: '#F0FDF4', border: '0.5px solid #86EFAC', borderRadius: 6, padding: '0.9rem' }}>
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.10em', color: '#16A34A', textTransform: 'uppercase', marginBottom: 4 }}>Positief aspect</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.10em', color: '#16A34A', textTransform: 'uppercase', marginBottom: 4 }}>Positief aspect</div>
           <p style={{ fontSize: 14, color: '#15803D', margin: 0 }}>{kaart.positief}</p>
         </div>
         <div style={{ background: '#FEF2F2', border: '0.5px solid #FCA5A5', borderRadius: 6, padding: '0.9rem' }}>
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.10em', color: '#DC2626', textTransform: 'uppercase', marginBottom: 4 }}>Uitdagend aspect</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.10em', color: '#DC2626', textTransform: 'uppercase', marginBottom: 4 }}>Uitdagend aspect</div>
           <p style={{ fontSize: 14, color: '#B91C1C', margin: 0 }}>{kaart.negatief}</p>
         </div>
       </div>
@@ -87,7 +87,7 @@ const KaartModal: React.FC<{ kaart: LenormandKaart; onSluit: () => void }> = ({ 
       <button
         onClick={onSluit}
         style={{
-          fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.08em',
+          fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.08em',
           padding: '9px 24px', borderRadius: 20,
           border: `0.5px solid ${G.rand2}`,
           background: 'transparent', color: G.tekst3, cursor: 'pointer',
@@ -119,10 +119,10 @@ export const LenormandBibliotheekPage: React.FC = () => {
       {/* Hero */}
       <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3.5rem 2rem 2.5rem' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.7rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.7rem' }}>
             Mystieke Lenormand
           </p>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 38, fontWeight: 400, color: G.tekst, marginBottom: '0.7rem' }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 38, fontWeight: 400, color: G.tekst, marginBottom: '0.7rem' }}>
             Kaarten Bibliotheek
           </h1>
           <p style={{ fontSize: 18, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, maxWidth: 560 }}>
@@ -140,7 +140,7 @@ export const LenormandBibliotheekPage: React.FC = () => {
             value={zoek}
             onChange={e => setZoek(e.target.value)}
             style={{
-              fontFamily: "'Crimson Pro', serif", fontSize: 16, color: G.tekst,
+              fontFamily: "'DM Sans', serif", fontSize: 16, color: G.tekst,
               background: G.bg, border: `0.5px solid ${G.rand2}`,
               borderRadius: 6, padding: '0.7rem 1rem', outline: 'none',
               flex: 1, maxWidth: 420,
@@ -160,7 +160,7 @@ export const LenormandBibliotheekPage: React.FC = () => {
               onClick={() => setGeselecteerd(kaart)}
             >
               <LenormandKaartVisueel kaart={kaart} grootte={130} />
-              <div style={{ fontSize: 11, color: G.tekst3, fontFamily: "'Cinzel', serif", letterSpacing: '0.04em', textAlign: 'center', maxWidth: 85 }}>
+              <div style={{ fontSize: 11, color: G.tekst3, fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.04em', textAlign: 'center', maxWidth: 85 }}>
                 {kaart.sleutelwoorden[0]}
               </div>
             </div>

@@ -74,7 +74,7 @@ export const LenormandKaartVisueel: React.FC<Props> = ({
             position: 'absolute',
             top: Math.round(grootte * 0.04),
             left: Math.round(grootte * 0.05),
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: numFontSize,
             color: '#fff',
             fontWeight: 700,
@@ -89,7 +89,7 @@ export const LenormandKaartVisueel: React.FC<Props> = ({
             position: 'absolute', left: 0, right: 0, bottom: 0,
             padding: `${Math.round(grootte * 0.07)}px ${Math.round(grootte * 0.04)}px ${Math.round(grootte * 0.04)}px`,
             background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0) 100%)',
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: naamFontSize,
             color: '#fff',
             textAlign: 'center',
@@ -115,7 +115,7 @@ export const LenormandKaartVisueel: React.FC<Props> = ({
 
           {/* Nummer */}
           <div style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: numFontSize,
             color: kaart.kleur,
             fontWeight: 600,
@@ -132,7 +132,7 @@ export const LenormandKaartVisueel: React.FC<Props> = ({
 
           {/* Naam */}
           <div style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: naamFontSize,
             color: kaart.kleurDonker,
             textAlign: 'center',

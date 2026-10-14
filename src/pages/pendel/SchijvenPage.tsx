@@ -99,10 +99,10 @@ const SchijfModal: React.FC<{
           style={{ position: 'absolute', top: '1.2rem', right: '1.2rem', fontSize: 22, color: G.tekst3, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}
         >×</button>
 
-        <p style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.4rem' }}>
+        <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.4rem' }}>
           Pendelschijf
         </p>
-        <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 24, fontWeight: 400, color: G.tekst, marginBottom: '0.5rem' }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 400, color: G.tekst, marginBottom: '0.5rem' }}>
           {schijf.naam}
         </h2>
         <p style={{ fontSize: 15, color: G.tekst2, fontStyle: 'italic', marginBottom: '1.5rem', lineHeight: 1.6 }}>
@@ -120,7 +120,7 @@ const SchijfModal: React.FC<{
             onClick={() => setUitlegOpen(p => !p)}
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
-              fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em',
+              fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em',
               color: G.goud, background: 'none', border: 'none', cursor: 'pointer', padding: 0,
             }}
           >
@@ -151,7 +151,7 @@ const SchijfModal: React.FC<{
           <button
             onClick={handleDownload}
             style={{
-              fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em',
+              fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em',
               padding: '9px 20px', background: G.goudBleek, color: G.goudDonker,
               border: `0.5px solid ${G.rand2}`, borderRadius: 4, cursor: 'pointer',
             }}
@@ -161,7 +161,7 @@ const SchijfModal: React.FC<{
           <button
             onClick={handlePrint}
             style={{
-              fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em',
+              fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em',
               padding: '9px 20px', background: G.goud, color: '#fff',
               border: 'none', borderRadius: 4, cursor: 'pointer',
             }}
@@ -171,7 +171,7 @@ const SchijfModal: React.FC<{
           <button
             onClick={onSluit}
             style={{
-              fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em',
+              fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em',
               padding: '9px 20px', background: 'transparent', color: G.tekst3,
               border: `0.5px solid ${G.rand2}`, borderRadius: 4, cursor: 'pointer',
             }}
@@ -193,10 +193,10 @@ export const SchijvenPage: React.FC = () => {
       {/* Header */}
       <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3.5rem 2rem 2.5rem' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.7rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.7rem' }}>
             Digitale hulpmiddelen
           </p>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 400, color: G.tekst, marginBottom: '0.5rem' }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, fontWeight: 400, color: G.tekst, marginBottom: '0.5rem' }}>
             Pendelschijven
           </h1>
           <p style={{ fontSize: 17, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, maxWidth: 560 }}>
@@ -251,7 +251,7 @@ const SchijfKaart: React.FC<{
       <div style={{ display: 'flex', justifyContent: 'center', pointerEvents: 'none', marginBottom: '0.75rem' }}>
         <PendelSchijf schijf={schijf} grootte={140} toonLabels={true} />
       </div>
-      <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: G.tekst, marginBottom: '0.25rem' }}>
+      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: G.tekst, marginBottom: '0.25rem' }}>
         {schijf.naam}
       </div>
       <div style={{ fontSize: 12, color: G.tekst3, fontStyle: 'italic', marginBottom: '0.6rem' }}>

@@ -18,14 +18,14 @@ export function CompatibiliteitPage() {
 
   const TekenKiezer = ({ geselecteerd, onKies, titel }: { geselecteerd: Teken | null, onKies: (t: Teken) => void, titel: string }) => (
     <div>
-      <div style={{ color: '#a89060', fontFamily: 'Cinzel, serif', fontSize: '0.85rem', marginBottom: '0.75rem', textAlign: 'center' }}>{titel}</div>
+      <div style={{ color: '#a89060', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.85rem', marginBottom: '0.75rem', textAlign: 'center' }}>{titel}</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
         {TEKENS.map(t => (
           <button key={t} onClick={() => onKies(t)} style={{
             padding: '0.5rem 0.25rem', borderRadius: 10, border: 'none', cursor: 'pointer',
             background: geselecteerd === t ? '#d4af37' : 'rgba(255,255,255,0.07)',
             color: geselecteerd === t ? '#1a0a2e' : '#d4cfc0',
-            fontFamily: 'Crimson Pro, serif', fontSize: '0.8rem', textAlign: 'center',
+            fontFamily: 'DM Sans, serif', fontSize: '0.8rem', textAlign: 'center',
             transition: 'all 0.2s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem',
           }}>
             <span style={{ fontSize: '1.3rem' }}>{TEKEN_EMOJI[t]}</span>
@@ -42,10 +42,10 @@ export function CompatibiliteitPage() {
 
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>💞</div>
-          <h1 style={{ fontFamily: 'Cinzel, serif', color: '#d4af37', fontSize: '2rem', marginBottom: '0.5rem' }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#d4af37', fontSize: '2rem', marginBottom: '0.5rem' }}>
             Sterrenbeelden Compatibiliteit
           </h1>
-          <p style={{ color: '#a89060', fontFamily: 'Crimson Pro, serif', fontSize: '1.1rem' }}>
+          <p style={{ color: '#a89060', fontFamily: 'DM Sans, serif', fontSize: '1.1rem' }}>
             Ontdek de astrologische harmonie tussen twee tekens
           </p>
         </div>
@@ -55,7 +55,7 @@ export function CompatibiliteitPage() {
           <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 16, border: '1px solid rgba(212,175,55,0.3)', padding: '2rem' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '1.5rem', alignItems: 'center' }}>
               <TekenKiezer geselecteerd={teken1} onKies={setTeken1} titel="Jouw sterrenbeeld" />
-              <div style={{ color: '#d4af37', fontFamily: 'Cinzel, serif', fontSize: '1.5rem', textAlign: 'center' }}>×</div>
+              <div style={{ color: '#d4af37', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.5rem', textAlign: 'center' }}>×</div>
               <TekenKiezer geselecteerd={teken2} onKies={setTeken2} titel="Partner/vriend sterrenbeeld" />
             </div>
 
@@ -63,7 +63,7 @@ export function CompatibiliteitPage() {
               <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
                 <button onClick={() => {}} style={{
                   padding: '0.75rem 2rem', background: '#d4af37', border: 'none', borderRadius: 25,
-                  color: '#1a0a2e', fontFamily: 'Cinzel, serif', fontSize: '1rem', cursor: 'default',
+                  color: '#1a0a2e', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1rem', cursor: 'default',
                 }}>
                   ✨ {teken1} {TEKEN_EMOJI[teken1]} × {teken2} {TEKEN_EMOJI[teken2]}
                 </button>
@@ -71,7 +71,7 @@ export function CompatibiliteitPage() {
             )}
 
             {!teken1 && (
-              <p style={{ textAlign: 'center', color: '#7a6a4a', fontFamily: 'Crimson Pro, serif', marginTop: '1.5rem' }}>
+              <p style={{ textAlign: 'center', color: '#7a6a4a', fontFamily: 'DM Sans, serif', marginTop: '1.5rem' }}>
                 Kies beide sterrenbeelden om de compatibiliteit te zien
               </p>
             )}
@@ -88,7 +88,7 @@ export function CompatibiliteitPage() {
                 <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>
                   {TEKEN_EMOJI[teken1]} × {TEKEN_EMOJI[teken2]}
                 </div>
-                <h2 style={{ fontFamily: 'Cinzel, serif', color: '#d4af37', fontSize: '1.5rem', margin: '0 0 0.25rem' }}>
+                <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#d4af37', fontSize: '1.5rem', margin: '0 0 0.25rem' }}>
                   {teken1} & {teken2}
                 </h2>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
@@ -104,12 +104,12 @@ export function CompatibiliteitPage() {
 
               {/* Score */}
               <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                <div style={{ fontSize: '4rem', fontFamily: 'Cinzel, serif', color: NIVEAU_KLEUR[resultaat.niveau], lineHeight: 1 }}>
+                <div style={{ fontSize: '4rem', fontFamily: "'Cormorant Garamond', Georgia, serif", color: NIVEAU_KLEUR[resultaat.niveau], lineHeight: 1 }}>
                   {resultaat.score}/10
                 </div>
                 <div style={{ marginTop: '0.75rem' }}>
                   <span style={{
-                    padding: '0.4rem 1.25rem', borderRadius: 20, fontSize: '0.9rem', fontFamily: 'Cinzel, serif',
+                    padding: '0.4rem 1.25rem', borderRadius: 20, fontSize: '0.9rem', fontFamily: "'Cormorant Garamond', Georgia, serif",
                     background: NIVEAU_KLEUR[resultaat.niveau] + '25', color: NIVEAU_KLEUR[resultaat.niveau],
                     border: `1px solid ${NIVEAU_KLEUR[resultaat.niveau]}50`,
                   }}>{resultaat.niveau}</span>
@@ -121,25 +121,25 @@ export function CompatibiliteitPage() {
               </div>
 
               {/* Samenvatting */}
-              <p style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '1.1rem', lineHeight: 1.8, textAlign: 'center', marginBottom: '2rem' }}>
+              <p style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '1.1rem', lineHeight: 1.8, textAlign: 'center', marginBottom: '2rem' }}>
                 {resultaat.samenvatting}
               </p>
 
               {/* Sterktes & uitdagingen */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                 <div style={{ background: 'rgba(39,174,96,0.08)', borderRadius: 10, padding: '1.25rem', border: '1px solid rgba(39,174,96,0.25)' }}>
-                  <h3 style={{ color: '#27ae60', fontFamily: 'Cinzel, serif', margin: '0 0 0.75rem', fontSize: '0.95rem' }}>✓ Sterktes</h3>
+                  <h3 style={{ color: '#27ae60', fontFamily: "'Cormorant Garamond', Georgia, serif", margin: '0 0 0.75rem', fontSize: '0.95rem' }}>✓ Sterktes</h3>
                   <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
                     {resultaat.sterktes.map((s, i) => (
-                      <li key={i} style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '0.95rem', marginBottom: '0.4rem' }}>{s}</li>
+                      <li key={i} style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.95rem', marginBottom: '0.4rem' }}>{s}</li>
                     ))}
                   </ul>
                 </div>
                 <div style={{ background: 'rgba(231,76,60,0.08)', borderRadius: 10, padding: '1.25rem', border: '1px solid rgba(231,76,60,0.25)' }}>
-                  <h3 style={{ color: '#e74c3c', fontFamily: 'Cinzel, serif', margin: '0 0 0.75rem', fontSize: '0.95rem' }}>⚡ Uitdagingen</h3>
+                  <h3 style={{ color: '#e74c3c', fontFamily: "'Cormorant Garamond', Georgia, serif", margin: '0 0 0.75rem', fontSize: '0.95rem' }}>⚡ Uitdagingen</h3>
                   <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
                     {resultaat.uitdagingen.map((u, i) => (
-                      <li key={i} style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '0.95rem', marginBottom: '0.4rem' }}>{u}</li>
+                      <li key={i} style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.95rem', marginBottom: '0.4rem' }}>{u}</li>
                     ))}
                   </ul>
                 </div>
@@ -150,7 +150,7 @@ export function CompatibiliteitPage() {
             <div style={{ textAlign: 'center' }}>
               <button onClick={reset} style={{
                 padding: '0.75rem 2rem', background: 'transparent', border: '1px solid #d4af37',
-                color: '#d4af37', borderRadius: 25, fontFamily: 'Cinzel, serif', cursor: 'pointer', fontSize: '0.9rem',
+                color: '#d4af37', borderRadius: 25, fontFamily: "'Cormorant Garamond', Georgia, serif", cursor: 'pointer', fontSize: '0.9rem',
               }}>
                 ← Nieuwe combinatie proberen
               </button>
@@ -161,16 +161,16 @@ export function CompatibiliteitPage() {
         {/* Alle tekens overzicht */}
         {!resultaat && (
           <div style={{ marginTop: '2rem' }}>
-            <h3 style={{ color: '#a89060', fontFamily: 'Cinzel, serif', fontSize: '0.9rem', textAlign: 'center', marginBottom: '1rem' }}>
+            <h3 style={{ color: '#a89060', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.9rem', textAlign: 'center', marginBottom: '1rem' }}>
               Elementen & Tekens
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
               {(['Vuur', 'Aarde', 'Lucht', 'Water'] as const).map(el => (
                 <div key={el} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 10, padding: '1rem', border: `1px solid ${ELEMENT_KLEUR[el]}30` }}>
-                  <div style={{ color: ELEMENT_KLEUR[el], fontFamily: 'Cinzel, serif', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                  <div style={{ color: ELEMENT_KLEUR[el], fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>
                     {el}
                   </div>
-                  <div style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '0.9rem' }}>
+                  <div style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.9rem' }}>
                     {TEKENS.filter(t => TEKEN_ELEMENT[t] === el).map(t => `${TEKEN_EMOJI[t]} ${t}`).join(' · ')}
                   </div>
                 </div>
@@ -180,14 +180,14 @@ export function CompatibiliteitPage() {
         )}
         {/* Gerelateerde tools */}
         <div style={{ borderTop: '0.5px solid rgba(184,134,11,0.15)', paddingTop: '1.25rem', paddingBottom: '2rem', marginTop: '1rem' }}>
-          <div style={{ fontFamily: 'Cinzel, serif', fontSize: '0.7rem', color: 'rgba(184,134,11,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Gerelateerde tools</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.7rem', color: 'rgba(184,134,11,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Gerelateerde tools</div>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {[
               { to: '/sterrenbeelden', label: 'Sterrenbeelden' },
               { to: '/cursus/module-07', label: 'Cursus: Compatibiliteit' },
               { to: '/cursus/module-04', label: 'Cursus: Sterrenbeelden' },
             ].map(l => (
-              <a key={l.to} href={l.to} style={{ fontSize: '0.75rem', color: 'rgba(184,134,11,0.8)', border: '0.5px solid rgba(184,134,11,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: 'Cinzel, serif', letterSpacing: '0.05em' }}>{l.label}</a>
+              <a key={l.to} href={l.to} style={{ fontSize: '0.75rem', color: 'rgba(184,134,11,0.8)', border: '0.5px solid rgba(184,134,11,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: '0.05em' }}>{l.label}</a>
             ))}
           </div>
         </div>

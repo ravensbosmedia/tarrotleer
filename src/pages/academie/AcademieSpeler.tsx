@@ -9,13 +9,13 @@ import { maakStappen, haalVragen, Stap, Vraag } from '../../lib/lesOpbouw';
 import { TrainersVideoBijHoofdstuk } from '../admin/TrainersVideos';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8', goudLicht: '#D4A537',
-  bg: '#1A1209', bg2: '#2C2416', bg3: '#3A2E1C', rand: 'rgba(184,134,11,0.25)',
-  tekst2: 'rgba(245,237,216,0.75)', tekst3: 'rgba(245,237,216,0.5)', groen: '#5FA777', rood: '#C8604F',
+  goud: '#F1CB78', goudBleek: '#FFF3DF', goudLicht: '#FFC653',
+  bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040', rand: 'rgba(241,203,120,0.25)',
+  tekst2: 'rgba(255,243,223,0.75)', tekst3: 'rgba(255,243,223,0.5)', groen: '#5FA777', rood: '#C8604F',
 };
-const pagina: React.CSSProperties = { minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'Crimson Pro', serif" };
+const pagina: React.CSSProperties = { minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'DM Sans', serif" };
 const knop: React.CSSProperties = {
-  fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.06em', padding: '11px 22px', borderRadius: 24,
+  fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.06em', padding: '11px 22px', borderRadius: 24,
   border: 'none', background: G.goud, color: G.bg, cursor: 'pointer', textDecoration: 'none', display: 'inline-block',
 };
 const knopLicht: React.CSSProperties = { ...knop, background: 'transparent', color: G.goudBleek, border: `1px solid ${G.rand}` };
@@ -35,7 +35,7 @@ const VoorbeeldMelding: React.FC<{ live: number }> = ({ live }) => {
   const { lid } = useAccount();
   if (live || lid?.rol !== 'admin') return null;
   return (
-    <div style={{ background: '#3A2E1C', borderBottom: `1px solid ${G.rand}`, padding: '0.5rem 1rem', textAlign: 'center', fontSize: 14, color: G.tekst2 }}>
+    <div style={{ background: '#2D2040', borderBottom: `1px solid ${G.rand}`, padding: '0.5rem 1rem', textAlign: 'center', fontSize: 14, color: G.tekst2 }}>
       👁 Voorbeeld voor beheerders — deze cursus is nog niet live en dus niet zichtbaar voor klanten.
     </div>
   );
@@ -48,7 +48,7 @@ export const AcademieOverzicht: React.FC = () => {
   return (
     <div style={pagina}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '2.5rem 1rem' }}>
-        <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 28, letterSpacing: '0.14em', color: G.goud, textAlign: 'center', margin: '0 0 0.4rem' }}>SPIRITUELE ACADEMIE</h1>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, letterSpacing: '0.14em', color: G.goud, textAlign: 'center', margin: '0 0 0.4rem' }}>SPIRITUELE ACADEMIE</h1>
         <p style={{ textAlign: 'center', color: G.tekst2, fontSize: 17, margin: '0 0 2rem' }}>Cursussen die je stap voor stap volgt, in je eigen tempo.</p>
         {cursussen === null && <p style={{ textAlign: 'center', color: G.tekst3 }}>Laden…</p>}
         {cursussen && cursussen.length === 0 && <p style={{ textAlign: 'center', color: G.tekst3, fontStyle: 'italic' }}>De eerste cursussen komen binnenkort online.</p>}
@@ -93,7 +93,7 @@ export const AcademieCursus: React.FC = () => {
         <p style={{ margin: '0 0 1rem', fontSize: 15 }}><Link to="/academie" style={{ color: G.goud }}>← Alle cursussen</Link></p>
         {c.hoofdstukken[0]?.afbeelding && <img src={c.hoofdstukken[0].afbeelding} alt="" style={{ width: '100%', borderRadius: 14, display: 'block', marginBottom: '1.2rem' }} />}
         <div style={{ fontSize: 13, color: G.tekst3 }}>Cursus {c.nr}</div>
-        <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 28, color: G.goud, margin: '4px 0 0.6rem', letterSpacing: '0.04em' }}>{c.titel}</h1>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: G.goud, margin: '4px 0 0.6rem', letterSpacing: '0.04em' }}>{c.titel}</h1>
         {c.beschrijving && <p style={{ fontSize: 18, color: G.tekst2, lineHeight: 1.6, margin: '0 0 1rem' }}>{c.beschrijving}</p>}
         {lid?.rol === 'admin' && <p style={{ margin: '0 0 1rem' }}><Link to={`/academie/${c.slug}/print`} style={{ ...knopLicht, padding: '7px 16px', fontSize: 12 }}>🖨 Printversie / PDF</Link></p>}
 
@@ -121,7 +121,7 @@ export const AcademieCursus: React.FC = () => {
             }}>
               {h.afbeelding
                 ? <img src={h.afbeelding} alt="" loading="lazy" style={{ width: 96, height: 54, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }} />
-                : <div style={{ width: 96, height: 54, borderRadius: 8, background: G.bg3, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: G.goud, fontFamily: "'Cinzel', serif" }}>{h.nr}</div>}
+                : <div style={{ width: 96, height: 54, borderRadius: 8, background: G.bg3, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: G.goud, fontFamily: "'Cormorant Garamond', serif" }}>{h.nr}</div>}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, color: G.tekst3 }}>Hoofdstuk {h.nr}</div>
                 <div style={{ fontSize: 17, lineHeight: 1.3 }}>{h.titel}</div>
@@ -161,7 +161,7 @@ const Quiz: React.FC<{ vragen: Vraag[]; onKlaar: (goed: number, antwoorden: { vr
                   borderRadius: 10, border: `1.5px solid ${kleur}`, background: keuze && (isGoed || isGekozen) ? `${kleur}22` : 'transparent',
                   color: G.goudBleek, cursor: keuze ? 'default' : 'pointer', fontFamily: 'inherit', fontSize: 16, lineHeight: 1.45,
                 }}>
-                  <span style={{ fontFamily: "'Cinzel', serif", color: keuze ? kleur : G.goud, minWidth: 18 }}>{keuze && isGoed ? '✓' : keuze && isGekozen ? '✗' : o.letter}</span>
+                  <span style={{ fontFamily: "'Cormorant Garamond', serif", color: keuze ? kleur : G.goud, minWidth: 18 }}>{keuze && isGoed ? '✓' : keuze && isGekozen ? '✗' : o.letter}</span>
                   <span>{o.tekst}</span>
                 </button>
               );
@@ -248,7 +248,7 @@ export const AcademieLes: React.FC = () => {
     const { icoon, kleur } = BLOK_STIJL[soort];
     const kader = (kinderen: React.ReactNode) => (
       <div style={{ border: `1px solid ${kleur}55`, borderLeft: `4px solid ${kleur}`, background: `${kleur}14`, borderRadius: 12, padding: '0.9rem 1rem', margin: '1rem 0' }}>
-        <div style={{ fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.06em', color: kleur, marginBottom: 6 }}>
+        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.06em', color: kleur, marginBottom: 6 }}>
           {icoon} {soort.toUpperCase()}{extra ? <span style={{ textTransform: 'none', opacity: 0.8 }}> {extra}</span> : null}
         </div>
         {inhoud}
@@ -294,13 +294,13 @@ export const AcademieLes: React.FC = () => {
             Hoofdstuk {les.nr} van {les.hoofdstukken.length}
           </span>
         </div>
-        <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 23, color: G.goud, margin: '0 0 0.8rem', letterSpacing: '0.03em', lineHeight: 1.3 }}>{les.titel}</h1>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 23, color: G.goud, margin: '0 0 0.8rem', letterSpacing: '0.03em', lineHeight: 1.3 }}>{les.titel}</h1>
         {lid?.rol === 'admin' && <TrainersVideoBijHoofdstuk slug={slug} nr={les.nr} />}
 
         {afgerond ? (
           <div style={{ background: G.bg2, border: `1px solid ${G.groen}88`, borderRadius: 16, padding: '2rem 1.4rem', textAlign: 'center' }}>
             <div style={{ fontSize: 46 }}>🌟</div>
-            <h2 style={{ fontFamily: "'Cinzel', serif", color: G.goud, fontSize: 22, margin: '0.4rem 0' }}>Hoofdstuk afgerond!</h2>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", color: G.goud, fontSize: 22, margin: '0.4rem 0' }}>Hoofdstuk afgerond!</h2>
             {data.score && <p style={{ fontSize: 17, color: G.tekst2, margin: '0 0 1rem' }}>Je toets: {data.score.goed} van {data.score.totaal} goed.</p>}
             <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap', marginTop: '1rem' }}>
               {volgendHoofdstuk
@@ -324,7 +324,7 @@ export const AcademieLes: React.FC = () => {
 
             <div style={{ background: G.bg2, border: `1px solid ${G.rand}`, borderRadius: 16, padding: '1.3rem 1.4rem', minHeight: 260 }}>
               {stap === 0 && afbeelding && <img src={afbeelding} alt="" style={{ width: '100%', borderRadius: 10, display: 'block', margin: '0 0 1rem' }} />}
-              <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 20, color: G.goud, margin: '0 0 0.8rem' }}>{huidig.titel}</h2>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, color: G.goud, margin: '0 0 0.8rem' }}>{huidig.titel}</h2>
               {rest && <Markdown key={`${nr}-${stap}`} tekst={rest} blokWeergave={blokWeergave} />}
               {vragen.length > 0 && (
                 <Quiz key={`q-${nr}-${stap}`} vragen={vragen} onKlaar={(goed, antwoorden) => {

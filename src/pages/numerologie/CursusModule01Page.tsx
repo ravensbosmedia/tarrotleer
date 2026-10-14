@@ -92,10 +92,10 @@ export function CursusModule01Page() {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🔢</div>
-          <h1 style={{ fontFamily: 'Cinzel, serif', color: '#d4af37', fontSize: '1.8rem', margin: '0 0 0.25rem' }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#d4af37', fontSize: '1.8rem', margin: '0 0 0.25rem' }}>
             Module 1 — Geboortedatum-getallen
           </h1>
-          <p style={{ color: '#a89060', fontFamily: 'Crimson Pro, serif', fontSize: '1rem', margin: '0 0 0.5rem' }}>
+          <p style={{ color: '#a89060', fontFamily: 'DM Sans, serif', fontSize: '1rem', margin: '0 0 0.5rem' }}>
             AuraLine Cursus — 10 getallen uit jouw geboortedatum
           </p>
           <div style={{ display: 'inline-flex', gap: '0.5rem' }}>
@@ -110,7 +110,7 @@ export function CursusModule01Page() {
           {tabs.map(t => (
             <button key={t.id} onClick={() => setTab(t.id)} style={{
               padding: '0.5rem 1rem', borderRadius: 20, border: 'none', cursor: 'pointer',
-              fontFamily: 'Cinzel, serif', fontSize: '0.82rem',
+              fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.82rem',
               background: tab === t.id ? '#d4af37' : 'rgba(212,175,55,0.12)',
               color: tab === t.id ? '#1a0a2e' : '#d4af37',
             }}>
@@ -123,8 +123,8 @@ export function CursusModule01Page() {
         {tab === 'lessen' && (
           <div>
             <div style={{ background: 'rgba(212,175,55,0.07)', borderRadius: 10, padding: '1rem', marginBottom: '1.5rem', border: '1px solid rgba(212,175,55,0.2)' }}>
-              <strong style={{ color: '#d4af37', fontFamily: 'Cinzel, serif', fontSize: '0.85rem' }}>🏆 De gouden regel</strong>
-              <p style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', margin: '0.5rem 0 0', fontSize: '1rem' }}>
+              <strong style={{ color: '#d4af37', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.85rem' }}>🏆 De gouden regel</strong>
+              <p style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', margin: '0.5rem 0 0', fontSize: '1rem' }}>
                 Alle getallen worden gereduceerd tot één cijfer (1-9), <strong style={{ color: '#d4af37' }}>behalve meestergetallen 11 en 22 — die blijven intact.</strong>
               </p>
             </div>
@@ -141,12 +141,12 @@ export function CursusModule01Page() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{ width: 30, height: 30, borderRadius: '50%', background: '#d4af37', color: '#1a0a2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Cinzel, serif', fontSize: '0.85rem', fontWeight: 'bold', flexShrink: 0 }}>
+                    <div style={{ width: 30, height: 30, borderRadius: '50%', background: '#d4af37', color: '#1a0a2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.85rem', fontWeight: 'bold', flexShrink: 0 }}>
                       {les.nummer}
                     </div>
                     <div>
-                      <div style={{ color: '#d4af37', fontFamily: 'Cinzel, serif', fontSize: '0.95rem' }}>{les.naam}</div>
-                      <div style={{ color: '#a89060', fontFamily: 'Crimson Pro, serif', fontSize: '0.85rem' }}>{les.kort}</div>
+                      <div style={{ color: '#d4af37', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.95rem' }}>{les.naam}</div>
+                      <div style={{ color: '#a89060', fontFamily: 'DM Sans, serif', fontSize: '0.85rem' }}>{les.kort}</div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -160,50 +160,50 @@ export function CursusModule01Page() {
 
                     {/* WAT IS HET */}
                     <div style={{ marginBottom: '1.25rem' }}>
-                      <div style={{ color: '#d4af37', fontFamily: 'Cinzel, serif', fontSize: '0.8rem', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>📘 WAT IS HET?</div>
-                      <p style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '1.05rem', lineHeight: 1.75, margin: 0 }}>{les.watIsHet}</p>
+                      <div style={{ color: '#d4af37', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.8rem', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>📘 WAT IS HET?</div>
+                      <p style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '1.05rem', lineHeight: 1.75, margin: 0 }}>{les.watIsHet}</p>
                     </div>
 
                     {/* WAT VERTELT HET */}
                     <div style={{ background: 'rgba(39,174,96,0.07)', borderRadius: 10, padding: '1rem', marginBottom: '1.25rem', border: '1px solid rgba(39,174,96,0.2)' }}>
-                      <div style={{ color: '#27ae60', fontFamily: 'Cinzel, serif', fontSize: '0.8rem', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>🔍 WAT VERTELT DIT OVER DE PERSOON?</div>
-                      <p style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '1.05rem', lineHeight: 1.75, margin: 0 }}>{les.watVerteltHet}</p>
+                      <div style={{ color: '#27ae60', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.8rem', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>🔍 WAT VERTELT DIT OVER DE PERSOON?</div>
+                      <p style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '1.05rem', lineHeight: 1.75, margin: 0 }}>{les.watVerteltHet}</p>
                     </div>
 
                     {/* IN GESPREK */}
                     <div style={{ background: 'rgba(52,152,219,0.07)', borderRadius: 10, padding: '1rem', marginBottom: '1.5rem', border: '1px solid rgba(52,152,219,0.2)' }}>
-                      <div style={{ color: '#3498db', fontFamily: 'Cinzel, serif', fontSize: '0.8rem', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>💬 HOE GEBRUIK JE DIT IN EEN GESPREK?</div>
-                      <p style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '1.05rem', lineHeight: 1.75, margin: 0 }}>{les.inGesprek}</p>
+                      <div style={{ color: '#3498db', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.8rem', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>💬 HOE GEBRUIK JE DIT IN EEN GESPREK?</div>
+                      <p style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '1.05rem', lineHeight: 1.75, margin: 0 }}>{les.inGesprek}</p>
                     </div>
 
                     {/* Scheidslijn */}
                     <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.25rem', marginBottom: '1.25rem' }}>
-                      <div style={{ color: '#7a6a4a', fontFamily: 'Cinzel, serif', fontSize: '0.75rem', letterSpacing: '0.08em', marginBottom: '1rem' }}>⚙️ BEREKENING</div>
+                      <div style={{ color: '#7a6a4a', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', letterSpacing: '0.08em', marginBottom: '1rem' }}>⚙️ BEREKENING</div>
 
                       <div style={{ marginBottom: '1rem' }}>
-                        <div style={{ color: '#a89060', fontSize: '0.75rem', fontFamily: 'Cinzel, serif', marginBottom: '0.4rem' }}>INPUT</div>
-                        <div style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '0.95rem' }}>{les.input}</div>
+                        <div style={{ color: '#a89060', fontSize: '0.75rem', fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: '0.4rem' }}>INPUT</div>
+                        <div style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.95rem' }}>{les.input}</div>
                       </div>
 
                       <div style={{ marginBottom: '1rem' }}>
-                        <div style={{ color: '#a89060', fontFamily: 'Cinzel, serif', fontSize: '0.75rem', marginBottom: '0.4rem' }}>STAPPEN</div>
+                        <div style={{ color: '#a89060', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.4rem' }}>STAPPEN</div>
                         {les.stappen.map((stap, i) => (
                           <div key={i} style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.35rem' }}>
-                            <span style={{ color: '#d4af37', fontFamily: 'Cinzel, serif', fontSize: '0.85rem', minWidth: 20 }}>{i + 1}.</span>
-                            <span style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '0.95rem' }}>{stap}</span>
+                            <span style={{ color: '#d4af37', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.85rem', minWidth: 20 }}>{i + 1}.</span>
+                            <span style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.95rem' }}>{stap}</span>
                           </div>
                         ))}
                       </div>
 
                       <div style={{ background: 'rgba(212,175,55,0.08)', borderRadius: 8, padding: '0.75rem', marginBottom: '0.75rem' }}>
-                        <div style={{ color: '#a89060', fontFamily: 'Cinzel, serif', fontSize: '0.75rem', marginBottom: '0.3rem' }}>VOORBEELD</div>
+                        <div style={{ color: '#a89060', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.3rem' }}>VOORBEELD</div>
                         <code style={{ color: '#d4af37', fontFamily: 'monospace', fontSize: '0.9rem' }}>{les.voorbeeld}</code>
                       </div>
 
                       {les.meestergetal && (
                         <div style={{ background: 'rgba(180,120,220,0.08)', borderRadius: 8, padding: '0.75rem', border: '1px solid rgba(180,120,220,0.2)', marginBottom: '0.75rem' }}>
-                          <div style={{ color: '#c9a0dc', fontFamily: 'Cinzel, serif', fontSize: '0.75rem', marginBottom: '0.3rem' }}>⭐ BIJ MEESTERGETALLEN</div>
-                          <div style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '0.9rem' }}>{les.meestergetal}</div>
+                          <div style={{ color: '#c9a0dc', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.3rem' }}>⭐ BIJ MEESTERGETALLEN</div>
+                          <div style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.9rem' }}>{les.meestergetal}</div>
                         </div>
                       )}
                     </div>
@@ -211,7 +211,7 @@ export function CursusModule01Page() {
                     {/* Positie-specifieke interpretaties */}
                     {POSITIE_INTERPRETATIES[les.naam as PosNaam] && (
                       <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.25rem' }}>
-                        <div style={{ color: '#7a6a4a', fontFamily: 'Cinzel, serif', fontSize: '0.75rem', letterSpacing: '0.08em', marginBottom: '1rem' }}>
+                        <div style={{ color: '#7a6a4a', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', letterSpacing: '0.08em', marginBottom: '1rem' }}>
                           📖 WAT BETEKENT ELK GETAL OP DEZE POSITIE?
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -222,12 +222,12 @@ export function CursusModule01Page() {
                             const archetype = GETAL_BETEKENISSEN.find(gb => String(gb.getal) === String(g))?.archetype || '';
                             return (
                               <div key={g} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                                <div style={{ minWidth: 34, height: 34, borderRadius: '50%', background: kleur + '25', border: `1px solid ${kleur}60`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Cinzel, serif', fontSize: '0.85rem', fontWeight: 'bold', color: kleur, flexShrink: 0 }}>
+                                <div style={{ minWidth: 34, height: 34, borderRadius: '50%', background: kleur + '25', border: `1px solid ${kleur}60`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.85rem', fontWeight: 'bold', color: kleur, flexShrink: 0 }}>
                                   {g}
                                 </div>
                                 <div>
-                                  <div style={{ color: kleur, fontFamily: 'Cinzel, serif', fontSize: '0.75rem', marginBottom: '0.2rem' }}>{archetype}</div>
-                                  <div style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '0.92rem', lineHeight: 1.65 }}>{tekst}</div>
+                                  <div style={{ color: kleur, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.2rem' }}>{archetype}</div>
+                                  <div style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.92rem', lineHeight: 1.65 }}>{tekst}</div>
                                 </div>
                               </div>
                             );
@@ -253,7 +253,7 @@ export function CursusModule01Page() {
                   color: openGetal === idx ? '#fff' : '#d4cfc0',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.3rem',
                 }}>
-                  <span style={{ fontSize: '1.4rem', fontFamily: 'Cinzel, serif', fontWeight: 'bold' }}>{g.getal}</span>
+                  <span style={{ fontSize: '1.4rem', fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 'bold' }}>{g.getal}</span>
                   <span style={{ fontSize: '0.65rem', textAlign: 'center', lineHeight: 1.2 }}>{g.archetype.replace('De ', '')}</span>
                   {g.isMeestergetal && <span style={{ fontSize: '0.6rem', color: openGetal === idx ? '#ffe' : '#c9a0dc' }}>⭐</span>}
                 </button>
@@ -266,11 +266,11 @@ export function CursusModule01Page() {
               return (
                 <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 14, border: `1px solid ${kleur}50`, padding: '2rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
-                    <div style={{ width: 60, height: 60, borderRadius: '50%', background: kleur, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Cinzel, serif', fontSize: '1.5rem', fontWeight: 'bold', color: '#fff', flexShrink: 0 }}>
+                    <div style={{ width: 60, height: 60, borderRadius: '50%', background: kleur, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.5rem', fontWeight: 'bold', color: '#fff', flexShrink: 0 }}>
                       {g.getal}
                     </div>
                     <div>
-                      <h2 style={{ color: kleur, fontFamily: 'Cinzel, serif', margin: '0 0 0.25rem', fontSize: '1.3rem' }}>{g.archetype}</h2>
+                      <h2 style={{ color: kleur, fontFamily: "'Cormorant Garamond', Georgia, serif", margin: '0 0 0.25rem', fontSize: '1.3rem' }}>{g.archetype}</h2>
                       <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                         {g.sleutelwoorden.map(w => (
                           <span key={w} style={{ padding: '0.15rem 0.5rem', borderRadius: 8, fontSize: '0.75rem', background: kleur + '20', color: kleur }}>{w}</span>
@@ -291,15 +291,15 @@ export function CursusModule01Page() {
                       { label: '🌱 Ontwikkelpunten', tekst: g.ontwikkelpunten, kleur: '#8e44ad' },
                     ].map(({ label, tekst, kleur: lkleur }) => (
                       <div key={label} style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 8, padding: '0.75rem', borderLeft: `2px solid ${lkleur}` }}>
-                        <div style={{ color: lkleur, fontFamily: 'Cinzel, serif', fontSize: '0.75rem', marginBottom: '0.3rem' }}>{label}</div>
-                        <div style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '0.95rem', lineHeight: 1.6 }}>{tekst}</div>
+                        <div style={{ color: lkleur, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.3rem' }}>{label}</div>
+                        <div style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.95rem', lineHeight: 1.6 }}>{tekst}</div>
                       </div>
                     ))}
 
                     {g.isMeestergetal && (
                       <div style={{ background: 'rgba(180,120,220,0.08)', borderRadius: 8, padding: '0.75rem', border: '1px solid rgba(180,120,220,0.25)' }}>
-                        <div style={{ color: '#c9a0dc', fontFamily: 'Cinzel, serif', fontSize: '0.75rem', marginBottom: '0.3rem' }}>⭐ IN DE PRAKTIJK</div>
-                        <div style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                        <div style={{ color: '#c9a0dc', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.3rem' }}>⭐ IN DE PRAKTIJK</div>
+                        <div style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.9rem', lineHeight: 1.6 }}>
                           Pas de duiding aan op de positie: <strong>Op Levenspad</strong> = hoofdthema heel leven · <strong>Op Bestuursgetal</strong> = dagelijkse manifestatie · <strong>Op Zielengetal</strong> = innerlijk verlangen · <strong>Op Geschenkgetal</strong> = talent in deze energie.
                         </div>
                       </div>
@@ -315,7 +315,7 @@ export function CursusModule01Page() {
         {tab === 'oefen' && (
           <div>
             <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 14, border: '1px solid rgba(212,175,55,0.25)', padding: '2rem', marginBottom: '1.5rem' }}>
-              <h2 style={{ color: '#d4af37', fontFamily: 'Cinzel, serif', margin: '0 0 1.25rem', fontSize: '1.1rem' }}>✏️ Bereken jouw 10 getallen</h2>
+              <h2 style={{ color: '#d4af37', fontFamily: "'Cormorant Garamond', Georgia, serif", margin: '0 0 1.25rem', fontSize: '1.1rem' }}>✏️ Bereken jouw 10 getallen</h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.25rem' }}>
                 {[
                   { label: 'Dag', value: dag, set: setDag, placeholder: 'bv. 14', min: 1, max: 31 },
@@ -323,7 +323,7 @@ export function CursusModule01Page() {
                   { label: 'Jaar', value: jaar, set: setJaar, placeholder: 'bv. 1979', min: 1900, max: 2020 },
                 ].map(({ label, value, set, placeholder }) => (
                   <div key={label}>
-                    <label style={{ color: '#a89060', fontFamily: 'Cinzel, serif', fontSize: '0.8rem', display: 'block', marginBottom: '0.4rem' }}>{label}</label>
+                    <label style={{ color: '#a89060', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.8rem', display: 'block', marginBottom: '0.4rem' }}>{label}</label>
                     <input
                       type="number"
                       value={value}
@@ -332,7 +332,7 @@ export function CursusModule01Page() {
                       style={{
                         width: '100%', padding: '0.6rem 0.75rem',
                         background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(212,175,55,0.3)',
-                        borderRadius: 8, color: '#fff', fontFamily: 'Crimson Pro, serif', fontSize: '1rem',
+                        borderRadius: 8, color: '#fff', fontFamily: 'DM Sans, serif', fontSize: '1rem',
                         boxSizing: 'border-box',
                       }}
                     />
@@ -346,7 +346,7 @@ export function CursusModule01Page() {
                     setOefenResultaat(berekenAlles(d, m, j));
                   }
                 }}
-                style={{ padding: '0.75rem 2rem', background: '#d4af37', border: 'none', borderRadius: 25, color: '#1a0a2e', fontFamily: 'Cinzel, serif', cursor: 'pointer', fontSize: '0.95rem' }}
+                style={{ padding: '0.75rem 2rem', background: '#d4af37', border: 'none', borderRadius: 25, color: '#1a0a2e', fontFamily: "'Cormorant Garamond', Georgia, serif", cursor: 'pointer', fontSize: '0.95rem' }}
               >
                 Bereken alle 10 getallen
               </button>
@@ -355,20 +355,20 @@ export function CursusModule01Page() {
             {oefenResultaat && (
               <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 14, border: '1px solid rgba(212,175,55,0.2)', overflow: 'hidden' }}>
                 <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid rgba(212,175,55,0.15)' }}>
-                  <h3 style={{ color: '#d4af37', fontFamily: 'Cinzel, serif', margin: 0 }}>Jouw 10 getallen — {dag}-{maand}-{jaar}</h3>
+                  <h3 style={{ color: '#d4af37', fontFamily: "'Cormorant Garamond', Georgia, serif", margin: 0 }}>Jouw 10 getallen — {dag}-{maand}-{jaar}</h3>
                 </div>
                 {oefenResultaat.map((r, i) => {
                   const kleur = GETAL_KLEUR[r.getal] || '#d4af37';
                   const archetype = getArchetype(r.getal);
                   return (
                     <div key={i} style={{ display: 'grid', gridTemplateColumns: '30px 1fr auto auto', gap: '0.75rem', alignItems: 'center', padding: '0.75rem 1.5rem', borderBottom: i < oefenResultaat.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
-                      <div style={{ color: '#7a6a4a', fontFamily: 'Cinzel, serif', fontSize: '0.8rem' }}>{i + 1}</div>
+                      <div style={{ color: '#7a6a4a', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.8rem' }}>{i + 1}</div>
                       <div>
-                        <div style={{ color: '#d4cfc0', fontFamily: 'Cinzel, serif', fontSize: '0.85rem' }}>{r.naam}</div>
+                        <div style={{ color: '#d4cfc0', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.85rem' }}>{r.naam}</div>
                         <div style={{ color: '#7a6a4a', fontFamily: 'monospace', fontSize: '0.75rem' }}>{r.stap}</div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ color: kleur, fontFamily: 'Cinzel, serif', fontSize: '1.4rem', fontWeight: 'bold' }}>{r.getal}</div>
+                        <div style={{ color: kleur, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.4rem', fontWeight: 'bold' }}>{r.getal}</div>
                         {(r.getal === 11 || r.getal === 22) && <div style={{ color: '#c9a0dc', fontSize: '0.65rem' }}>⭐ meestergetal</div>}
                       </div>
                       <div style={{ padding: '0.2rem 0.5rem', borderRadius: 8, fontSize: '0.72rem', background: kleur + '20', color: kleur, whiteSpace: 'nowrap', textAlign: 'center' }}>
@@ -380,7 +380,7 @@ export function CursusModule01Page() {
 
                 {/* Patronen analyse */}
                 <div style={{ padding: '1.25rem 1.5rem', borderTop: '1px solid rgba(212,175,55,0.15)', background: 'rgba(212,175,55,0.05)' }}>
-                  <div style={{ color: '#a89060', fontFamily: 'Cinzel, serif', fontSize: '0.8rem', marginBottom: '0.75rem' }}>PATRONEN IN JOUW PROFIEL</div>
+                  <div style={{ color: '#a89060', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.8rem', marginBottom: '0.75rem' }}>PATRONEN IN JOUW PROFIEL</div>
                   {(() => {
                     const tellingen: Record<number, number> = {};
                     oefenResultaat.forEach(r => { tellingen[r.getal] = (tellingen[r.getal] || 0) + 1; });
@@ -389,17 +389,17 @@ export function CursusModule01Page() {
                     return (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                         {dubbel.length > 0 && (
-                          <div style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '0.95rem' }}>
+                          <div style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.95rem' }}>
                             <span style={{ color: '#d4af37' }}>Dominante getallen:</span> {dubbel.join(' · ')}
                           </div>
                         )}
                         {meestergetallen.length > 0 && (
-                          <div style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '0.95rem' }}>
+                          <div style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.95rem' }}>
                             <span style={{ color: '#c9a0dc' }}>⭐ Meestergetallen:</span> {meestergetallen.join(' · ')}
                           </div>
                         )}
                         {dubbel.length === 0 && meestergetallen.length === 0 && (
-                          <div style={{ color: '#a89060', fontFamily: 'Crimson Pro, serif', fontSize: '0.9rem' }}>Gevarieerd profiel — geen dominant herhalend getal.</div>
+                          <div style={{ color: '#a89060', fontFamily: 'DM Sans, serif', fontSize: '0.9rem' }}>Gevarieerd profiel — geen dominant herhalend getal.</div>
                         )}
                       </div>
                     );
@@ -414,10 +414,10 @@ export function CursusModule01Page() {
         {tab === 'voorbeeld' && (
           <div>
             <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 14, border: '1px solid rgba(212,175,55,0.25)', padding: '2rem', marginBottom: '1.5rem' }}>
-              <h2 style={{ color: '#d4af37', fontFamily: 'Cinzel, serif', margin: '0 0 0.25rem', fontSize: '1.2rem' }}>
+              <h2 style={{ color: '#d4af37', fontFamily: "'Cormorant Garamond', Georgia, serif", margin: '0 0 0.25rem', fontSize: '1.2rem' }}>
                 👤 {VOORBEELD_PERSOON.naam}
               </h2>
-              <p style={{ color: '#a89060', fontFamily: 'Crimson Pro, serif', margin: '0 0 1.5rem', fontSize: '0.95rem' }}>
+              <p style={{ color: '#a89060', fontFamily: 'DM Sans, serif', margin: '0 0 1.5rem', fontSize: '0.95rem' }}>
                 Geboortedatum: {VOORBEELD_PERSOON.datum}
               </p>
 
@@ -425,12 +425,12 @@ export function CursusModule01Page() {
                 const kleur = GETAL_KLEUR[g.getal] || '#d4af37';
                 return (
                   <div key={i} style={{ display: 'grid', gridTemplateColumns: '30px 1fr auto auto', gap: '0.75rem', alignItems: 'center', padding: '0.6rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div style={{ color: '#7a6a4a', fontFamily: 'Cinzel, serif', fontSize: '0.8rem' }}>{i + 1}</div>
+                    <div style={{ color: '#7a6a4a', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.8rem' }}>{i + 1}</div>
                     <div>
-                      <div style={{ color: '#d4cfc0', fontFamily: 'Cinzel, serif', fontSize: '0.85rem' }}>{g.naam}</div>
+                      <div style={{ color: '#d4cfc0', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.85rem' }}>{g.naam}</div>
                       <div style={{ color: '#7a6a4a', fontFamily: 'monospace', fontSize: '0.75rem' }}>{g.berekening}</div>
                     </div>
-                    <div style={{ color: kleur, fontFamily: 'Cinzel, serif', fontSize: '1.4rem', fontWeight: 'bold', textAlign: 'right' }}>{g.getal}</div>
+                    <div style={{ color: kleur, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.4rem', fontWeight: 'bold', textAlign: 'right' }}>{g.getal}</div>
                     <div style={{ padding: '0.2rem 0.5rem', borderRadius: 8, fontSize: '0.72rem', background: kleur + '20', color: kleur, textAlign: 'center' }}>{g.archetype}</div>
                   </div>
                 );
@@ -438,16 +438,16 @@ export function CursusModule01Page() {
             </div>
 
             <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(212,175,55,0.15)', padding: '1.5rem' }}>
-              <h3 style={{ color: '#d4af37', fontFamily: 'Cinzel, serif', margin: '0 0 1rem', fontSize: '1rem' }}>🔍 Wat valt op?</h3>
+              <h3 style={{ color: '#d4af37', fontFamily: "'Cormorant Garamond', Georgia, serif", margin: '0 0 1rem', fontSize: '1rem' }}>🔍 Wat valt op?</h3>
               {VOORBEELD_PERSOON.patronen.map((p, i) => (
                 <div key={i} style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.5rem' }}>
                   <span style={{ color: '#d4af37', flexShrink: 0 }}>•</span>
-                  <span style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '1rem', lineHeight: 1.6 }}>{p}</span>
+                  <span style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '1rem', lineHeight: 1.6 }}>{p}</span>
                 </div>
               ))}
               <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'rgba(231,76,60,0.08)', borderRadius: 8, border: '1px solid rgba(231,76,60,0.2)' }}>
-                <strong style={{ color: '#e74c3c', fontFamily: 'Cinzel, serif', fontSize: '0.85rem' }}>⚡ Spanningsveld</strong>
-                <p style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', margin: '0.4rem 0 0', fontSize: '0.95rem' }}>{VOORBEELD_PERSOON.spanning}</p>
+                <strong style={{ color: '#e74c3c', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.85rem' }}>⚡ Spanningsveld</strong>
+                <p style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', margin: '0.4rem 0 0', fontSize: '0.95rem' }}>{VOORBEELD_PERSOON.spanning}</p>
               </div>
             </div>
           </div>
@@ -458,13 +458,13 @@ export function CursusModule01Page() {
           <div>
             {!quizKlaar ? (
               <div>
-                <p style={{ color: '#a89060', fontFamily: 'Crimson Pro, serif', marginBottom: '1.5rem' }}>
+                <p style={{ color: '#a89060', fontFamily: 'DM Sans, serif', marginBottom: '1.5rem' }}>
                   10 vragen — antwoord alle vragen en klik dan op 'Controleer antwoorden'.
                 </p>
                 {QUIZ_VRAGEN.map((vraag: QuizVraag, qi) => (
                   <div key={qi} style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 12, border: '1px solid rgba(212,175,55,0.15)', padding: '1.25rem', marginBottom: '1rem' }}>
-                    <p style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '1.05rem', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
-                      <strong style={{ color: '#d4af37', fontFamily: 'Cinzel, serif', fontSize: '0.85rem' }}>Vraag {qi + 1}</strong><br />
+                    <p style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '1.05rem', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
+                      <strong style={{ color: '#d4af37', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.85rem' }}>Vraag {qi + 1}</strong><br />
                       {vraag.vraag}
                     </p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
@@ -475,7 +475,7 @@ export function CursusModule01Page() {
                           setQuizAntwoorden(nieuw);
                         }} style={{
                           padding: '0.6rem 1rem', borderRadius: 8, border: 'none', cursor: 'pointer', textAlign: 'left',
-                          fontFamily: 'Crimson Pro, serif', fontSize: '0.95rem',
+                          fontFamily: 'DM Sans, serif', fontSize: '0.95rem',
                           background: quizAntwoorden[qi] === oi ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
                           color: quizAntwoorden[qi] === oi ? '#d4af37' : '#d4cfc0',
                           border: quizAntwoorden[qi] === oi ? '1px solid #d4af37' : '1px solid transparent',
@@ -492,7 +492,7 @@ export function CursusModule01Page() {
                     disabled={quizAntwoorden.some(a => a === null)}
                     style={{
                       padding: '0.75rem 2rem', background: quizAntwoorden.every(a => a !== null) ? '#d4af37' : 'rgba(212,175,55,0.3)',
-                      border: 'none', borderRadius: 25, color: '#1a0a2e', fontFamily: 'Cinzel, serif',
+                      border: 'none', borderRadius: 25, color: '#1a0a2e', fontFamily: "'Cormorant Garamond', Georgia, serif",
                       cursor: quizAntwoorden.every(a => a !== null) ? 'pointer' : 'not-allowed', fontSize: '0.95rem',
                     }}
                   >
@@ -504,14 +504,14 @@ export function CursusModule01Page() {
               <div>
                 {/* Score */}
                 <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.05)', borderRadius: 14, border: '1px solid rgba(212,175,55,0.3)', padding: '2rem', marginBottom: '1.5rem' }}>
-                  <div style={{ fontSize: '3rem', fontFamily: 'Cinzel, serif', color: quizScore >= 8 ? '#27ae60' : quizScore >= 6 ? '#e67e22' : '#e74c3c' }}>
+                  <div style={{ fontSize: '3rem', fontFamily: "'Cormorant Garamond', Georgia, serif", color: quizScore >= 8 ? '#27ae60' : quizScore >= 6 ? '#e67e22' : '#e74c3c' }}>
                     {quizScore}/10
                   </div>
-                  <div style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', fontSize: '1.1rem', margin: '0.5rem 0' }}>
+                  <div style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '1.1rem', margin: '0.5rem 0' }}>
                     {quizScore >= 9 ? 'Uitstekend! De stof zit volledig.' : quizScore >= 7 ? 'Goed! Herlees de berekeningen even.' : 'Doe Module 1 nog eens door, focus op de reductieregels.'}
                   </div>
                   <button onClick={() => { setQuizAntwoorden(Array(QUIZ_VRAGEN.length).fill(null)); setQuizKlaar(false); }} style={{
-                    marginTop: '1rem', padding: '0.5rem 1.5rem', background: 'transparent', border: '1px solid #d4af37', color: '#d4af37', borderRadius: 20, cursor: 'pointer', fontFamily: 'Cinzel, serif',
+                    marginTop: '1rem', padding: '0.5rem 1.5rem', background: 'transparent', border: '1px solid #d4af37', color: '#d4af37', borderRadius: 20, cursor: 'pointer', fontFamily: "'Cormorant Garamond', Georgia, serif",
                   }}>
                     Opnieuw proberen
                   </button>
@@ -523,17 +523,17 @@ export function CursusModule01Page() {
                   return (
                     <div key={qi} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: `1px solid ${goed ? 'rgba(39,174,96,0.3)' : 'rgba(231,76,60,0.3)'}`, padding: '1.25rem', marginBottom: '0.75rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                        <span style={{ color: '#a89060', fontFamily: 'Cinzel, serif', fontSize: '0.8rem' }}>Vraag {qi + 1}</span>
-                        <span style={{ color: goed ? '#27ae60' : '#e74c3c', fontFamily: 'Cinzel, serif', fontSize: '0.8rem' }}>{goed ? '✓ Goed' : '✗ Fout'}</span>
+                        <span style={{ color: '#a89060', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.8rem' }}>Vraag {qi + 1}</span>
+                        <span style={{ color: goed ? '#27ae60' : '#e74c3c', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.8rem' }}>{goed ? '✓ Goed' : '✗ Fout'}</span>
                       </div>
-                      <p style={{ color: '#d4cfc0', fontFamily: 'Crimson Pro, serif', margin: '0 0 0.75rem' }}>{vraag.vraag}</p>
+                      <p style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', margin: '0 0 0.75rem' }}>{vraag.vraag}</p>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                         {vraag.opties.map((optie, oi) => {
                           const isGekozen = quizAntwoorden[qi] === oi;
                           const isJuist = oi === vraag.juist;
                           return (
                             <div key={oi} style={{
-                              padding: '0.4rem 0.75rem', borderRadius: 6, fontSize: '0.9rem', fontFamily: 'Crimson Pro, serif',
+                              padding: '0.4rem 0.75rem', borderRadius: 6, fontSize: '0.9rem', fontFamily: 'DM Sans, serif',
                               background: isJuist ? 'rgba(39,174,96,0.12)' : isGekozen && !isJuist ? 'rgba(231,76,60,0.12)' : 'transparent',
                               color: isJuist ? '#27ae60' : isGekozen && !isJuist ? '#e74c3c' : '#7a6a4a',
                               border: isJuist ? '1px solid rgba(39,174,96,0.3)' : isGekozen && !isJuist ? '1px solid rgba(231,76,60,0.3)' : '1px solid transparent',
@@ -543,7 +543,7 @@ export function CursusModule01Page() {
                           );
                         })}
                       </div>
-                      <div style={{ marginTop: '0.5rem', padding: '0.5rem 0.75rem', background: 'rgba(212,175,55,0.07)', borderRadius: 6, color: '#a89060', fontFamily: 'Crimson Pro, serif', fontSize: '0.85rem' }}>
+                      <div style={{ marginTop: '0.5rem', padding: '0.5rem 0.75rem', background: 'rgba(212,175,55,0.07)', borderRadius: 6, color: '#a89060', fontFamily: 'DM Sans, serif', fontSize: '0.85rem' }}>
                         💡 {vraag.uitleg}
                       </div>
                     </div>

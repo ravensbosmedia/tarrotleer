@@ -64,7 +64,7 @@ const JaNeeOefening: React.FC = () => {
             value={vraag}
             onChange={e => setVraag(e.target.value)}
             style={{
-              fontFamily: "'Crimson Pro', serif",
+              fontFamily: "'DM Sans', serif",
               fontSize: 16, color: G.tekst,
               background: G.bg, border: `0.5px solid ${G.rand2}`,
               borderRadius: 6, padding: '0.9rem 1rem',
@@ -77,7 +77,7 @@ const JaNeeOefening: React.FC = () => {
               onClick={startPendelen}
               disabled={!vraag.trim()}
               style={{
-                fontFamily: "'Cinzel', serif",
+                fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 13, letterSpacing: '0.08em',
                 padding: '10px 28px', borderRadius: 24,
                 border: `0.5px solid ${G.goud}`,
@@ -124,7 +124,7 @@ const JaNeeOefening: React.FC = () => {
           {fase === 'resultaat' && resultaat && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', width: '100%' }}>
               <div style={{
-                fontFamily: "'Cinzel', serif",
+                fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 44, fontWeight: 700,
                 color: resultaat === 'JA' ? '#16A34A' : '#DC2626',
                 padding: '0.6rem 2.5rem',
@@ -155,7 +155,7 @@ const JaNeeOefening: React.FC = () => {
               <button
                 onClick={reset}
                 style={{
-                  fontFamily: "'Cinzel', serif",
+                  fontFamily: "'Cormorant Garamond', serif",
                   fontSize: 12, letterSpacing: '0.08em',
                   padding: '8px 20px', borderRadius: 20,
                   border: `0.5px solid ${G.rand2}`,
@@ -212,14 +212,14 @@ const SchijfOefening: React.FC = () => {
 
       {/* Schijf selectie */}
       <div style={{ marginBottom: '1.2rem' }}>
-        <label style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem' }}>
+        <label style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.08em', color: G.tekst3, textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem' }}>
           Kies een schijf
         </label>
         <select
           value={geselecteerdeSchijfId}
           onChange={e => { setGeselecteerdeSchijfId(e.target.value); setGemarkeerdeIndex(null); setPendelModus('still'); }}
           style={{
-            fontFamily: "'Crimson Pro', serif",
+            fontFamily: "'DM Sans', serif",
             fontSize: 15, color: G.tekst,
             background: G.bg, border: `0.5px solid ${G.rand2}`,
             borderRadius: 6, padding: '0.6rem 0.8rem',
@@ -248,7 +248,7 @@ const SchijfOefening: React.FC = () => {
             onClick={pendelOpSchijf}
             disabled={isAnimerend}
             style={{
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 13, letterSpacing: '0.08em',
               padding: '10px 24px', borderRadius: 24,
               border: `0.5px solid ${G.goud}`,
@@ -274,7 +274,7 @@ const SchijfOefening: React.FC = () => {
             <div style={{ width: 28, height: 28, borderRadius: '50%', background: gekozenSegment.kleur, flexShrink: 0, border: `1px solid ${G.rand2}` }} />
           )}
           <div>
-            <div style={{ fontFamily: "'Cinzel', serif", fontSize: 16, color: G.tekst, marginBottom: '0.2rem' }}>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, color: G.tekst, marginBottom: '0.2rem' }}>
               {gekozenSegment.label}
             </div>
             {gekozenSegment.beschrijving && (
@@ -385,15 +385,15 @@ const LichaamsharmonieOefening: React.FC = () => {
   if (klaar) {
     return (
       <div style={{ textAlign: 'center', padding: '2rem' }}>
-        <div style={{ fontFamily: "'Cinzel', serif", fontSize: 32, color: '#16A34A', marginBottom: '0.5rem' }}>✓</div>
-        <h3 style={{ fontFamily: "'Cinzel', serif", fontSize: 20, fontWeight: 400, color: G.tekst, marginBottom: '0.5rem' }}>Oefening voltooid</h3>
+        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, color: '#16A34A', marginBottom: '0.5rem' }}>✓</div>
+        <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, color: G.tekst, marginBottom: '0.5rem' }}>Oefening voltooid</h3>
         <p style={{ fontSize: 15, color: G.tekst2, lineHeight: 1.7, marginBottom: '1.5rem', maxWidth: 420, margin: '0 auto 1.5rem' }}>
           Goed gedaan. Noteer je bevindingen en vergelijk je lichaamssignalen met je pendelresultaten over meerdere sessies om patronen te ontdekken.
         </p>
         <button
           onClick={reset}
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: 12, letterSpacing: '0.08em',
             padding: '9px 22px', borderRadius: 20,
             border: `0.5px solid ${G.goud}`,
@@ -427,7 +427,7 @@ const LichaamsharmonieOefening: React.FC = () => {
       {/* Huidige stap + pendel */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '2rem', alignItems: 'center', marginBottom: '1.5rem' }}>
         <div style={{ background: G.bg2, border: `0.5px solid ${G.rand2}`, borderRadius: 8, padding: '1.4rem' }}>
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 14, color: G.goud, marginBottom: '0.5rem' }}>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 14, color: G.goud, marginBottom: '0.5rem' }}>
             {stappen[huidigeStap].titel}
           </div>
           <p style={{ fontSize: 15, color: G.tekst2, lineHeight: 1.8, margin: 0 }}>
@@ -435,7 +435,7 @@ const LichaamsharmonieOefening: React.FC = () => {
           </p>
           <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <span style={{
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 28, fontWeight: 700,
               color: restTijd <= 10 && actief ? '#DC2626' : G.goudDonker,
             }}>
@@ -478,7 +478,7 @@ const LichaamsharmonieOefening: React.FC = () => {
           <button
             onClick={() => setActief(true)}
             style={{
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 12, letterSpacing: '0.08em',
               padding: '9px 22px', borderRadius: 20,
               border: `0.5px solid ${G.goud}`,
@@ -492,7 +492,7 @@ const LichaamsharmonieOefening: React.FC = () => {
           <button
             onClick={() => setActief(false)}
             style={{
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 12, letterSpacing: '0.08em',
               padding: '9px 22px', borderRadius: 20,
               border: `0.5px solid ${G.rand2}`,
@@ -506,7 +506,7 @@ const LichaamsharmonieOefening: React.FC = () => {
         <button
           onClick={reset}
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: 12, letterSpacing: '0.08em',
             padding: '9px 20px', borderRadius: 20,
             border: `0.5px solid ${G.rand}`,
@@ -540,10 +540,10 @@ export const OefeningenPage: React.FC = () => {
       {/* ── Hero ── */}
       <div style={{ borderBottom: `0.5px solid ${G.rand}`, padding: '3.5rem 2rem 2.5rem' }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.7rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: G.goud, textTransform: 'uppercase', marginBottom: '0.7rem' }}>
             Praktisch oefenen
           </p>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 38, fontWeight: 400, color: G.tekst, marginBottom: '0.7rem' }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 38, fontWeight: 400, color: G.tekst, marginBottom: '0.7rem' }}>
             Pendel Oefeningen
           </h1>
           <p style={{ fontSize: 18, fontStyle: 'italic', color: G.tekst2, lineHeight: 1.7, maxWidth: 560 }}>
@@ -561,7 +561,7 @@ export const OefeningenPage: React.FC = () => {
               key={tab.id}
               onClick={() => setActieveTab(tab.id)}
               style={{
-                fontFamily: "'Cinzel', serif",
+                fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 12, letterSpacing: '0.06em',
                 padding: '10px 20px', borderRadius: 24,
                 border: `0.5px solid ${actieveTab === tab.id ? G.goud : G.rand2}`,
@@ -572,7 +572,7 @@ export const OefeningenPage: React.FC = () => {
               }}
             >
               <span>{tab.label}</span>
-              <span style={{ fontSize: 10, opacity: 0.7, fontFamily: "'Crimson Pro', serif", fontStyle: 'italic', letterSpacing: 0 }}>{tab.sub}</span>
+              <span style={{ fontSize: 10, opacity: 0.7, fontFamily: "'DM Sans', serif", fontStyle: 'italic', letterSpacing: 0 }}>{tab.sub}</span>
             </button>
           ))}
         </div>
@@ -582,7 +582,7 @@ export const OefeningenPage: React.FC = () => {
           background: G.bg, border: `0.5px solid ${G.rand2}`,
           borderRadius: 10, padding: '2rem',
         }}>
-          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 20, fontWeight: 400, color: G.tekst, marginBottom: '0.3rem' }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, color: G.tekst, marginBottom: '0.3rem' }}>
             {tabs.find(t => t.id === actieveTab)?.label}
           </h2>
           <div style={{ width: 40, height: 1, background: G.goud, opacity: 0.5, marginBottom: '1.5rem' }} />
@@ -599,7 +599,7 @@ export const OefeningenPage: React.FC = () => {
           borderRadius: 8, padding: '1rem 1.4rem',
           fontSize: 13, color: G.tekst2, lineHeight: 1.7,
         }}>
-          <strong style={{ fontFamily: "'Cinzel', serif", color: G.goud }}>Tip:</strong>{' '}
+          <strong style={{ fontFamily: "'Cormorant Garamond', serif", color: G.goud }}>Tip:</strong>{' '}
           Kalibreer je pendel vóór elke sessie met de Controleschijf. Houd je hoofd vrij van wensdenken en accepteer het antwoord dat je krijgt — ook als het je verrast.
         </div>
       </div>

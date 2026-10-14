@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const G = { goud: '#B8860B', goudBleek: '#F5EDD8', bg: '#1A1208', bg2: '#2C2416', bg3: '#3A2E1C' };
+const G = { goud: '#F1CB78', goudBleek: '#FFF3DF', bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040' };
 
 const ARCHETYPES: Record<number, { naam: string; kernwoorden: string; beschrijving: string; uitdaging: string }> = {
   1: { naam: 'De Pionier', kernwoorden: 'Leiderschap · Initiatief · Onafhankelijkheid', beschrijving: 'Je bent hier om te leiden en nieuwe paden te openen. Jouw levensles draait om het vertrouwen op je eigen inzicht en het durven beginnen — ook als niemand je voorgaat.', uitdaging: 'Leren samenwerken en niet alles zelf te hoeven doen.' },
@@ -55,58 +55,58 @@ export const NumerologieLevenspadPage: React.FC = () => {
   const arch = resultaat ? ARCHETYPES[resultaat.getal] : null;
 
   return (
-    <div style={{ background: G.bg, minHeight: '100vh', color: G.goudBleek, fontFamily: "'Crimson Pro', Georgia, serif" }}>
+    <div style={{ background: G.bg, minHeight: '100vh', color: G.goudBleek, fontFamily: "'DM Sans', sans-serif" }}>
       <div style={{ maxWidth: 700, margin: '0 auto', padding: '2rem 1.5rem' }}>
-        <div style={{ marginBottom: '1.5rem', fontSize: 13, color: 'rgba(245,237,216,0.45)' }}>
-          <Link to="/numerologie/analyse" style={{ color: 'rgba(184,134,11,0.7)', textDecoration: 'none' }}>← Profiel Analyse</Link>
+        <div style={{ marginBottom: '1.5rem', fontSize: 13, color: 'rgba(255,243,223,0.45)' }}>
+          <Link to="/numerologie/analyse" style={{ color: 'rgba(241,203,120,0.7)', textDecoration: 'none' }}>← Profiel Analyse</Link>
         </div>
         <div style={{ marginBottom: '2rem' }}>
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, color: 'rgba(184,134,11,0.6)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Numerologie</div>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 22, color: G.goud, marginBottom: '0.5rem' }}>Levenspad</h1>
-          <p style={{ color: 'rgba(245,237,216,0.65)', fontSize: 15 }}>Het meest fundamentele getal — jouw hoofdles in dit leven</p>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: 'rgba(241,203,120,0.6)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Numerologie</div>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: G.goud, marginBottom: '0.5rem' }}>Levenspad</h1>
+          <p style={{ color: 'rgba(255,243,223,0.65)', fontSize: 15 }}>Het meest fundamentele getal — jouw hoofdles in dit leven</p>
         </div>
 
-        <div style={{ background: G.bg2, border: '0.5px solid rgba(184,134,11,0.25)', borderRadius: 12, padding: '1.5rem', marginBottom: '1.5rem' }}>
-          <label style={{ display: 'block', fontFamily: "'Cinzel', serif", fontSize: 11, color: 'rgba(184,134,11,0.7)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Geboortedatum</label>
+        <div style={{ background: G.bg2, border: '0.5px solid rgba(241,203,120,0.25)', borderRadius: 12, padding: '1.5rem', marginBottom: '1.5rem' }}>
+          <label style={{ display: 'block', fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: 'rgba(241,203,120,0.7)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Geboortedatum</label>
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
             <input type="date" value={geboortedatum} onChange={e => setGeboortedatum(e.target.value)}
-              style={{ flex: 1, minWidth: 180, background: G.bg3, border: '0.5px solid rgba(184,134,11,0.3)', borderRadius: 8, padding: '10px 14px', color: G.goudBleek, fontSize: 15, fontFamily: "'Crimson Pro', Georgia, serif" }} />
-            <button onClick={bereken} style={{ padding: '10px 24px', background: G.goud, border: 'none', borderRadius: 8, color: '#1A1208', fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.06em', cursor: 'pointer' }}>Bereken</button>
+              style={{ flex: 1, minWidth: 180, background: G.bg3, border: '0.5px solid rgba(241,203,120,0.3)', borderRadius: 8, padding: '10px 14px', color: G.goudBleek, fontSize: 15, fontFamily: "'DM Sans', sans-serif" }} />
+            <button onClick={bereken} style={{ padding: '10px 24px', background: G.goud, border: 'none', borderRadius: 8, color: '#0D0C22', fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', cursor: 'pointer' }}>Bereken</button>
           </div>
         </div>
 
         {resultaat && arch && (
           <div>
             <div style={{ background: G.bg2, border: `1px solid ${G.goud}`, borderRadius: 12, padding: '1.5rem', marginBottom: '1rem', textAlign: 'center' }}>
-              <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, color: 'rgba(184,134,11,0.6)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Jouw Levenspad</div>
-              <div style={{ fontFamily: "'Cinzel', serif", fontSize: 64, color: G.goud, lineHeight: 1 }}>{resultaat.getal}</div>
-              <div style={{ fontFamily: "'Cinzel', serif", fontSize: 16, color: G.goudBleek, marginTop: '0.5rem' }}>{arch.naam}</div>
-              <div style={{ fontSize: 13, color: 'rgba(184,134,11,0.7)', marginTop: '0.25rem' }}>{arch.kernwoorden}</div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: 'rgba(241,203,120,0.6)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Jouw Levenspad</div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 64, color: G.goud, lineHeight: 1 }}>{resultaat.getal}</div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, color: G.goudBleek, marginTop: '0.5rem' }}>{arch.naam}</div>
+              <div style={{ fontSize: 13, color: 'rgba(241,203,120,0.7)', marginTop: '0.25rem' }}>{arch.kernwoorden}</div>
             </div>
 
-            <div style={{ background: G.bg2, border: '0.5px solid rgba(184,134,11,0.2)', borderRadius: 10, padding: '1.25rem', marginBottom: '0.75rem' }}>
-              <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, color: G.goud, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Berekening</div>
+            <div style={{ background: G.bg2, border: '0.5px solid rgba(241,203,120,0.2)', borderRadius: 10, padding: '1.25rem', marginBottom: '0.75rem' }}>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: G.goud, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Berekening</div>
               {resultaat.stappen.map((s, i) => (
-                <div key={i} style={{ fontSize: 13, color: 'rgba(245,237,216,0.65)', padding: '3px 0', fontFamily: 'monospace' }}>{s}</div>
+                <div key={i} style={{ fontSize: 13, color: 'rgba(255,243,223,0.65)', padding: '3px 0', fontFamily: 'monospace' }}>{s}</div>
               ))}
             </div>
 
-            <div style={{ background: G.bg2, border: '0.5px solid rgba(184,134,11,0.2)', borderRadius: 10, padding: '1.25rem', marginBottom: '0.75rem' }}>
-              <p style={{ fontSize: 15, lineHeight: 1.7, color: 'rgba(245,237,216,0.85)', margin: 0 }}>{arch.beschrijving}</p>
+            <div style={{ background: G.bg2, border: '0.5px solid rgba(241,203,120,0.2)', borderRadius: 10, padding: '1.25rem', marginBottom: '0.75rem' }}>
+              <p style={{ fontSize: 15, lineHeight: 1.7, color: 'rgba(255,243,223,0.85)', margin: 0 }}>{arch.beschrijving}</p>
             </div>
 
             <div style={{ background: 'rgba(200,80,80,0.08)', border: '0.5px solid rgba(200,80,80,0.25)', borderRadius: 10, padding: '1rem 1.25rem' }}>
-              <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, color: '#DB7A7A', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Uitdaging</div>
-              <p style={{ fontSize: 14, color: 'rgba(245,237,216,0.75)', lineHeight: 1.6, margin: 0 }}>{arch.uitdaging}</p>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#DB7A7A', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Uitdaging</div>
+              <p style={{ fontSize: 14, color: 'rgba(255,243,223,0.75)', lineHeight: 1.6, margin: 0 }}>{arch.uitdaging}</p>
             </div>
           </div>
         )}
 
-        <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '0.5px solid rgba(184,134,11,0.15)' }}>
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, color: 'rgba(184,134,11,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Gerelateerde tools</div>
+        <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '0.5px solid rgba(241,203,120,0.15)' }}>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: 'rgba(241,203,120,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Gerelateerde tools</div>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {[{to:'/numerologie/bestuursgetal',label:'Bestuursgetal'},{to:'/numerologie/naam-analyse',label:'Naam Analyse'},{to:'/numerologie/mobiel-nummer',label:'Persoonlijk Jaar'},{to:'/cursus/module-01',label:'Cursus Module 1'}].map(l => (
-              <Link key={l.to} to={l.to} style={{ fontSize: 12, color: 'rgba(184,134,11,0.8)', border: '0.5px solid rgba(184,134,11,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: "'Cinzel', serif", letterSpacing: '0.05em' }}>{l.label}</Link>
+              <Link key={l.to} to={l.to} style={{ fontSize: 12, color: 'rgba(241,203,120,0.8)', border: '0.5px solid rgba(241,203,120,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.05em' }}>{l.label}</Link>
             ))}
           </div>
         </div>

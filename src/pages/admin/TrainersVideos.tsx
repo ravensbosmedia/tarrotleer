@@ -3,11 +3,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8', bg: '#1A1209', bg2: '#2C2416', bg3: '#3A2E1C',
-  rand: 'rgba(184,134,11,0.25)', tekst2: 'rgba(245,237,216,0.75)', tekst3: 'rgba(245,237,216,0.5)',
+  goud: '#F1CB78', goudBleek: '#FFF3DF', bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040',
+  rand: 'rgba(241,203,120,0.25)', tekst2: 'rgba(255,243,223,0.75)', tekst3: 'rgba(255,243,223,0.5)',
 };
 const knop: React.CSSProperties = {
-  fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.05em', padding: '8px 16px', borderRadius: 20,
+  fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.05em', padding: '8px 16px', borderRadius: 20,
   border: 'none', background: G.goud, color: G.bg, cursor: 'pointer',
 };
 const knopLicht: React.CSSProperties = { ...knop, background: 'transparent', color: G.goudBleek, border: `0.5px solid ${G.rand}` };
@@ -88,7 +88,7 @@ export const TrainersVideos: React.FC<{ slug: string }> = ({ slug }) => {
     <div style={{ background: G.bg2, border: `1px solid ${G.rand}`, borderRadius: 12, padding: '1rem 1.1rem', margin: '1rem 0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
         <div>
-          <div style={{ fontFamily: "'Cinzel', serif", color: G.goud, fontSize: 15, letterSpacing: '0.05em' }}>🎬 TRAINERSVIDEO'S</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", color: G.goud, fontSize: 15, letterSpacing: '0.05em' }}>🎬 TRAINERSVIDEO'S</div>
           <div style={{ fontSize: 13, color: G.tekst3 }}>Alleen zichtbaar voor beheerders — ook als de cursus live staat. Tot 2 GB (mp4 of webm).</div>
         </div>
         <button style={knop} onClick={() => kiezer.current?.click()}>⬆ Video uploaden</button>
@@ -159,7 +159,7 @@ export const TrainersVideoBijHoofdstuk: React.FC<{ slug: string; nr: number }> =
   if (!hier.length) return null;
   return (
     <div style={{ background: G.bg3, border: `1px dashed ${G.goud}`, borderRadius: 12, padding: '0.6rem 0.9rem', margin: '0 0 1rem' }}>
-      <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', color: G.goud, cursor: 'pointer', fontFamily: "'Cinzel', serif", fontSize: 13, letterSpacing: '0.05em', padding: 0 }}>
+      <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', color: G.goud, cursor: 'pointer', fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.05em', padding: 0 }}>
         🎬 TRAINERSVIDEO BIJ DIT HOOFDSTUK {open ? '▴' : '▾'} <span style={{ fontFamily: 'inherit', color: G.tekst3, letterSpacing: 0, textTransform: 'none' }}>· alleen zichtbaar voor beheerders</span>
       </button>
       {open && hier.map((v) => (

@@ -74,7 +74,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
       >
         <div
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: 72,
             fontWeight: 700,
             color: G.goud,
@@ -87,7 +87,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
         <div style={{ flex: 1, minWidth: 200 }}>
           <p
             style={{
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 11,
               letterSpacing: '0.12em',
               color: G.tekst3,
@@ -99,7 +99,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
           </p>
           <h3
             style={{
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 22,
               fontWeight: 400,
               color: G.tekst,
@@ -112,7 +112,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
             style={{
               fontSize: 16,
               color: G.tekst2,
-              fontFamily: "'Crimson Pro', serif",
+              fontFamily: "'DM Sans', serif",
               lineHeight: 1.7,
             }}
           >
@@ -133,7 +133,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
       >
         <p
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: 11,
             letterSpacing: '0.08em',
             color: G.tekst3,
@@ -149,7 +149,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
             style={{
               fontSize: 13,
               color: G.tekst2,
-              fontFamily: "'Crimson Pro', serif",
+              fontFamily: "'DM Sans', serif",
               margin: '0.2rem 0',
               lineHeight: 1.6,
             }}
@@ -161,7 +161,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
           style={{
             fontSize: 14,
             color: G.goud,
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             marginTop: '0.4rem',
           }}
         >
@@ -175,7 +175,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
           style={{
             fontSize: 15,
             color: G.tekst2,
-            fontFamily: "'Crimson Pro', serif",
+            fontFamily: "'DM Sans', serif",
             lineHeight: 1.7,
             marginBottom: '1.5rem',
             fontStyle: 'italic',
@@ -197,7 +197,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
       >
         <p
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: 12,
             letterSpacing: '0.08em',
             color: G.tekst3,
@@ -211,7 +211,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
           <div>
             <p
               style={{
-                fontFamily: "'Cinzel', serif",
+                fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 11,
                 letterSpacing: '0.06em',
                 color: '#16A34A',
@@ -228,7 +228,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
                   style={{
                     fontSize: 14,
                     color: G.tekst2,
-                    fontFamily: "'Crimson Pro', serif",
+                    fontFamily: "'DM Sans', serif",
                     lineHeight: 1.7,
                   }}
                 >
@@ -240,7 +240,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
           <div>
             <p
               style={{
-                fontFamily: "'Cinzel', serif",
+                fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 11,
                 letterSpacing: '0.06em',
                 color: '#DC2626',
@@ -257,7 +257,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
                   style={{
                     fontSize: 14,
                     color: G.tekst2,
-                    fontFamily: "'Crimson Pro', serif",
+                    fontFamily: "'DM Sans', serif",
                     lineHeight: 1.7,
                   }}
                 >
@@ -321,7 +321,7 @@ const HuisnummerTab: React.FC = () => {
       >
         <h2
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: 17,
             fontWeight: 400,
             color: G.tekst,
@@ -334,7 +334,7 @@ const HuisnummerTab: React.FC = () => {
           style={{
             fontSize: 14,
             color: G.tekst3,
-            fontFamily: "'Crimson Pro', serif",
+            fontFamily: "'DM Sans', serif",
             fontStyle: 'italic',
             marginBottom: '1rem',
           }}
@@ -346,7 +346,7 @@ const HuisnummerTab: React.FC = () => {
           <label
             style={{
               display: 'block',
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 12,
               letterSpacing: '0.08em',
               color: G.tekst3,
@@ -364,7 +364,7 @@ const HuisnummerTab: React.FC = () => {
             style={{
               width: '100%',
               padding: '0.6rem 0.8rem',
-              fontFamily: "'Crimson Pro', serif",
+              fontFamily: "'DM Sans', serif",
               fontSize: 18,
               color: G.tekst,
               background: G.bg,
@@ -380,7 +380,7 @@ const HuisnummerTab: React.FC = () => {
           onClick={() => setBerekend(true)}
           disabled={!invoer.trim() || !/\d/.test(invoer)}
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: 14,
             letterSpacing: '0.08em',
             color: (!invoer.trim() || !/\d/.test(invoer)) ? G.tekst3 : '#fff',
@@ -419,7 +419,7 @@ const HuisnummerTab: React.FC = () => {
       >
         <p
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: 12,
             letterSpacing: '0.06em',
             color: G.goudDonker,
@@ -432,7 +432,7 @@ const HuisnummerTab: React.FC = () => {
           style={{
             fontSize: 14,
             color: G.tekst2,
-            fontFamily: "'Crimson Pro', serif",
+            fontFamily: "'DM Sans', serif",
             lineHeight: 1.7,
             margin: 0,
           }}
@@ -495,7 +495,7 @@ const TelefoonnummerTab: React.FC = () => {
       >
         <h2
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: 17,
             fontWeight: 400,
             color: G.tekst,
@@ -508,7 +508,7 @@ const TelefoonnummerTab: React.FC = () => {
           style={{
             fontSize: 14,
             color: G.tekst3,
-            fontFamily: "'Crimson Pro', serif",
+            fontFamily: "'DM Sans', serif",
             fontStyle: 'italic',
             marginBottom: '1rem',
           }}
@@ -521,7 +521,7 @@ const TelefoonnummerTab: React.FC = () => {
           <label
             style={{
               display: 'block',
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 12,
               letterSpacing: '0.08em',
               color: G.tekst3,
@@ -539,7 +539,7 @@ const TelefoonnummerTab: React.FC = () => {
             style={{
               width: '100%',
               padding: '0.6rem 0.8rem',
-              fontFamily: "'Crimson Pro', serif",
+              fontFamily: "'DM Sans', serif",
               fontSize: 18,
               color: G.tekst,
               background: G.bg,
@@ -555,7 +555,7 @@ const TelefoonnummerTab: React.FC = () => {
           onClick={() => setBerekend(true)}
           disabled={!invoer.trim() || !/\d/.test(invoer)}
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: 14,
             letterSpacing: '0.08em',
             color: (!invoer.trim() || !/\d/.test(invoer)) ? G.tekst3 : '#fff',
@@ -594,7 +594,7 @@ const TelefoonnummerTab: React.FC = () => {
       >
         <p
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Cormorant Garamond', serif",
             fontSize: 12,
             letterSpacing: '0.06em',
             color: G.goudDonker,
@@ -607,7 +607,7 @@ const TelefoonnummerTab: React.FC = () => {
           style={{
             fontSize: 14,
             color: G.tekst2,
-            fontFamily: "'Crimson Pro', serif",
+            fontFamily: "'DM Sans', serif",
             lineHeight: 1.7,
             margin: 0,
           }}
@@ -642,7 +642,7 @@ export const NumerologieHuisnummerPage: React.FC = () => {
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <p
             style={{
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 12,
               letterSpacing: '0.14em',
               color: G.goud,
@@ -654,7 +654,7 @@ export const NumerologieHuisnummerPage: React.FC = () => {
           </p>
           <h1
             style={{
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 38,
               fontWeight: 400,
               color: G.tekst,
@@ -670,7 +670,7 @@ export const NumerologieHuisnummerPage: React.FC = () => {
               color: G.tekst2,
               lineHeight: 1.7,
               maxWidth: 580,
-              fontFamily: "'Crimson Pro', serif",
+              fontFamily: "'DM Sans', serif",
             }}
           >
             Ontdek de numerologische trilling van je huisnummer of telefoonnummer. Elk getal draagt
@@ -698,7 +698,7 @@ export const NumerologieHuisnummerPage: React.FC = () => {
                 key={tab.id}
                 onClick={() => setActieveTab(tab.id)}
                 style={{
-                  fontFamily: "'Cinzel', serif",
+                  fontFamily: "'Cormorant Garamond', serif",
                   fontSize: 14,
                   letterSpacing: '0.07em',
                   color: active ? G.goud : G.tekst3,
@@ -734,7 +734,7 @@ export const NumerologieHuisnummerPage: React.FC = () => {
         >
           <p
             style={{
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Cormorant Garamond', serif",
               fontSize: 12,
               letterSpacing: '0.06em',
               color: G.goudDonker,
@@ -747,7 +747,7 @@ export const NumerologieHuisnummerPage: React.FC = () => {
             style={{
               fontSize: 14,
               color: G.tekst2,
-              fontFamily: "'Crimson Pro', serif",
+              fontFamily: "'DM Sans', serif",
               lineHeight: 1.7,
               margin: 0,
             }}

@@ -73,7 +73,7 @@ export const MaanfasePage: React.FC = () => {
   const vandaagStr = new Date().toISOString().slice(0, 10);
 
   return (
-    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'Crimson Pro', serif" }}>
+    <div style={{ minHeight: '100vh', background: G.bg, color: G.goudBleek, fontFamily: "'DM Sans', serif" }}>
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '2.5rem 1.5rem' }}>
 
         {/* Header */}
@@ -81,7 +81,7 @@ export const MaanfasePage: React.FC = () => {
           <div style={{ fontSize: 52, marginBottom: '0.3rem' }}>
             {maanNu?.emoji ?? '🌕'}
           </div>
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 26, letterSpacing: '0.15em', color: G.goud, margin: 0 }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, letterSpacing: '0.15em', color: G.goud, margin: 0 }}>
             MAANFASE
           </h1>
           <p style={{ color: 'rgba(245,237,216,0.45)', fontSize: 13, marginTop: '0.4rem', letterSpacing: '0.05em' }}>
@@ -98,10 +98,10 @@ export const MaanfasePage: React.FC = () => {
           }}>
             {/* Links: fase info */}
             <div>
-              <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, marginBottom: '0.8rem', opacity: 0.7 }}>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, marginBottom: '0.8rem', opacity: 0.7 }}>
                 HUIDIGE MAANFASE
               </div>
-              <div style={{ fontSize: 22, fontFamily: "'Cinzel', serif", color: G.goudBleek, marginBottom: '1.2rem' }}>
+              <div style={{ fontSize: 22, fontFamily: "'Cormorant Garamond', serif", color: G.goudBleek, marginBottom: '1.2rem' }}>
                 {maanNu.fase}
               </div>
 
@@ -144,7 +144,7 @@ export const MaanfasePage: React.FC = () => {
 
             {/* Rechts: betekenis */}
             <div style={{ borderLeft: `0.5px solid ${G.rand}`, paddingLeft: '2rem' }}>
-              <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, marginBottom: '0.8rem', opacity: 0.7 }}>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.12em', color: G.goud, marginBottom: '0.8rem', opacity: 0.7 }}>
                 BETEKENIS
               </div>
               <p style={{ fontSize: 15, lineHeight: 1.8, color: 'rgba(245,237,216,0.85)', margin: 0 }}>
@@ -160,7 +160,7 @@ export const MaanfasePage: React.FC = () => {
           {/* Kalender navigatie */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
             <button onClick={vorigeMaand} style={{ background: 'none', border: `0.5px solid ${G.rand}`, borderRadius: 8, padding: '6px 14px', color: G.goudBleek, cursor: 'pointer', fontSize: 16 }}>‹</button>
-            <span style={{ fontFamily: "'Cinzel', serif", fontSize: 14, letterSpacing: '0.12em', color: G.goud }}>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 14, letterSpacing: '0.12em', color: G.goud }}>
               {MAANDEN_NL[huidigeMaand - 1]} {huidigJaar}
             </span>
             <button onClick={volgendeMaand} style={{ background: 'none', border: `0.5px solid ${G.rand}`, borderRadius: 8, padding: '6px 14px', color: G.goudBleek, cursor: 'pointer', fontSize: 16 }}>›</button>
@@ -169,7 +169,7 @@ export const MaanfasePage: React.FC = () => {
           {/* Weekdag headers */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.3rem', marginBottom: '0.3rem' }}>
             {DAGEN_NL.map(d => (
-              <div key={d} style={{ textAlign: 'center', fontFamily: "'Cinzel', serif", fontSize: 10, letterSpacing: '0.08em', color: 'rgba(245,237,216,0.35)', padding: '0.3rem 0' }}>
+              <div key={d} style={{ textAlign: 'center', fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.08em', color: 'rgba(245,237,216,0.35)', padding: '0.3rem 0' }}>
                 {d}
               </div>
             ))}
@@ -202,7 +202,7 @@ export const MaanfasePage: React.FC = () => {
                   >
                     <div style={{ fontSize: isVolleMaan || isNieuweMaan ? 20 : 16, lineHeight: 1 }}>{dag.emoji}</div>
                     <div style={{
-                      fontSize: 11, marginTop: '0.2rem', fontFamily: "'Cinzel', serif",
+                      fontSize: 11, marginTop: '0.2rem', fontFamily: "'Cormorant Garamond', serif",
                       color: isVandaag ? G.goud : 'rgba(245,237,216,0.6)',
                       fontWeight: isVandaag ? 700 : 400,
                     }}>
@@ -218,7 +218,7 @@ export const MaanfasePage: React.FC = () => {
               })}
             </div>
           ) : (
-            <div style={{ textAlign: 'center', padding: '2rem', color: G.goud, fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.1em' }}>
+            <div style={{ textAlign: 'center', padding: '2rem', color: G.goud, fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.1em' }}>
               Laden...
             </div>
           )}
@@ -246,14 +246,14 @@ export const MaanfasePage: React.FC = () => {
         {/* Gerelateerde tools */}
         <div style={{ maxWidth: 900, margin: '1.5rem auto 0', padding: '0 1.5rem 2rem' }}>
           <div style={{ borderTop: '0.5px solid rgba(184,134,11,0.15)', paddingTop: '1.25rem' }}>
-            <div style={{ fontFamily: "'Cinzel', serif", fontSize: 11, color: 'rgba(184,134,11,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Gerelateerde tools</div>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: 'rgba(184,134,11,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Gerelateerde tools</div>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               {[
                 { to: '/cursus/module-05', label: 'Cursus: Maanfasen' },
                 { to: '/sterrenbeelden', label: 'Sterrenbeelden' },
                 { to: '/natal', label: 'Geboortehoroscoop' },
               ].map(l => (
-                <a key={l.to} href={l.to} style={{ fontSize: 12, color: 'rgba(184,134,11,0.8)', border: '0.5px solid rgba(184,134,11,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: "'Cinzel', serif", letterSpacing: '0.05em' }}>{l.label}</a>
+                <a key={l.to} href={l.to} style={{ fontSize: 12, color: 'rgba(184,134,11,0.8)', border: '0.5px solid rgba(184,134,11,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.05em' }}>{l.label}</a>
               ))}
             </div>
           </div>

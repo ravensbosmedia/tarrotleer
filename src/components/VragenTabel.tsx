@@ -2,9 +2,9 @@ import React, { useMemo, useState } from 'react';
 import { pctGoed, QuizStat } from '../lib/voortgang';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8',
-  bg: '#1A1209', bg3: '#3A2E1C', rand: 'rgba(184,134,11,0.25)',
-  tekst2: 'rgba(245,237,216,0.72)', tekst3: 'rgba(245,237,216,0.5)',
+  goud: '#F1CB78', goudBleek: '#FFF3DF',
+  bg: '#0D0C22', bg3: '#2D2040', rand: 'rgba(241,203,120,0.25)',
+  tekst2: 'rgba(255,243,223,0.72)', tekst3: 'rgba(255,243,223,0.5)',
 };
 const NIVEAU_KLEUR = (p: number) => (p >= 80 ? '#5FA777' : p >= 50 ? '#C9A227' : '#C8604F');
 
