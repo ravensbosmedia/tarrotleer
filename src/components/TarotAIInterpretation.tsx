@@ -2,7 +2,6 @@ import React from 'react';
 import { Sparkles, AlertCircle, Lock } from 'lucide-react';
 import { TarotCard } from '../types/cards';
 import { QuotaManager } from '../utils/quotaManager';
-import { AiDisclaimer } from './AiDisclaimer';
 
 interface Props {
   cards: TarotCard[];
@@ -125,7 +124,6 @@ export const TarotAIInterpretation: React.FC<Props> = ({
       <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#B9A9CC', marginTop: '1rem', letterSpacing: '0.05em' }}>
         Op basis van onze kaartbetekenissen · gpt-5.5
       </div>
-      <AiDisclaimer />
     </div>
   );
 };

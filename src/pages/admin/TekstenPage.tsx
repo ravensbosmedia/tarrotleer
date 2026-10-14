@@ -5,7 +5,7 @@ import { ZF_KNOP, ZF_KNOP_PAARS } from '../../lib/zenStijl';
 interface Tekst { sleutel: string; waarde: string; standaard: string; aangepast: boolean; bijgewerkt: string | null; door: string | null }
 const UITLEG: Record<string, { titel: string; waar: string }> = {
   disclaimer_algemeen: { titel: 'Disclaimer — gratis functies', waar: 'Op zen-flow.nl onder "Probeer het zelf" (dagkaart, levenspad, maandhoroscoop).' },
-  disclaimer_ai: { titel: 'Disclaimer — AI-duidingen', waar: 'In de leeromgeving bij de duiding van Tarot en Lenormand en bij het gesprek over je legging; ook op zen-flow.nl onder de knoppen voor ingelogde bezoekers.' },
+  disclaimer_ai: { titel: 'Disclaimer — AI-duidingen (niet in gebruik)', waar: 'Wordt op dit moment nergens getoond (op verzoek weggehaald, 15-10-2026). Bewaard voor als hij later weer nodig is.' },
 };
 
 export const TekstenPage: React.FC = () => {

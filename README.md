@@ -161,7 +161,7 @@ Knop **Aa** in het menu (op de telefoon bovenin het uitklapmenu): Normaal / Grot
 
 ## Openbaar voor zen-flow.nl (zonder inloggen, zonder AI) en Teksten
 `publiek.ts` (vóór de toegangscontrole in server.ts): `/api/publiek/teksten`, `/api/publiek/dagkaart`, `/api/publiek/levenspad?datum=`, `/api/publiek/maandhoroscoop/:teken` (alleen GET; CORS alleen voor zen-flow.nl en www) en `/publiek/kaarten/*` (kaartafbeeldingen). Geen van deze roept AI aan; de maandhoroscoop gebruikt de bestaande AstroAPI-cache (`maandHoroscoop()` in server.ts, max. 12 calls per maand).
-**Teksten (disclaimers)**: `/admin/teksten` (alleen beheerders; tabel `instellingen`; leeg opslaan = standaardtekst, zie `STANDAARD_TEKSTEN`). De AI-disclaimer (`<AiDisclaimer />`) staat bij de Tarot- en Lenormand-duiding en het gesprek over je legging.
+**Teksten (disclaimers)**: `/admin/teksten` (alleen beheerders; tabel `instellingen`; leeg opslaan = standaardtekst, zie `STANDAARD_TEKSTEN`). De AI-disclaimer (`<AiDisclaimer />`) is op verzoek van de gebruiker overal weggehaald (15-10-2026); de tekst `disclaimer_ai` blijft in het beheer bewaard maar wordt nergens getoond.
 
 ## Maandhoroscoop in makkelijke taal (B1) — 15-10-2026
 `maandHoroscoop()` in server.ts: AstroAPI-tekst (max. één call per teken per maand) wordt **één keer per teken per maand** door gpt-5.5 herschreven naar B1 (korte zinnen, geen vaktermen, zelfde boodschap) en bewaard als `cache/astroapi/maand-JJJJ-MM-<teken>-b1.json`. Zowel zen-flow.nl als de horoscooppagina tonen die versie; lukt herschrijven niet, dan het origineel. Max. 12 AI-calls per maand, niet per bezoeker.
