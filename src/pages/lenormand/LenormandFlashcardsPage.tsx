@@ -6,10 +6,10 @@ import { LenormandKaart } from '../../types/lenormand';
 import { LenormandKaartVisueel } from '../../components/lenormand/LenormandKaartVisueel';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8', goudDonker: '#7A5C00',
-  bg: '#FDFAF4', bg2: '#F5F0E8', bg3: '#EDE6D6',
-  tekst: '#2C2416', tekst2: '#6B5C3E', tekst3: '#9C8A6A',
-  rand: 'rgba(184,134,11,0.20)', rand2: 'rgba(184,134,11,0.35)',
+  goud: '#F1CB78', goudBleek: '#2D2040', goudDonker: '#E0B04A',
+  bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040',
+  tekst: '#FFF3DF', tekst2: '#E0D5E9', tekst3: '#B9A9CC',
+  rand: 'rgba(239,180,255,0.22)', rand2: 'rgba(239,180,255,0.38)',
 };
 
 function schud<T>(arr: T[]): T[] {
@@ -153,13 +153,13 @@ export const LenormandFlashcardsPage: React.FC = () => {
           </button>
           <button
             onClick={() => beoordeel(false)}
-            style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 20px', borderRadius: 20, border: '0.5px solid #FDBA74', background: '#FFF7ED', color: '#C2410C', cursor: 'pointer' }}
+            style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 20px', borderRadius: 20, border: '0.5px solid rgba(224,176,74,0.5)', background: 'rgba(224,176,74,0.12)', color: '#F2B27A', cursor: 'pointer' }}
           >
             ↺ Nog oefenen
           </button>
           <button
             onClick={() => beoordeel(true)}
-            style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 20px', borderRadius: 20, border: '0.5px solid #86EFAC', background: '#F0FDF4', color: '#15803D', cursor: 'pointer' }}
+            style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', padding: '9px 20px', borderRadius: 20, border: '0.5px solid rgba(155,212,155,0.5)', background: 'rgba(95,167,119,0.15)', color: '#9BD49B', cursor: 'pointer' }}
           >
             ✓ Ken ik
           </button>
@@ -168,7 +168,7 @@ export const LenormandFlashcardsPage: React.FC = () => {
           </button>
         </div>
         <p style={{ textAlign: 'center', fontSize: 13, color: G.tekst3, marginTop: '0.9rem' }}>
-          <span style={{ color: '#15803D' }}>✓ {telling.ken}</span> · <span style={{ color: '#C2410C' }}>↺ {telling.oefen}</span> deze ronde ·{' '}
+          <span style={{ color: '#9BD49B' }}>✓ {telling.ken}</span> · <span style={{ color: '#F2B27A' }}>↺ {telling.oefen}</span> deze ronde ·{' '}
           <Link to="/voortgang" style={{ color: G.goudDonker }}>Mijn voortgang</Link>
         </p>
 

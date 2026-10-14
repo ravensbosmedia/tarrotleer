@@ -97,7 +97,22 @@ const SECTIES: Sectie[] = [
 
 const G = {
   goud: '#F1CB78', goudBleek: '#FFF3DF', goudDonker: '#E0B04A',
-  bg: '#0C0A20', bg2: '#20162F', bg3: '#17112C',
+  bg: '#0C0A20', bg2: '#20162F', bg3: '#151029',
+};
+// Zen Flow-menu (zie zen-flow.nl): DM Sans, gouden gloed bij aanwijzen, panelen met paarse rand
+const SANS = "'DM Sans', sans-serif";
+const PANEEL: React.CSSProperties = {
+  background: G.bg2, border: '1px solid #C292BD', borderRadius: 13, padding: 8,
+  boxShadow: '0 0 40px rgba(172,85,178,0.23), 0 14px 32px rgba(0,0,0,0.5)',
+};
+const itemStijl = (actief: boolean): React.CSSProperties => ({
+  display: 'block', fontFamily: SANS, fontSize: 14, padding: '10px 14px', borderRadius: 8,
+  color: actief ? G.goud : '#E0D5E9', background: actief ? 'rgba(239,180,255,0.14)' : 'transparent',
+  textDecoration: 'none', transition: 'all 0.12s', whiteSpace: 'nowrap',
+});
+const zweefAan = (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.background = 'rgba(239,180,255,0.10)'; e.currentTarget.style.color = G.goud; };
+const zweefUit = (actief: boolean) => (e: React.MouseEvent<HTMLElement>) => {
+  e.currentTarget.style.background = actief ? 'rgba(239,180,255,0.14)' : 'transparent'; e.currentTarget.style.color = actief ? G.goud : '#E0D5E9';
 };
 
 export const Navbar: React.FC = () => {
@@ -181,12 +196,12 @@ export const Navbar: React.FC = () => {
                   aria-expanded={isOpen}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 4,
-                    fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.08em',
-                    padding: '7px 13px', borderRadius: 8, border: 'none',
-                    background: isOpen ? G.bg2 : 'transparent',
-                    color: isActief ? G.goud : 'rgba(255,243,223,0.78)',
-                    cursor: 'pointer', textTransform: 'uppercase',
-                    transition: 'all 0.15s', whiteSpace: 'nowrap',
+                    fontFamily: SANS, fontSize: 13, fontWeight: 500,
+                    padding: '8px 12px', borderRadius: 20, border: 'none',
+                    background: isOpen ? 'rgba(239,180,255,0.10)' : 'transparent',
+                    color: isActief || isOpen ? G.goud : 'rgba(255,243,223,0.85)',
+                    textShadow: isOpen ? '0 0 15px #E361FF' : 'none',
+                    cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap',
                   }}
                 >
                   {s.label}
@@ -197,26 +212,15 @@ export const Navbar: React.FC = () => {
                 {/* paddingTop i.p.v. marginTop: geen gat tussen knop en lijst, anders sluit de hover */}
                 {isOpen && (
                   <div style={{ position: 'absolute', top: '100%', left: 0, paddingTop: 4, zIndex: 60 }}>
-                  <div style={{
-                    minWidth: 200, background: G.bg2,
-                    border: '0.5px solid rgba(241,203,120,0.30)', borderRadius: 10,
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.45)', padding: 6,
-                  }}>
+                  <div style={{ ...PANEEL, minWidth: 220 }}>
                     {s.links.map((l) => {
                       const actief = linkActief(l.to);
                       return (
                         <Link
                           key={l.to} to={l.to}
-                          style={{
-                            display: 'block', fontFamily: "'Cormorant Garamond', serif",
-                            fontSize: 12.5, letterSpacing: '0.04em',
-                            padding: '9px 12px', borderRadius: 7,
-                            color: actief ? G.goudBleek : 'rgba(255,243,223,0.74)',
-                            background: actief ? 'rgba(241,203,120,0.18)' : 'transparent',
-                            textDecoration: 'none', transition: 'all 0.12s', whiteSpace: 'nowrap',
-                          }}
-                          onMouseEnter={(e) => { if (!actief) (e.currentTarget.style.background = 'rgba(241,203,120,0.10)'); }}
-                          onMouseLeave={(e) => { if (!actief) (e.currentTarget.style.background = 'transparent'); }}
+                          style={itemStijl(actief)}
+                          onMouseEnter={zweefAan}
+                          onMouseLeave={zweefUit(actief)}
                         >
                           {l.label}
                         </Link>
@@ -242,9 +246,9 @@ export const Navbar: React.FC = () => {
               onClick={() => klikSectie('__account')}
               aria-expanded={open === '__account'}
               style={{
-                display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 8, border: 'none',
-                background: open === '__account' ? G.bg2 : 'transparent', color: 'rgba(255,243,223,0.85)',
-                fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.06em', cursor: 'pointer', whiteSpace: 'nowrap',
+                display: 'flex', alignItems: 'center', gap: 6, padding: '8px 18px', borderRadius: 30,
+                border: '1px solid #B67AC9', background: open === '__account' ? 'rgba(239,180,255,0.10)' : 'transparent',
+                color: G.goudBleek, fontFamily: SANS, fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap',
               }}
             >
               <User size={15} /> {lid.naam.split(' ')[0]}
@@ -252,13 +256,10 @@ export const Navbar: React.FC = () => {
             </button>
             {open === '__account' && (
               <div style={{ position: 'absolute', top: '100%', right: 0, paddingTop: 4, zIndex: 60 }}>
-                <div style={{
-                  minWidth: 210, background: G.bg2, border: '0.5px solid rgba(241,203,120,0.30)', borderRadius: 10,
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.45)', padding: 6,
-                }}>
-                  <div style={{ padding: '8px 12px 10px', borderBottom: '0.5px solid rgba(241,203,120,0.2)', marginBottom: 4 }}>
-                    <div style={{ color: G.goudBleek, fontSize: 14 }}>{lid.naam}</div>
-                    <div style={{ color: G.goud, fontSize: 11, fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.06em', marginTop: 2 }}>
+                <div style={{ ...PANEEL, minWidth: 230 }}>
+                  <div style={{ padding: '8px 14px 12px', borderBottom: '1px solid rgba(194,146,189,0.35)', marginBottom: 6 }}>
+                    <div style={{ color: G.goudBleek, fontSize: 21, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500 }}>{lid.naam}</div>
+                    <div style={{ color: G.goud, fontSize: 10, fontFamily: SANS, letterSpacing: '2px', marginTop: 4 }}>
                       {ABONNEMENT_LABEL[lid.abonnement_actief].toUpperCase()}
                     </div>
                   </div>
@@ -267,15 +268,11 @@ export const Navbar: React.FC = () => {
                     { to: '/account', label: 'Mijn account' },
                     ...(lid.rol === 'admin' ? [{ to: '/admin/leden', label: 'Leden beheren' }, { to: '/admin/academie', label: 'Academie (beheer)' }, { to: '/admin/cursussen', label: 'Cursus-uploads' }] : []),
                   ].map((l) => (
-                    <Link key={l.to} to={l.to} style={{
-                      display: 'block', fontFamily: "'Cormorant Garamond', serif", fontSize: 12.5, letterSpacing: '0.04em',
-                      padding: '9px 12px', borderRadius: 7, color: 'rgba(255,243,223,0.8)', textDecoration: 'none',
-                    }}>{l.label}</Link>
+                    <Link key={l.to} to={l.to} style={itemStijl(linkActief(l.to))} onMouseEnter={zweefAan} onMouseLeave={zweefUit(linkActief(l.to))}>{l.label}</Link>
                   ))}
                   <button onClick={uitloggen} style={{
-                    display: 'block', width: '100%', textAlign: 'left', fontFamily: "'Cormorant Garamond', serif", fontSize: 12.5,
-                    letterSpacing: '0.04em', padding: '9px 12px', borderRadius: 7, border: 'none', background: 'transparent',
-                    color: 'rgba(255,243,223,0.6)', cursor: 'pointer',
+                    ...itemStijl(false), width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer', color: '#B9A9CC',
+                    marginTop: 4, borderTop: '1px solid rgba(194,146,189,0.25)', borderRadius: 0,
                   }}>Uitloggen</button>
                 </div>
               </div>
@@ -287,7 +284,7 @@ export const Navbar: React.FC = () => {
         <button
           className="md:hidden"
           onClick={() => setMobiel((v) => !v)}
-          style={{ marginLeft: 'auto', background: 'none', border: 'none', color: G.goudBleek, cursor: 'pointer', display: 'flex' }}
+          style={{ marginLeft: 'auto', background: 'none', border: '1px solid #B17BC6', borderRadius: 5, padding: '5px 9px', color: G.goud, cursor: 'pointer', display: 'flex' }}
           aria-label="Menu"
         >
           {mobiel ? <X size={24} /> : <Menu size={24} />}
@@ -296,19 +293,19 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile: accordion per sectie */}
       {mobiel && (
-        <div className="md:hidden" style={{ background: G.bg3, borderTop: '0.5px solid rgba(241,203,120,0.20)', padding: '0.5rem 0', maxHeight: '75vh', overflowY: 'auto' }}>
+        <div className="md:hidden" style={{ background: G.bg3, borderTop: '1px solid #A77AB9', borderBottom: '1px solid #A77AB9', padding: '0.5rem 0', maxHeight: '75vh', overflowY: 'auto' }}>
           {SECTIES.map((s) => {
             const openSectie = mobielSectie === s.id;
             const isActief = activeId === s.id;
             return (
-              <div key={s.id} style={{ borderBottom: '0.5px solid rgba(241,203,120,0.10)' }}>
+              <div key={s.id} style={{ borderBottom: '1px solid rgba(194,146,189,0.18)' }}>
                 <button
                   onClick={() => setMobielSectie(openSectie ? null : s.id)}
                   style={{
                     width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em',
-                    padding: '13px 1.5rem', border: 'none', background: 'transparent',
-                    color: isActief ? G.goud : G.goudBleek, cursor: 'pointer', textTransform: 'uppercase',
+                    fontFamily: SANS, fontSize: 15, fontWeight: 500,
+                    padding: '14px 1.5rem', border: 'none', background: 'transparent',
+                    color: isActief || openSectie ? G.goud : G.goudBleek, cursor: 'pointer',
                   }}
                 >
                   {s.label}
@@ -321,13 +318,7 @@ export const Navbar: React.FC = () => {
                       return (
                         <Link
                           key={l.to} to={l.to}
-                          style={{
-                            display: 'block', fontFamily: "'Cormorant Garamond', serif", fontSize: 13,
-                            padding: '10px 1rem', borderRadius: 7,
-                            color: actief ? G.goudBleek : 'rgba(255,243,223,0.72)',
-                            background: actief ? 'rgba(241,203,120,0.16)' : 'transparent',
-                            textDecoration: 'none',
-                          }}
+                          style={{ ...itemStijl(actief), fontSize: 15, padding: '11px 1rem', whiteSpace: 'normal' }}
                         >
                           {l.label}
                         </Link>
@@ -340,19 +331,19 @@ export const Navbar: React.FC = () => {
           })}
           {lid && (
             <div style={{ padding: '0.6rem 1.5rem 0.4rem', display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <div style={{ color: G.goud, fontSize: 11, fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.06em', padding: '6px 0' }}>
+              <div style={{ color: G.goud, fontSize: 10, fontFamily: SANS, letterSpacing: '2px', padding: '6px 0', textTransform: 'uppercase' }}>
                 {lid.naam} · {ABONNEMENT_LABEL[lid.abonnement_actief]}
               </div>
-              <Link to="/voortgang" style={{ color: G.goudBleek, fontFamily: "'Cormorant Garamond', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Mijn voortgang</Link>
-              <Link to="/account" style={{ color: G.goudBleek, fontFamily: "'Cormorant Garamond', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Mijn account</Link>
+              <Link to="/voortgang" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Mijn voortgang</Link>
+              <Link to="/account" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Mijn account</Link>
               {lid.rol === 'admin' && (
                 <>
-                  <Link to="/admin/leden" style={{ color: G.goudBleek, fontFamily: "'Cormorant Garamond', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Leden beheren</Link>
-                  <Link to="/admin/academie" style={{ color: G.goudBleek, fontFamily: "'Cormorant Garamond', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Academie (beheer)</Link>
-                  <Link to="/admin/cursussen" style={{ color: G.goudBleek, fontFamily: "'Cormorant Garamond', serif", fontSize: 13, padding: '8px 0', textDecoration: 'none' }}>Cursus-uploads</Link>
+                  <Link to="/admin/leden" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Leden beheren</Link>
+                  <Link to="/admin/academie" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Academie (beheer)</Link>
+                  <Link to="/admin/cursussen" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Cursus-uploads</Link>
                 </>
               )}
-              <button onClick={uitloggen} style={{ textAlign: 'left', background: 'none', border: 'none', color: 'rgba(255,243,223,0.6)', fontFamily: "'Cormorant Garamond', serif", fontSize: 13, padding: '8px 0', cursor: 'pointer' }}>Uitloggen</button>
+              <button onClick={uitloggen} style={{ textAlign: 'left', background: 'none', border: 'none', color: '#B9A9CC', fontFamily: SANS, fontSize: 15, padding: '9px 0', cursor: 'pointer' }}>Uitloggen</button>
             </div>
           )}
         </div>

@@ -2,10 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8', goudDonker: '#7A5C00',
-  bg: '#FDFAF4', bg2: '#F5F0E8', bg3: '#EDE6D6',
-  tekst: '#2C2416', tekst2: '#6B5C3E', tekst3: '#9C8A6A',
-  rand: 'rgba(184,134,11,0.20)', rand2: 'rgba(184,134,11,0.35)',
+  goud: '#F1CB78', goudBleek: '#2D2040', goudDonker: '#E0B04A',
+  bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040',
+  tekst: '#FFF3DF', tekst2: '#E0D5E9', tekst3: '#B9A9CC',
+  rand: 'rgba(239,180,255,0.22)', rand2: 'rgba(239,180,255,0.38)',
 };
 
 interface Groep {
@@ -19,7 +19,7 @@ interface Groep {
 
 const GROEPEN: Groep[] = [
   {
-    id: 'lenormand', icoon: '🃏', titel: 'Lenormand', accent: '#B8860B',
+    id: 'lenormand', icoon: '🃏', titel: 'Lenormand', accent: '#F1CB78',
     omschrijving: '36 heldere, directe kaarten — sterk in combinaties en dagelijkse vragen.',
     links: [
       { to: '/lenormand/leggingen',   label: 'Leggingen' },
@@ -73,7 +73,7 @@ const GROEPEN: Groep[] = [
     ],
   },
   {
-    id: 'spiritueel', icoon: '🕯️', titel: 'Spiritueel', accent: '#15803D',
+    id: 'spiritueel', icoon: '🕯️', titel: 'Spiritueel', accent: '#9BD49B',
     omschrijving: 'Werk met kristallen en rituelen voor balans en intentie.',
     links: [
       { to: '/kristallen', label: 'Kristallen' },
@@ -99,7 +99,7 @@ export const StartPage: React.FC = () => {
       <div style={{
         borderBottom: `0.5px solid ${G.rand}`,
         padding: '4rem 2rem 3rem',
-        background: 'radial-gradient(circle at 50% 0%, rgba(184,134,11,0.07), transparent 60%)',
+        background: 'radial-gradient(circle at 50% 0%, rgba(241,203,120,0.07), transparent 60%)',
       }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
           <div style={{ fontSize: 46, marginBottom: '0.4rem', opacity: 0.9, fontFamily: 'Georgia, serif' }}>☾</div>

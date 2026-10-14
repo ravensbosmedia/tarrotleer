@@ -196,7 +196,7 @@ export const PendelSchijf: React.FC<PendelSchijfProps> = ({
         {/* Afdrukknop */}
         <button
           onClick={() => window.print()}
-          className="mt-2 px-4 py-1.5 bg-purple-100 text-purple-700 hover:bg-purple-200 border border-purple-300 rounded-full text-sm font-medium transition-colors"
+          className="mt-2 px-4 py-1.5 bg-[#3A2A52] text-[#F1CB78] hover:bg-[#482254] border border-[#C292BD] rounded-full text-sm font-medium transition-colors"
         >
           Afdrukken
         </button>

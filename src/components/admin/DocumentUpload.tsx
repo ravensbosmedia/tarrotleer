@@ -49,13 +49,13 @@ export const DocumentUpload: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold text-purple-700 mb-4">
+    <div className="bg-[#20162F] p-6 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold text-[#F1CB78] mb-4">
         Document Uploaden
       </h2>
 
       <div className="mb-4">
-        <p className="text-gray-600">
+        <p className="text-[#CFC2DC]">
           Upload PDF's of e-books met tarot kennis om de interpretaties te verbeteren.
           De bestanden worden lokaal opgeslagen.
         </p>
@@ -63,13 +63,13 @@ export const DocumentUpload: React.FC = () => {
 
       <div className="space-y-4">
         <label className="block">
-          <div className="flex items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-lg appearance-none cursor-pointer hover:border-purple-400 focus:outline-none">
+          <div className="flex items-center justify-center w-full h-32 px-4 transition bg-[#20162F] border-2 border-[rgba(194,146,189,0.45)] border-dashed rounded-lg appearance-none cursor-pointer hover:border-[#EFB4FF] focus:outline-none">
             <div className="flex flex-col items-center space-y-2">
-              <FileText className="w-8 h-8 text-purple-600" />
-              <span className="font-medium text-gray-600">
+              <FileText className="w-8 h-8 text-[#F1CB78]" />
+              <span className="font-medium text-[#CFC2DC]">
                 {uploading ? 'Bezig met opslaan...' : 'Klik om een document te kiezen'}
               </span>
-              <span className="text-sm text-gray-500">PDF of EPUB (max. 10MB)</span>
+              <span className="text-sm text-[#B9A9CC]">PDF of EPUB (max. 10MB)</span>
             </div>
             <input
               type="file"
@@ -82,14 +82,14 @@ export const DocumentUpload: React.FC = () => {
         </label>
 
         {error && (
-          <div className="flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded">
+          <div className="flex items-center gap-2 text-[#F0A596] bg-[rgba(200,96,79,0.15)] p-3 rounded">
             <AlertCircle className="w-5 h-5" />
             <p>{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded">
+          <div className="flex items-center gap-2 text-[#9BD49B] bg-[rgba(95,167,119,0.15)] p-3 rounded">
             <Upload className="w-5 h-5" />
             <p>{success}</p>
           </div>

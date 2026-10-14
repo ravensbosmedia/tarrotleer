@@ -6,10 +6,10 @@ import { lenormandKaarten } from '../../data/lenormand/kaarten';
 import { haalVoortgang, haalQuizStats, slaRondeOp, maakGewicht, QuizAntwoord, QuizResultaat, QuizStat } from '../../lib/voortgang';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8', goudDonker: '#7A5C00',
-  bg: '#FDFAF4', bg2: '#F5F0E8', bg3: '#EDE6D6',
-  tekst: '#2C2416', tekst2: '#6B5C3E', tekst3: '#9C8A6A',
-  rand: 'rgba(184,134,11,0.20)', rand2: 'rgba(184,134,11,0.35)',
+  goud: '#F1CB78', goudBleek: '#2D2040', goudDonker: '#E0B04A',
+  bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040',
+  tekst: '#FFF3DF', tekst2: '#E0D5E9', tekst3: '#B9A9CC',
+  rand: 'rgba(239,180,255,0.22)', rand2: 'rgba(239,180,255,0.38)',
 };
 
 const LETTERS = ['A', 'B', 'C', 'D'];
@@ -275,8 +275,8 @@ export const LenormandQuizPage: React.FC = () => {
             let borderColor = G.rand2;
             let textColor = G.tekst2;
             if (gekozen !== null) {
-              if (isCorrect) { bg = '#F0FDF4'; borderColor = '#86EFAC'; textColor = '#15803D'; }
-              else if (isGekozen) { bg = '#FEF2F2'; borderColor = '#FCA5A5'; textColor = '#B91C1C'; }
+              if (isCorrect) { bg = 'rgba(95,167,119,0.15)'; borderColor = 'rgba(155,212,155,0.5)'; textColor = '#9BD49B'; }
+              else if (isGekozen) { bg = 'rgba(200,96,79,0.15)'; borderColor = 'rgba(240,165,150,0.5)'; textColor = '#F0A596'; }
             }
             return (
               <button
@@ -312,9 +312,9 @@ export const LenormandQuizPage: React.FC = () => {
           <>
             <div style={{
               padding: '1rem 1.2rem', borderRadius: 8, marginBottom: '1.2rem',
-              background: gekozen === vraag.correct ? '#F0FDF4' : '#FEF2F2',
-              border: `0.5px solid ${gekozen === vraag.correct ? '#86EFAC' : '#FCA5A5'}`,
-              fontSize: 14, color: gekozen === vraag.correct ? '#15803D' : '#B91C1C',
+              background: gekozen === vraag.correct ? 'rgba(95,167,119,0.15)' : 'rgba(200,96,79,0.15)',
+              border: `0.5px solid ${gekozen === vraag.correct ? 'rgba(155,212,155,0.5)' : 'rgba(240,165,150,0.5)'}`,
+              fontSize: 14, color: gekozen === vraag.correct ? '#9BD49B' : '#F0A596',
               lineHeight: 1.7,
             }}>
               <strong>{gekozen === vraag.correct ? '✓ Goed!' : '✗ Helaas.'}</strong>

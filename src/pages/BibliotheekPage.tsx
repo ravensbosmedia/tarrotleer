@@ -28,11 +28,11 @@ export const BibliotheekPage: React.FC = () => {
   }), [suit, search]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-purple-700 text-white py-8">
+    <div className="min-h-screen bg-[#17112C]">
+      <div className="bg-[#FFC653] text-[#1C0D06] py-8">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold mb-1">Kaartbibliotheek</h1>
-          <p className="text-purple-200">Alle 78 Rider-Waite-Smith kaarten als naslagwerk</p>
+          <p className="text-[#E0D5E9]">Alle 78 Rider-Waite-Smith kaarten als naslagwerk</p>
         </div>
       </div>
 
@@ -40,25 +40,25 @@ export const BibliotheekPage: React.FC = () => {
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-2.5 w-4 h-4 text-[#9A8CB3]" />
             <input
               type="text"
               placeholder="Zoek op naam of betekenis..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full pl-9 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
             />
           </div>
           <select
             value={suit}
             onChange={e => setSuit(e.target.value)}
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
           >
             {SUITS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </div>
 
-        <p className="text-sm text-gray-500 mb-4">{filtered.length} kaarten gevonden</p>
+        <p className="text-sm text-[#B9A9CC] mb-4">{filtered.length} kaarten gevonden</p>
 
         {/* Kaartenraster */}
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3">
@@ -76,7 +76,7 @@ export const BibliotheekPage: React.FC = () => {
                   className="w-full h-auto group-hover:scale-105 transition-transform duration-200"
                 />
               </div>
-              <p className="text-xs text-center mt-1 text-gray-600 leading-tight">{card.nameNL}</p>
+              <p className="text-xs text-center mt-1 text-[#CFC2DC] leading-tight">{card.nameNL}</p>
             </div>
           ))}
         </div>
@@ -89,24 +89,24 @@ export const BibliotheekPage: React.FC = () => {
           onClick={() => setSelected(null)}
         >
           <div
-            className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-[#20162F] rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b">
               <div className="flex items-center gap-3">
-                <h3 className="text-xl font-bold text-purple-800">{selected.nameNL}</h3>
+                <h3 className="text-xl font-bold text-[#F1CB78]">{selected.nameNL}</h3>
                 <button
                   onClick={() => setShowReversed(!showReversed)}
                   className={`text-xs px-2 py-1 rounded-full border transition-colors ${
                     showReversed
-                      ? 'bg-purple-100 border-purple-400 text-purple-700'
-                      : 'border-gray-300 text-gray-500 hover:border-purple-400'
+                      ? 'bg-[#3A2A52] border-[#EFB4FF] text-[#F1CB78]'
+                      : 'border-[rgba(194,146,189,0.45)] text-[#B9A9CC] hover:border-[#EFB4FF]'
                   }`}
                 >
                   {showReversed ? 'Omgekeerd' : 'Rechtop'}
                 </button>
               </div>
-              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 text-2xl">×</button>
+              <button onClick={() => setSelected(null)} className="text-[#9A8CB3] hover:text-[#CFC2DC] text-2xl">×</button>
             </div>
             <div className="p-6">
               <CardDetails card={selected} isReversed={showReversed} />

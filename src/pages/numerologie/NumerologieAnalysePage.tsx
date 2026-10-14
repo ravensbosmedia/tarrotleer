@@ -6,10 +6,10 @@ import { letterMeanings } from '../../data/numerologie/letterBetekenissen';
 import { nameNumberMeanings } from '../../data/numerologie/naamGetallen';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8', goudDonker: '#7A5C00',
-  bg: '#FDFAF4', bg2: '#F5F0E8', bg3: '#EDE6D6',
-  tekst: '#2C2416', tekst2: '#6B5C3E', tekst3: '#9C8A6A',
-  rand: 'rgba(184,134,11,0.20)', rand2: 'rgba(184,134,11,0.35)',
+  goud: '#F1CB78', goudBleek: '#2D2040', goudDonker: '#E0B04A',
+  bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040',
+  tekst: '#FFF3DF', tekst2: '#E0D5E9', tekst3: '#B9A9CC',
+  rand: 'rgba(239,180,255,0.22)', rand2: 'rgba(239,180,255,0.38)',
 };
 
 const VOWELS = new Set(['A','E','I','O','U']);
@@ -115,13 +115,13 @@ const NumberCard: React.FC<{
               <p style={{ fontSize: 14, color: G.tekst2, fontFamily: "'DM Sans', serif", lineHeight: 1.7, marginBottom: '0.8rem' }}>{desc.description}</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
                 <div>
-                  <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#16A34A', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Kwaliteiten</p>
+                  <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#7BC98F', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Kwaliteiten</p>
                   <ul style={{ paddingLeft: '1rem', margin: 0 }}>
                     {desc.positives.map((p, i) => <li key={i} style={{ fontSize: 13, color: G.tekst2, fontFamily: "'DM Sans', serif", lineHeight: 1.6 }}>{p}</li>)}
                   </ul>
                 </div>
                 <div>
-                  <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#DC2626', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Uitdagingen</p>
+                  <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#F0A596', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Uitdagingen</p>
                   <ul style={{ paddingLeft: '1rem', margin: 0 }}>
                     {desc.negatives.map((n, i) => <li key={i} style={{ fontSize: 13, color: G.tekst2, fontFamily: "'DM Sans', serif", lineHeight: 1.6 }}>{n}</li>)}
                   </ul>
@@ -228,13 +228,13 @@ export const NumerologieAnalysePage: React.FC = () => {
                     {lifePathDesc && (
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
                         <div>
-                          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#16A34A', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Kwaliteiten</p>
+                          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#7BC98F', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Kwaliteiten</p>
                           <ul style={{ paddingLeft: '1rem', margin: 0 }}>
                             {lifePathDesc.positives.map((p, i) => <li key={i} style={{ fontSize: 14, color: G.tekst2, fontFamily: "'DM Sans', serif", lineHeight: 1.7 }}>{p}</li>)}
                           </ul>
                         </div>
                         <div>
-                          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#DC2626', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Uitdagingen</p>
+                          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: '#F0A596', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Uitdagingen</p>
                           <ul style={{ paddingLeft: '1rem', margin: 0 }}>
                             {lifePathDesc.negatives.map((n, i) => <li key={i} style={{ fontSize: 14, color: G.tekst2, fontFamily: "'DM Sans', serif", lineHeight: 1.7 }}>{n}</li>)}
                           </ul>
@@ -403,8 +403,8 @@ export const NumerologieAnalysePage: React.FC = () => {
         )}
 
         {/* Gerelateerde tools */}
-        <div style={{ borderTop: '0.5px solid rgba(184,134,11,0.15)', paddingTop: '1.25rem', paddingBottom: '2rem', maxWidth: 900, margin: '0 auto' }}>
-          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: 'rgba(184,134,11,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Losse calculators</div>
+        <div style={{ borderTop: '0.5px solid rgba(241,203,120,0.15)', paddingTop: '1.25rem', paddingBottom: '2rem', maxWidth: 900, margin: '0 auto' }}>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: 'rgba(241,203,120,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Losse calculators</div>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {[
               { to: '/numerologie/levenspad', label: 'Levenspad' },
@@ -415,7 +415,7 @@ export const NumerologieAnalysePage: React.FC = () => {
               { to: '/numerologie/mobiel-nummer', label: 'Persoonlijk Jaar' },
               { to: '/cursus/module-01', label: 'Cursus Module 1' },
             ].map(l => (
-              <a key={l.to} href={l.to} style={{ fontSize: 12, color: 'rgba(184,134,11,0.8)', border: '0.5px solid rgba(184,134,11,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.05em' }}>{l.label}</a>
+              <a key={l.to} href={l.to} style={{ fontSize: 12, color: 'rgba(241,203,120,0.8)', border: '0.5px solid rgba(241,203,120,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.05em' }}>{l.label}</a>
             ))}
           </div>
         </div>

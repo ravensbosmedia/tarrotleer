@@ -4,17 +4,17 @@ import { PendelSchijf } from '../../components/pendel/PendelSchijf';
 import { pendelSchijven } from '../../data/pendel/schijven';
 
 const G = {
-  goud: '#B8860B',
-  goudBleek: '#F5EDD8',
-  goudDonker: '#7A5C00',
-  bg: '#FDFAF4',
-  bg2: '#F5F0E8',
-  bg3: '#EDE6D6',
-  tekst: '#2C2416',
-  tekst2: '#6B5C3E',
-  tekst3: '#9C8A6A',
-  rand: 'rgba(184,134,11,0.20)',
-  rand2: 'rgba(184,134,11,0.35)',
+  goud: '#F1CB78',
+  goudBleek: '#2D2040',
+  goudDonker: '#E0B04A',
+  bg: '#0D0C22',
+  bg2: '#20162F',
+  bg3: '#2D2040',
+  tekst: '#FFF3DF',
+  tekst2: '#E0D5E9',
+  tekst3: '#B9A9CC',
+  rand: 'rgba(239,180,255,0.22)',
+  rand2: 'rgba(239,180,255,0.38)',
 };
 
 // ── Oefening 1: JA/NEE ─────────────────────────────────────────────────────
@@ -126,10 +126,10 @@ const JaNeeOefening: React.FC = () => {
               <div style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 44, fontWeight: 700,
-                color: resultaat === 'JA' ? '#16A34A' : '#DC2626',
+                color: resultaat === 'JA' ? '#7BC98F' : '#F0A596',
                 padding: '0.6rem 2.5rem',
-                background: resultaat === 'JA' ? '#F0FDF4' : '#FEF2F2',
-                border: `1px solid ${resultaat === 'JA' ? '#86EFAC' : '#FCA5A5'}`,
+                background: resultaat === 'JA' ? 'rgba(95,167,119,0.15)' : 'rgba(200,96,79,0.15)',
+                border: `1px solid ${resultaat === 'JA' ? 'rgba(155,212,155,0.5)' : 'rgba(240,165,150,0.5)'}`,
                 borderRadius: 12,
                 letterSpacing: '0.1em',
               }}>
@@ -385,7 +385,7 @@ const LichaamsharmonieOefening: React.FC = () => {
   if (klaar) {
     return (
       <div style={{ textAlign: 'center', padding: '2rem' }}>
-        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, color: '#16A34A', marginBottom: '0.5rem' }}>✓</div>
+        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, color: '#7BC98F', marginBottom: '0.5rem' }}>✓</div>
         <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, color: G.tekst, marginBottom: '0.5rem' }}>Oefening voltooid</h3>
         <p style={{ fontSize: 15, color: G.tekst2, lineHeight: 1.7, marginBottom: '1.5rem', maxWidth: 420, margin: '0 auto 1.5rem' }}>
           Goed gedaan. Noteer je bevindingen en vergelijk je lichaamssignalen met je pendelresultaten over meerdere sessies om patronen te ontdekken.
@@ -437,7 +437,7 @@ const LichaamsharmonieOefening: React.FC = () => {
             <span style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: 28, fontWeight: 700,
-              color: restTijd <= 10 && actief ? '#DC2626' : G.goudDonker,
+              color: restTijd <= 10 && actief ? '#F0A596' : G.goudDonker,
             }}>
               {restTijd}
             </span>
@@ -462,7 +462,7 @@ const LichaamsharmonieOefening: React.FC = () => {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 11, fontWeight: 'bold',
               background: i < huidigeStap ? '#D1FAE5' : i === huidigeStap ? G.goud : G.bg3,
-              color: i < huidigeStap ? '#16A34A' : i === huidigeStap ? 'white' : G.tekst3,
+              color: i < huidigeStap ? '#7BC98F' : i === huidigeStap ? 'white' : G.tekst3,
             }}>
               {i < huidigeStap ? '✓' : i + 1}
             </span>

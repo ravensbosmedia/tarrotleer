@@ -25,7 +25,7 @@ const CardInterpretation: React.FC<CardInterpretationProps> = ({
   relation
 }) => {
   return (
-    <div className="border border-gray-100 rounded-lg p-4 shadow-sm">
+    <div className="border border-[rgba(194,146,189,0.25)] rounded-lg p-4 shadow-sm">
       <div className="flex items-start gap-4">
         <div className="flex-shrink-0">
           <div className={`w-24 h-36 transform transition-transform ${isReversed ? 'rotate-180' : ''}`}>
@@ -35,7 +35,7 @@ const CardInterpretation: React.FC<CardInterpretationProps> = ({
               className="w-full h-full object-cover rounded-lg shadow-md"
             />
           </div>
-          <div className="flex items-center justify-center gap-1 mt-2 text-sm text-gray-600">
+          <div className="flex items-center justify-center gap-1 mt-2 text-sm text-[#CFC2DC]">
             <ArrowDownUp className="w-4 h-4" />
             {isReversed ? 'Omgekeerd' : 'Rechtop'}
           </div>
@@ -43,30 +43,30 @@ const CardInterpretation: React.FC<CardInterpretationProps> = ({
 
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm font-medium">
+            <span className="bg-[#3A2A52] text-[#F1CB78] px-2 py-1 rounded text-sm font-medium">
               Positie {positionNumber}
             </span>
-            <h5 className="text-lg font-semibold text-purple-700">
+            <h5 className="text-lg font-semibold text-[#F1CB78]">
               {position}
             </h5>
           </div>
 
           <div className="space-y-2 text-sm">
-            <p className="text-gray-700">
+            <p className="text-[#E0D5E9]">
               <span className="font-medium">Kaart: </span>
               {card.nameNL} ({card.name})
             </p>
-            <p className="text-gray-700">
+            <p className="text-[#E0D5E9]">
               <span className="font-medium">Positie betekenis: </span>
               {meaning}
             </p>
 
             {/* Algemene betekenis van de stand */}
-            <div className="mt-4 bg-purple-50 p-3 rounded-lg">
-              <p className="font-medium text-purple-700 mb-2">
+            <div className="mt-4 bg-[#2D2040] p-3 rounded-lg">
+              <p className="font-medium text-[#F1CB78] mb-2">
                 {isReversed ? 'Omgekeerde Kaart Betekenis:' : 'Rechtopstaande Kaart Betekenis:'}
               </p>
-              <ul className="space-y-1 text-gray-700">
+              <ul className="space-y-1 text-[#E0D5E9]">
                 {isReversed ? (
                   <>
                     <li>• Energie is geblokkeerd of naar binnen gericht</li>
@@ -89,14 +89,14 @@ const CardInterpretation: React.FC<CardInterpretationProps> = ({
 
             {/* Specifieke kaart interpretatie */}
             <div className="mt-4">
-              <p className="text-gray-700">
+              <p className="text-[#E0D5E9]">
                 <span className="font-medium">Specifieke interpretatie: </span>
                 {isReversed ? card.meaningReversed : card.meaningUpright}
               </p>
             </div>
 
             {relation && (
-              <p className="text-gray-700 mt-4">
+              <p className="text-[#E0D5E9] mt-4">
                 <span className="font-medium">Samenhang: </span>
                 {relation}
               </p>
@@ -124,9 +124,9 @@ const positionMeanings = [
 export const CelticCrossBasicMeaning: React.FC<Props> = ({ cards, positions }) => {
   return (
     <div className="space-y-8">
-      <div className="bg-purple-50 p-6 rounded-lg mb-8">
-        <h3 className="text-xl font-semibold text-purple-700 mb-4">Basis Interpretatie</h3>
-        <p className="text-gray-700 mb-4">
+      <div className="bg-[#2D2040] p-6 rounded-lg mb-8">
+        <h3 className="text-xl font-semibold text-[#F1CB78] mb-4">Basis Interpretatie</h3>
+        <p className="text-[#E0D5E9] mb-4">
           Het Keltisch Kruis is een krachtige en veelzijdige legging die verschillende aspecten van je vraag of situatie belicht. 
           Elke positie heeft een specifieke betekenis die samen een compleet beeld vormen.
         </p>

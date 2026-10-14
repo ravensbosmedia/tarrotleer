@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { PendelAnimatie, PendelMode } from '../../components/pendel/PendelAnimatie';
 
 const G = {
-  goud: '#B8860B',
-  goudBleek: '#F5EDD8',
-  goudDonker: '#7A5C00',
-  bg: '#FDFAF4',
-  bg2: '#F5F0E8',
-  bg3: '#EDE6D6',
-  tekst: '#2C2416',
-  tekst2: '#6B5C3E',
-  tekst3: '#9C8A6A',
-  rand: 'rgba(184,134,11,0.20)',
-  rand2: 'rgba(184,134,11,0.35)',
+  goud: '#F1CB78',
+  goudBleek: '#2D2040',
+  goudDonker: '#E0B04A',
+  bg: '#0D0C22',
+  bg2: '#20162F',
+  bg3: '#2D2040',
+  tekst: '#FFF3DF',
+  tekst2: '#E0D5E9',
+  tekst3: '#B9A9CC',
+  rand: 'rgba(239,180,255,0.22)',
+  rand2: 'rgba(239,180,255,0.38)',
 };
 
 interface Chakra {
@@ -154,29 +154,29 @@ const LichaamDiagram: React.FC<{ actief: number | null; onKlik: (nr: number) => 
   return (
     <svg width={260} height={420} viewBox="0 0 260 420" style={{ display: 'block' }}>
       {/* Hoofd */}
-      <ellipse cx={130} cy={55} rx={32} ry={38} fill="#F0D4B0" stroke="#C9A080" strokeWidth={0.8} />
+      <ellipse cx={130} cy={55} rx={32} ry={38} fill="#F0D4B0" stroke="#D9B48A" strokeWidth={0.8} />
       {/* Nek */}
-      <rect x={118} y={88} width={24} height={22} fill="#F0D4B0" stroke="#C9A080" strokeWidth={0.5} />
+      <rect x={118} y={88} width={24} height={22} fill="#F0D4B0" stroke="#D9B48A" strokeWidth={0.5} />
       {/* Schouders / bovenlichaam */}
       <path d="M70,108 Q95,100 118,110 L118,280 L90,285 L85,370 Q83,375 80,375 L68,375 Q65,375 64,370 L60,285 L55,108 Z"
-        fill="#E8C9A0" stroke="#C9A080" strokeWidth={0.8} />
+        fill="#E8C9A0" stroke="#D9B48A" strokeWidth={0.8} />
       <path d="M190,108 Q165,100 142,110 L142,280 L170,285 L175,370 Q177,375 180,375 L192,375 Q195,375 196,370 L200,285 L205,108 Z"
-        fill="#E8C9A0" stroke="#C9A080" strokeWidth={0.8} />
+        fill="#E8C9A0" stroke="#D9B48A" strokeWidth={0.8} />
       {/* Armen links */}
       <path d="M57,110 Q42,120 35,180 Q30,220 32,250 L44,248 Q44,220 50,185 Q56,148 68,120 Z"
-        fill="#F0D4B0" stroke="#C9A080" strokeWidth={0.5} />
+        fill="#F0D4B0" stroke="#D9B48A" strokeWidth={0.5} />
       {/* Armen rechts */}
       <path d="M203,110 Q218,120 225,180 Q230,220 228,250 L216,248 Q216,220 210,185 Q204,148 192,120 Z"
-        fill="#F0D4B0" stroke="#C9A080" strokeWidth={0.5} />
+        fill="#F0D4B0" stroke="#D9B48A" strokeWidth={0.5} />
       {/* Romp */}
       <path d="M68,108 Q95,98 130,96 Q165,98 192,108 L196,280 L170,285 L142,280 L118,280 L90,285 L64,280 Z"
-        fill="#EED5B0" stroke="#C9A080" strokeWidth={0.8} />
+        fill="#EED5B0" stroke="#D9B48A" strokeWidth={0.8} />
       {/* Benen */}
-      <rect x={90}  y={280} width={34} height={95} rx={6} fill="#E8C9A0" stroke="#C9A080" strokeWidth={0.6} />
-      <rect x={136} y={280} width={34} height={95} rx={6} fill="#E8C9A0" stroke="#C9A080" strokeWidth={0.6} />
+      <rect x={90}  y={280} width={34} height={95} rx={6} fill="#E8C9A0" stroke="#D9B48A" strokeWidth={0.6} />
+      <rect x={136} y={280} width={34} height={95} rx={6} fill="#E8C9A0" stroke="#D9B48A" strokeWidth={0.6} />
       {/* Voeten */}
-      <ellipse cx={107} cy={376} rx={18} ry={8} fill="#E8C9A0" stroke="#C9A080" strokeWidth={0.5} />
-      <ellipse cx={153} cy={376} rx={18} ry={8} fill="#E8C9A0" stroke="#C9A080" strokeWidth={0.5} />
+      <ellipse cx={107} cy={376} rx={18} ry={8} fill="#E8C9A0" stroke="#D9B48A" strokeWidth={0.5} />
+      <ellipse cx={153} cy={376} rx={18} ry={8} fill="#E8C9A0" stroke="#D9B48A" strokeWidth={0.5} />
 
       {/* Chakra punten */}
       {chakras.map(ch => {
@@ -275,14 +275,14 @@ export const ChakrasPage: React.FC = () => {
               <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                 <span style={{ fontSize: 20, flexShrink: 0 }}>↻</span>
                 <div>
-                  <strong style={{ color: '#16A34A' }}>Rechtsom (met de klok mee)</strong><br />
+                  <strong style={{ color: '#7BC98F' }}>Rechtsom (met de klok mee)</strong><br />
                   Chakra is <strong>open en in balans</strong>. Hoe groter de cirkel, hoe meer energie.
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                 <span style={{ fontSize: 20, flexShrink: 0 }}>↺</span>
                 <div>
-                  <strong style={{ color: '#DC2626' }}>Linksom (tegen de klok in)</strong><br />
+                  <strong style={{ color: '#F0A596' }}>Linksom (tegen de klok in)</strong><br />
                   Chakra is <strong>geblokkeerd of gesloten</strong>. Energie stroomt niet vrij.
                 </div>
               </div>
@@ -416,8 +416,8 @@ export const ChakrasPage: React.FC = () => {
                     {/* 4 status-knoppen als pill-row */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '1.2rem' }}>
                       {[
-                        { b: 'right' as PendelMode, label: '↻ Open en in balans',     kleur: '#16A34A', sub: 'Rechtsom · chakra actief' },
-                        { b: 'left'  as PendelMode, label: '↺ Geblokkeerd',            kleur: '#DC2626', sub: 'Linksom · energie blokkeert' },
+                        { b: 'right' as PendelMode, label: '↻ Open en in balans',     kleur: '#7BC98F', sub: 'Rechtsom · chakra actief' },
+                        { b: 'left'  as PendelMode, label: '↺ Geblokkeerd',            kleur: '#F0A596', sub: 'Linksom · energie blokkeert' },
                         { b: 'lr'    as PendelMode, label: '↔ Gedeeltelijk actief',   kleur: '#CA8A04', sub: 'Heen-weer · partieel vrij' },
                         { b: 'still' as PendelMode, label: '◼ Vrijwel gesloten',       kleur: '#7C3AED', sub: 'Stil · weinig energie' },
                       ].map(({ b, label, kleur, sub }) => (
@@ -446,10 +446,10 @@ export const ChakrasPage: React.FC = () => {
                       fontSize: 14, color: G.tekst2, lineHeight: 1.7,
                     }}>
                       <div style={{ marginBottom: '0.4rem' }}>
-                        <strong style={{ color: '#16A34A' }}>✓ Open: </strong>{actiefChakra.openTeken}
+                        <strong style={{ color: '#7BC98F' }}>✓ Open: </strong>{actiefChakra.openTeken}
                       </div>
                       <div>
-                        <strong style={{ color: '#DC2626' }}>✗ Geblokkeerd: </strong>{actiefChakra.gesloten}
+                        <strong style={{ color: '#F0A596' }}>✗ Geblokkeerd: </strong>{actiefChakra.gesloten}
                       </div>
                     </div>
                   </div>

@@ -2,17 +2,17 @@ import React, { useState, useMemo } from 'react';
 import { numberDescriptions } from '../../data/numerologie/getalBeschrijvingen';
 
 const G = {
-  goud: '#B8860B',
-  goudBleek: '#F5EDD8',
-  goudDonker: '#7A5C00',
-  bg: '#FDFAF4',
-  bg2: '#F5F0E8',
-  bg3: '#EDE6D6',
-  tekst: '#2C2416',
-  tekst2: '#6B5C3E',
-  tekst3: '#9C8A6A',
-  rand: 'rgba(184,134,11,0.20)',
-  rand2: 'rgba(184,134,11,0.35)',
+  goud: '#F1CB78',
+  goudBleek: '#2D2040',
+  goudDonker: '#E0B04A',
+  bg: '#0D0C22',
+  bg2: '#20162F',
+  bg3: '#2D2040',
+  tekst: '#FFF3DF',
+  tekst2: '#E0D5E9',
+  tekst3: '#B9A9CC',
+  rand: 'rgba(239,180,255,0.22)',
+  rand2: 'rgba(239,180,255,0.38)',
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -214,7 +214,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 11,
                 letterSpacing: '0.06em',
-                color: '#16A34A',
+                color: '#7BC98F',
                 textTransform: 'uppercase',
                 marginBottom: '0.5rem',
               }}
@@ -243,7 +243,7 @@ const ResultBlock: React.FC<ResultBlockProps> = ({
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 11,
                 letterSpacing: '0.06em',
-                color: '#DC2626',
+                color: '#F0A596',
                 textTransform: 'uppercase',
                 marginBottom: '0.5rem',
               }}

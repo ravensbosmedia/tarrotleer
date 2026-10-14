@@ -148,7 +148,9 @@ Per cursus uploaden in Academie (beheer) (mp4/webm, tot 2 GB; nginx-locatie `/ap
 De leeromgeving gaat over naar de stijl van https://zen-flow.nl (stijlgids: `/home/ubuntu/zen-flow-voorpagina/bron/documentatie/STIJLGIDS.md`): middernacht `#0D0C22`, paneel `#20162F`, goud `#F1CB78`, tekst `#FFF3DF` / `#E0D5E9`, paarse randen `#EFB4FF`/`#C292BD`, gouden knop `linear-gradient(#FFEEB5,#FFC653 58%,#EEB153)`; koppen Cormorant Garamond, tekst DM Sans.
 Omzetten gaat in fasen met `scripts/zenflow-stijl.py` (eerst proefrun, dan `--toepassen`):
 - **Fase 1 (gedaan):** lettertypen overal; kleuren in de donkere pagina's (Academie, account, voortgang, horoscoop, cursusmodules, numerologie, beheer); menu, inlogscherm (`accounts.ts`), favicon, titel, naam "Zen Flow". Met de hand: `Markdown.tsx` (goud op scherm, paars op papier) en `AcademiePrint.tsx` (paarse accenten op wit).
-- **Fase 2:** de lichte crème pagina's (start, pendel, Lenormand, numerologie-analyse) naar donker.
-- **Fase 3:** de Tailwind-tarotpagina's (wit/paars) naar donker.
+- **Menu (gedaan):** uitklapmenu's, accountmenu en telefoonmenu in Zen Flow-stijl: DM Sans, gouden gloed bij aanwijzen, panelen `#20162F` met paarse rand `#C292BD`, hamburger zoals op zen-flow.nl.
+- **Fase 2 (gedaan):** de lichte crème pagina's naar donker (startpagina, alle pendelpagina's + pendelanimatie, Lenormand, numerologie-analyse/huisnummer) met een eigen tabel (in deze bestanden is donkerbruin tekst en crème achtergrond); tekst op gouden knoppen donker gemaakt.
+- **Fase 3 (gedaan):** de Tailwind-tarotpagina's (leggingen, flashcards, quiz, lessen, bibliotheek, invoer, tarot-componenten, beheer) via een klassentabel naar Zen Flow; witte tekst op gouden knoppen → `#1C0D06`. Ook omgezet: kristallen, rituelen, compatibiliteit, API-docs, numerologie-module 1, geboortehoroscoop, maanfase. `index.css`: standaard donkere achtergrond en Zen Flow-lettertypen.
+- **Bewust niet omgezet:** de Lenormand-kaarten zelf (`LenormandKaartVisueel`, `data/lenormand/kaarten.ts`), de printbare pendelschijf en de printversie van de Academie (papier).
 Niet aanpassen: "Mystieke Lenormand" (naam van het kaartspel). De kopafbeeldingen van de Academie bevatten nog de tekst "Mystieke Kaarten" (in de afbeelding zelf).
 

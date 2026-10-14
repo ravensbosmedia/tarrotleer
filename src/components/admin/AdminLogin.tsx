@@ -18,43 +18,43 @@ export const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-purple-800 mb-6">Admin Login</h2>
-        <p className="text-sm text-gray-500 mb-4">Standaard wachtwoord: <code>admin123</code></p>
+    <div className="min-h-screen bg-[#2D2040] flex items-center justify-center">
+      <div className="bg-[#20162F] p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold text-[#F1CB78] mb-6">Admin Login</h2>
+        <p className="text-sm text-[#B9A9CC] mb-4">Standaard wachtwoord: <code>admin123</code></p>
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-[rgba(200,96,79,0.22)] border border-[#F0A596] text-[#F0A596] px-4 py-3 rounded mb-4">
             {error}
           </div>
         )}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
+            <label className="block text-[#E0D5E9] text-sm font-bold mb-2">
               Email
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
               required
             />
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
+            <label className="block text-[#E0D5E9] text-sm font-bold mb-2">
               Wachtwoord
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition-colors"
+            className="w-full bg-[#F1CB78] text-[#1C0D06] py-2 px-4 rounded hover:bg-[#FFC653] transition-colors"
           >
             Inloggen
           </button>

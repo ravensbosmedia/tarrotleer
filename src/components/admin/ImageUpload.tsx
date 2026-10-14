@@ -63,7 +63,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded, curre
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className={`flex items-center gap-2 bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition-colors ${
+          className={`flex items-center gap-2 bg-[#F1CB78] text-[#1C0D06] py-2 px-4 rounded hover:bg-[#FFC653] transition-colors ${
             uploading ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >
@@ -72,7 +72,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded, curre
         </button>
 
         {error && (
-          <p className="text-red-600 mt-2">{error}</p>
+          <p className="text-[#F0A596] mt-2">{error}</p>
         )}
       </div>
     </div>

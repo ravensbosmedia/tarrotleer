@@ -50,10 +50,10 @@ const Verbindingen: React.FC<{
 };
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8', goudDonker: '#7A5C00',
-  bg: '#FDFAF4', bg2: '#F5F0E8', bg3: '#EDE6D6',
-  tekst: '#2C2416', tekst2: '#6B5C3E', tekst3: '#9C8A6A',
-  rand: 'rgba(184,134,11,0.20)', rand2: 'rgba(184,134,11,0.35)',
+  goud: '#F1CB78', goudBleek: '#2D2040', goudDonker: '#E0B04A',
+  bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040',
+  tekst: '#FFF3DF', tekst2: '#E0D5E9', tekst3: '#B9A9CC',
+  rand: 'rgba(239,180,255,0.22)', rand2: 'rgba(239,180,255,0.38)',
 };
 
 function melangeerDeck(): LenormandKaart[] {
@@ -354,7 +354,7 @@ export const LenormandLezingPage: React.FC = () => {
             {spread.id !== 'tableau' && onthuldeIndices.size === getrokken.length && getrokken.length >= 1 && (
               <div style={{ marginBottom: '1.5rem' }}>
                 {!duiding && !duidingBezig && (
-                  <button onClick={vraagDuiding} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.07em', padding: '10px 22px', borderRadius: 22, border: 'none', background: G.goud, color: '#2C2416', cursor: 'pointer', fontWeight: 600 }}>
+                  <button onClick={vraagDuiding} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.07em', padding: '10px 22px', borderRadius: 22, border: 'none', background: G.goud, color: '#FFF3DF', cursor: 'pointer', fontWeight: 600 }}>
                     ✦ Vraag een samenvattende duiding
                   </button>
                 )}
@@ -364,7 +364,7 @@ export const LenormandLezingPage: React.FC = () => {
                   </div>
                 )}
                 {duidingFout && (
-                  <div style={{ fontSize: 14, color: '#B91C1C' }}>{duidingFout}</div>
+                  <div style={{ fontSize: 14, color: '#F0A596' }}>{duidingFout}</div>
                 )}
                 {duiding && (
                   <div style={{ background: 'linear-gradient(160deg, #FFFDF7, #F7F1E4)', border: `0.5px solid ${G.rand2}`, borderRadius: 12, padding: '1.6rem 1.7rem' }}>
@@ -396,7 +396,7 @@ export const LenormandLezingPage: React.FC = () => {
               )}
               {onthuldeIndices.size === getrokken.length && getrokken.length > 0 && (
                 bewaard === 'ja' ? (
-                  <span style={{ alignSelf: 'center', fontSize: 13, color: '#15803D' }}>
+                  <span style={{ alignSelf: 'center', fontSize: 13, color: '#9BD49B' }}>
                     ✓ Bewaard — zie <Link to="/voortgang#leggingen" style={{ color: G.goudDonker }}>Mijn voortgang</Link>
                   </span>
                 ) : (

@@ -76,10 +76,10 @@ export const TarotChat: React.FC<Props> = ({ cards, positions }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 mt-6">
+    <div className="bg-[#20162F] rounded-lg shadow-lg p-6 mt-6">
       <div className="flex items-center gap-2 mb-4">
-        <Sparkles className="w-6 h-6 text-purple-600" />
-        <h3 className="text-xl font-semibold text-purple-700">
+        <Sparkles className="w-6 h-6 text-[#F1CB78]" />
+        <h3 className="text-xl font-semibold text-[#F1CB78]">
           Persoonlijk Tarot Gesprek
         </h3>
       </div>
@@ -87,13 +87,13 @@ export const TarotChat: React.FC<Props> = ({ cards, positions }) => {
       {/* Suggesties */}
       {messages.length === 0 && (
         <div className="mb-6">
-          <p className="text-gray-600 mb-3">Suggesties voor vragen:</p>
+          <p className="text-[#CFC2DC] mb-3">Suggesties voor vragen:</p>
           <div className="flex flex-wrap gap-2">
             {suggestions.map((suggestion, index) => (
               <button
                 key={index}
                 onClick={() => setInput(suggestion)}
-                className="bg-purple-50 text-purple-700 px-4 py-2 rounded-full text-sm hover:bg-purple-100 transition-colors"
+                className="bg-[#2D2040] text-[#F1CB78] px-4 py-2 rounded-full text-sm hover:bg-[#3A2A52] transition-colors"
               >
                 {suggestion}
               </button>
@@ -102,9 +102,9 @@ export const TarotChat: React.FC<Props> = ({ cards, positions }) => {
         </div>
       )}
       
-      <div className="bg-gray-50 rounded-lg p-4 mb-4 h-96 overflow-y-auto">
+      <div className="bg-[#17112C] rounded-lg p-4 mb-4 h-96 overflow-y-auto">
         {messages.length === 0 ? (
-          <div className="text-gray-500 text-center py-4">
+          <div className="text-[#B9A9CC] text-center py-4">
             Stel een vraag over je tarotlegging en ontvang persoonlijk inzicht.
           </div>
         ) : (
@@ -117,22 +117,22 @@ export const TarotChat: React.FC<Props> = ({ cards, positions }) => {
                 }`}
               >
                 {message.role === 'assistant' && (
-                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                    <Bot className="w-5 h-5 text-purple-600" />
+                  <div className="w-8 h-8 rounded-full bg-[#3A2A52] flex items-center justify-center">
+                    <Bot className="w-5 h-5 text-[#F1CB78]" />
                   </div>
                 )}
                 <div
                   className={`rounded-lg p-3 max-w-[80%] ${
                     message.role === 'user'
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 text-gray-700'
+                      ? 'bg-[#F1CB78] text-[#1C0D06]'
+                      : 'bg-[#2D2040] text-[#E0D5E9]'
                   }`}
                 >
                   {message.content}
                 </div>
                 {message.role === 'user' && (
-                  <div className="w-8 h-8 rounded-full bg-purple-200 flex items-center justify-center">
-                    <User className="w-5 h-5 text-purple-600" />
+                  <div className="w-8 h-8 rounded-full bg-[#482254] flex items-center justify-center">
+                    <User className="w-5 h-5 text-[#F1CB78]" />
                   </div>
                 )}
               </div>
@@ -147,14 +147,14 @@ export const TarotChat: React.FC<Props> = ({ cards, positions }) => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Stel je vraag over de legging..."
-          className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+          className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
           disabled={loading}
         />
         <button
           type="submit"
           disabled={loading}
-          className={`px-4 py-2 rounded-lg bg-purple-600 text-white flex items-center gap-2 ${
-            loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'
+          className={`px-4 py-2 rounded-lg bg-[#F1CB78] text-[#1C0D06] flex items-center gap-2 ${
+            loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#FFC653]'
           }`}
         >
           <Send className="w-4 h-4" />

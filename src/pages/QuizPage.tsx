@@ -93,11 +93,11 @@ export const QuizPage: React.FC = () => {
   const pct = total > 0 ? Math.round(score / total * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-purple-700 text-white py-8">
+    <div className="min-h-screen bg-[#17112C]">
+      <div className="bg-[#FFC653] text-[#1C0D06] py-8">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold mb-1">Quiz</h1>
-          <p className="text-purple-200">Test je kennis van de tarotkaarten</p>
+          <p className="text-[#E0D5E9]">Test je kennis van de tarotkaarten</p>
         </div>
       </div>
 
@@ -105,48 +105,48 @@ export const QuizPage: React.FC = () => {
         {/* Instellingen */}
         <div className="flex gap-3 mb-6 flex-wrap">
           <select value={suit} onChange={e => { setSuit(e.target.value); reset(); }}
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm">
+            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#F1CB78] text-sm">
             {SUITS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
-          <div className="flex gap-1 bg-white border rounded-lg overflow-hidden">
+          <div className="flex gap-1 bg-[#20162F] border rounded-lg overflow-hidden">
             {([['betekenis', 'Betekenis raden'], ['naam', 'Naam raden']] as [Mode, string][]).map(([m, l]) => (
               <button key={m} onClick={() => { setMode(m); reset(); }}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${mode === m ? 'bg-purple-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}>
+                className={`px-3 py-2 text-sm font-medium transition-colors ${mode === m ? 'bg-[#F1CB78] text-[#1C0D06]' : 'text-[#CFC2DC] hover:bg-[#17112C]'}`}>
                 {l}
               </button>
             ))}
           </div>
-          <Link to="/voortgang" className="ml-auto self-center text-sm text-purple-600 hover:underline">Mijn voortgang</Link>
-          <button onClick={reset} className="flex items-center gap-1 text-sm text-purple-600">
+          <Link to="/voortgang" className="ml-auto self-center text-sm text-[#F1CB78] hover:underline">Mijn voortgang</Link>
+          <button onClick={reset} className="flex items-center gap-1 text-sm text-[#F1CB78]">
             <RotateCcw className="w-4 h-4" /> Reset
           </button>
         </div>
 
         {/* Score */}
         <div className="flex gap-6 mb-6 text-center">
-          <div className="flex-1 bg-white rounded-xl shadow p-4">
-            <p className="text-3xl font-bold text-purple-700">{score}</p>
-            <p className="text-xs text-gray-500">Goed</p>
+          <div className="flex-1 bg-[#20162F] rounded-xl shadow p-4">
+            <p className="text-3xl font-bold text-[#F1CB78]">{score}</p>
+            <p className="text-xs text-[#B9A9CC]">Goed</p>
           </div>
-          <div className="flex-1 bg-white rounded-xl shadow p-4">
-            <p className="text-3xl font-bold text-gray-700">{total}</p>
-            <p className="text-xs text-gray-500">Totaal</p>
+          <div className="flex-1 bg-[#20162F] rounded-xl shadow p-4">
+            <p className="text-3xl font-bold text-[#E0D5E9]">{total}</p>
+            <p className="text-xs text-[#B9A9CC]">Totaal</p>
           </div>
-          <div className="flex-1 bg-white rounded-xl shadow p-4">
-            <p className="text-3xl font-bold text-green-600">{pct}%</p>
-            <p className="text-xs text-gray-500">Score</p>
+          <div className="flex-1 bg-[#20162F] rounded-xl shadow p-4">
+            <p className="text-3xl font-bold text-[#9BD49B]">{pct}%</p>
+            <p className="text-xs text-[#B9A9CC]">Score</p>
           </div>
         </div>
 
         {/* Vraag */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="p-6 flex flex-col items-center gap-4 bg-gradient-to-br from-purple-50 to-indigo-50">
+        <div className="bg-[#20162F] rounded-2xl shadow-lg overflow-hidden">
+          <div className="p-6 flex flex-col items-center gap-4 bg-gradient-to-br from-[#20162F] to-[#2D2040]">
             <div className={`w-36 rounded-xl shadow-lg overflow-hidden ${isReversed ? 'rotate-180' : ''}`}>
               <img src={correct.imageUrl} alt="?" className="w-full h-auto" />
             </div>
-            {isReversed && <span className="text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded-full">Omgekeerd</span>}
+            {isReversed && <span className="text-xs bg-[#3A2A52] text-[#F1CB78] px-2 py-0.5 rounded-full">Omgekeerd</span>}
 
-            <h2 className="text-lg font-semibold text-gray-700 text-center">
+            <h2 className="text-lg font-semibold text-[#E0D5E9] text-center">
               {mode === 'betekenis'
                 ? 'Wat is de betekenis van deze kaart?'
                 : 'Welke kaart is dit?'}
@@ -158,11 +158,11 @@ export const QuizPage: React.FC = () => {
             {options.map(opt => {
               const isCorrect = opt.id === correct.id;
               const isChosen = opt.id === answered;
-              let style = 'border-2 border-gray-200 bg-white hover:border-purple-400';
+              let style = 'border-2 border-[rgba(194,146,189,0.3)] bg-[#20162F] hover:border-[#EFB4FF]';
               if (answered !== null) {
-                if (isCorrect) style = 'border-2 border-green-500 bg-green-50';
-                else if (isChosen) style = 'border-2 border-red-400 bg-red-50';
-                else style = 'border-2 border-gray-100 bg-gray-50 opacity-60';
+                if (isCorrect) style = 'border-2 border-green-500 bg-[rgba(95,167,119,0.15)]';
+                else if (isChosen) style = 'border-2 border-[#F0A596] bg-[rgba(200,96,79,0.15)]';
+                else style = 'border-2 border-[rgba(194,146,189,0.25)] bg-[#17112C] opacity-60';
               }
 
               return (
@@ -173,16 +173,16 @@ export const QuizPage: React.FC = () => {
                   className={`text-left p-4 rounded-xl transition-all ${style}`}
                 >
                   <div className="flex items-start gap-2">
-                    {answered !== null && isCorrect && <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />}
+                    {answered !== null && isCorrect && <CheckCircle2 className="w-5 h-5 text-[#9BD49B] shrink-0 mt-0.5" />}
                     {answered !== null && isChosen && !isCorrect && <XCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />}
                     <div>
-                      <p className="font-medium text-gray-800 text-sm">
+                      <p className="font-medium text-[#FFF3DF] text-sm">
                         {mode === 'betekenis'
                           ? opt.nameNL
                           : (isReversed ? opt.meaningReversed : opt.meaningUpright)}
                       </p>
                       {mode === 'naam' && answered !== null && (
-                        <p className="text-xs text-gray-400 mt-0.5">{opt.nameNL}</p>
+                        <p className="text-xs text-[#9A8CB3] mt-0.5">{opt.nameNL}</p>
                       )}
                     </div>
                   </div>
@@ -193,7 +193,7 @@ export const QuizPage: React.FC = () => {
 
           {answered !== null && (
             <div className="px-5 pb-5">
-              <div className={`text-sm p-3 rounded-lg mb-3 ${answered === correct.id ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+              <div className={`text-sm p-3 rounded-lg mb-3 ${answered === correct.id ? 'bg-[rgba(95,167,119,0.15)] text-[#9BD49B]' : 'bg-[rgba(200,96,79,0.15)] text-[#F0A596]'}`}>
                 {answered === correct.id ? '✓ Correct!' : `✗ Het juiste antwoord was: ${correct.nameNL}`}
                 <p className="mt-1 text-xs opacity-80">
                   {isReversed ? correct.meaningReversed : correct.meaningUpright}
@@ -201,7 +201,7 @@ export const QuizPage: React.FC = () => {
               </div>
               <button
                 onClick={next}
-                className="w-full bg-purple-600 text-white py-2.5 rounded-lg hover:bg-purple-700 transition-colors font-medium"
+                className="w-full bg-[#F1CB78] text-[#1C0D06] py-2.5 rounded-lg hover:bg-[#FFC653] transition-colors font-medium"
               >
                 Volgende kaart →
               </button>

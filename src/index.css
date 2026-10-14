@@ -2,11 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Zen Flow: standaard donkere achtergrond, lichte tekst en de lettertypen van zen-flow.nl */
+@layer base {
+  html { background: #080718; }
+  body { background: #0D0C22; color: #FFF3DF; font-family: 'DM Sans', sans-serif; }
+  h1, h2, h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; }
+  ::selection { background: rgba(241,203,120,0.35); }
+}
+
 /* ── Pendel module gold/cream thema ───────────────────────────────────── */
 .pendel-pagina {
   font-family: 'DM Sans', sans-serif;
-  background: #FDFAF4;
-  color: #2C2416;
+  background: #0D0C22;
+  color: #FFF3DF;
   min-height: 100vh;
   line-height: 1.7;
 }

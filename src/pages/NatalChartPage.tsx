@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { HUIZEN, ASPECT_TYPES, PLANEET_BETEKENIS, PLANEET_IN_TEKEN, aspectTekst } from '../data/astrologie/interpretaties';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8', bg: '#0D0B14',
-  bg2: '#1A1625', bg3: '#221E30', rand: 'rgba(184,134,11,0.25)', accent: 'rgba(184,134,11,0.12)',
+  goud: '#F1CB78', goudBleek: '#FFF3DF', bg: '#0D0C22',
+  bg2: '#20162F', bg3: '#2D2040', rand: 'rgba(241,203,120,0.25)', accent: 'rgba(241,203,120,0.12)',
 };
 
 const PLANEET_KLEUR: Record<string, string> = {
@@ -24,13 +24,13 @@ interface NatalData {
 interface Suggestie { naam: string; land: string }
 
 const invoerStijl: React.CSSProperties = {
-  width:'100%', background:'rgba(255,255,255,0.05)', border:`0.5px solid rgba(184,134,11,0.25)`,
-  borderRadius:8, padding:'10px 14px', color:'#F5EDD8',
-  fontFamily:"'DM Sans', serif", fontSize:15, outline:'none', boxSizing:'border-box',
+  width:'100%', background:'rgba(255,255,255,0.05)', border:`0.5px solid rgba(241,203,120,0.25)`,
+  borderRadius:8, padding:'10px 14px', color:'#FFF3DF',
+  fontFamily:"'DM Sans', sans-serif", fontSize:15, outline:'none', boxSizing:'border-box',
 };
 const label = (tekst: string, sub?: string): React.ReactNode => (
   <label style={{display:'block', fontFamily:"'Cormorant Garamond', serif", fontSize:10, letterSpacing:'0.1em', color:G.goud, marginBottom:'0.4rem', opacity:0.8}}>
-    {tekst}{sub && <span style={{color:'rgba(245,237,216,0.3)', fontSize:9, marginLeft:6}}>{sub}</span>}
+    {tekst}{sub && <span style={{color:'rgba(255,243,223,0.3)', fontSize:9, marginLeft:6}}>{sub}</span>}
   </label>
 );
 const sectieHeader = (tekst: string) => (
@@ -89,14 +89,14 @@ export const NatalChartPage: React.FC = () => {
   });
 
   return (
-    <div style={{minHeight:'100vh', background:G.bg, color:G.goudBleek, fontFamily:"'DM Sans', serif"}}>
+    <div style={{minHeight:'100vh', background:G.bg, color:G.goudBleek, fontFamily:"'DM Sans', sans-serif"}}>
       <div style={{maxWidth:1000, margin:'0 auto', padding:'2.5rem 1.5rem'}}>
 
         {/* Header */}
         <div style={{textAlign:'center', marginBottom:'2.5rem'}}>
           <div style={{fontSize:48, marginBottom:'0.4rem'}}>☌</div>
           <h1 style={{fontFamily:"'Cormorant Garamond', serif", fontSize:26, letterSpacing:'0.15em', color:G.goud, margin:0}}>GEBOORTEHOROSCOOP</h1>
-          <p style={{color:'rgba(245,237,216,0.45)', fontSize:13, marginTop:'0.4rem'}}>Exacte planeetposities · Aspecten · Interpretaties · Swiss Ephemeris</p>
+          <p style={{color:'rgba(255,243,223,0.45)', fontSize:13, marginTop:'0.4rem'}}>Exacte planeetposities · Aspecten · Interpretaties · Swiss Ephemeris</p>
         </div>
 
         {/* Formulier */}
@@ -113,9 +113,9 @@ export const NatalChartPage: React.FC = () => {
                 <div style={{position:'absolute',top:'100%',left:0,right:0,zIndex:50,background:G.bg3,border:`0.5px solid ${G.rand}`,borderRadius:8,marginTop:2,overflow:'hidden',boxShadow:'0 8px 24px rgba(0,0,0,0.5)'}}>
                   {suggesties.map((s,i) => (
                     <button key={i} onClick={() => kiesStad(s)}
-                      style={{display:'block',width:'100%',textAlign:'left',padding:'10px 14px',background:'none',border:'none',color:G.goudBleek,cursor:'pointer',borderBottom:i<suggesties.length-1?`0.5px solid ${G.rand}`:'none',fontFamily:"'DM Sans', serif",fontSize:14}}
+                      style={{display:'block',width:'100%',textAlign:'left',padding:'10px 14px',background:'none',border:'none',color:G.goudBleek,cursor:'pointer',borderBottom:i<suggesties.length-1?`0.5px solid ${G.rand}`:'none',fontFamily:"'DM Sans', sans-serif",fontSize:14}}
                       onMouseEnter={e=>(e.currentTarget.style.background=G.accent)} onMouseLeave={e=>(e.currentTarget.style.background='none')}>
-                      {s.naam}{s.land && <span style={{color:'rgba(245,237,216,0.4)',fontSize:12,marginLeft:8}}>{s.land}</span>}
+                      {s.naam}{s.land && <span style={{color:'rgba(255,243,223,0.4)',fontSize:12,marginLeft:8}}>{s.land}</span>}
                     </button>
                   ))}
                 </div>
@@ -131,7 +131,7 @@ export const NatalChartPage: React.FC = () => {
             </div>
           </div>
           {fout && <p style={{color:'#FF6B6B',fontSize:14,margin:'0 0 1rem'}}>{fout}</p>}
-          <button onClick={bereken} disabled={laden} style={{width:'100%',background:laden?'rgba(184,134,11,0.4)':G.goud,color:G.bg,border:'none',borderRadius:10,padding:'12px',fontFamily:"'Cormorant Garamond', serif",fontSize:13,letterSpacing:'0.12em',cursor:laden?'default':'pointer',transition:'all 0.18s'}}>
+          <button onClick={bereken} disabled={laden} style={{width:'100%',background:laden?'rgba(241,203,120,0.4)':G.goud,color:G.bg,border:'none',borderRadius:10,padding:'12px',fontFamily:"'Cormorant Garamond', serif",fontSize:13,letterSpacing:'0.12em',cursor:laden?'default':'pointer',transition:'all 0.18s'}}>
             {laden ? 'Berekenen via Swiss Ephemeris...' : 'BEREKEN GEBOORTEHOROSCOOP'}
           </button>
         </div>
@@ -142,7 +142,7 @@ export const NatalChartPage: React.FC = () => {
             {/* Info + tabs */}
             <div style={{textAlign:'center',marginBottom:'1.5rem'}}>
               <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:18,color:G.goud}}>{resultaat.naam}</div>
-              <div style={{fontSize:13,color:'rgba(245,237,216,0.5)',marginTop:'0.3rem'}}>
+              <div style={{fontSize:13,color:'rgba(255,243,223,0.5)',marginTop:'0.3rem'}}>
                 {resultaat.geboortedatum} · {resultaat.geboortetijd} · {resultaat.geboorteplaats} · {resultaat.tijdzone}
               </div>
               <div style={{display:'flex',gap:'0.5rem',justifyContent:'center',marginTop:'1.2rem',flexWrap:'wrap'}}>
@@ -170,13 +170,13 @@ export const NatalChartPage: React.FC = () => {
                         <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:9,letterSpacing:'0.12em',color:kleur,opacity:0.8,marginBottom:'0.8rem'}}>{lbl}</div>
                         <div style={{fontSize:44}}>{data.symbool}</div>
                         <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:16,color:kleur,marginTop:'0.5rem',letterSpacing:'0.08em'}}>{data.teken}</div>
-                        <div style={{fontSize:12,color:'rgba(245,237,216,0.4)',marginTop:'0.3rem'}}>{data.graad}°</div>
-                        <div style={{fontSize:11,color:'rgba(245,237,216,0.3)',marginTop:'0.3rem'}}>{sub}</div>
+                        <div style={{fontSize:12,color:'rgba(255,243,223,0.4)',marginTop:'0.3rem'}}>{data.graad}°</div>
+                        <div style={{fontSize:11,color:'rgba(255,243,223,0.3)',marginTop:'0.3rem'}}>{sub}</div>
                       </div>
                       <div style={{borderLeft:`0.5px solid ${G.rand}`,paddingLeft:'2rem'}}>
                         {interpretatie
-                          ? <p style={{fontSize:15,lineHeight:1.85,color:'rgba(245,237,216,0.9)',margin:0}}>{interpretatie}</p>
-                          : <p style={{color:'rgba(245,237,216,0.4)',fontSize:14}}>Geen interpretatie beschikbaar.</p>
+                          ? <p style={{fontSize:15,lineHeight:1.85,color:'rgba(255,243,223,0.9)',margin:0}}>{interpretatie}</p>
+                          : <p style={{color:'rgba(255,243,223,0.4)',fontSize:14}}>Geen interpretatie beschikbaar.</p>
                         }
                       </div>
                     </div>
@@ -200,19 +200,19 @@ export const NatalChartPage: React.FC = () => {
                         </span>
                         <span style={{fontSize:22}}>{p.symbool}</span>
                         <span style={{fontSize:14,color:G.goudBleek}}>{p.teken}</span>
-                        <span style={{fontSize:12,color:'rgba(245,237,216,0.4)',marginLeft:'auto'}}>{p.graad}°{huis?` · Huis ${p.huis}`:''}</span>
-                        <span style={{fontSize:12,color:'rgba(245,237,216,0.3)'}}>▾</span>
+                        <span style={{fontSize:12,color:'rgba(255,243,223,0.4)',marginLeft:'auto'}}>{p.graad}°{huis?` · Huis ${p.huis}`:''}</span>
+                        <span style={{fontSize:12,color:'rgba(255,243,223,0.3)'}}>▾</span>
                       </summary>
                       <div style={{padding:'0 1.2rem 1.2rem',borderTop:`0.5px solid ${G.rand}`}}>
                         <div style={{paddingTop:'1rem'}}>
-                          {interp && <p style={{fontSize:14,lineHeight:1.8,color:'rgba(245,237,216,0.85)',margin:'0 0 0.8rem'}}>{interp}</p>}
+                          {interp && <p style={{fontSize:14,lineHeight:1.8,color:'rgba(255,243,223,0.85)',margin:'0 0 0.8rem'}}>{interp}</p>}
                           {huisInfo && (
-                            <div style={{background:'rgba(255,255,255,0.03)',borderRadius:8,padding:'0.8rem 1rem',fontSize:13,color:'rgba(245,237,216,0.6)'}}>
+                            <div style={{background:'rgba(255,255,255,0.03)',borderRadius:8,padding:'0.8rem 1rem',fontSize:13,color:'rgba(255,243,223,0.6)'}}>
                               <span style={{color:G.goud,fontFamily:"'Cormorant Garamond', serif",fontSize:10,letterSpacing:'0.06em'}}>HUIS {p.huis} — {huisInfo.naam.toUpperCase()}</span>
                               <br/>{huisInfo.thema}
                             </div>
                           )}
-                          {!interp && !huisInfo && <p style={{color:'rgba(245,237,216,0.4)',fontSize:13}}>Dit is een generationele planeet — de invloed is collectief en subtiel.</p>}
+                          {!interp && !huisInfo && <p style={{color:'rgba(255,243,223,0.4)',fontSize:13}}>Dit is een generationele planeet — de invloed is collectief en subtiel.</p>}
                         </div>
                       </div>
                     </details>
@@ -226,7 +226,7 @@ export const NatalChartPage: React.FC = () => {
               <div>
                 <div style={{background:G.bg2,border:`0.5px solid ${G.rand}`,borderRadius:16,padding:'1.5rem',marginBottom:'1.5rem'}}>
                   {sectieHeader('Wat zijn aspecten?')}
-                  <p style={{fontSize:14,lineHeight:1.8,color:'rgba(245,237,216,0.75)',margin:0}}>
+                  <p style={{fontSize:14,lineHeight:1.8,color:'rgba(255,243,223,0.75)',margin:0}}>
                     Aspecten zijn de hoeken tussen planeten in jouw chart. Ze laten zien hoe de energieën van planeten samenwerken of botsen — en bepalen voor een groot deel jouw karakter, uitdagingen en talenten. Een klein orbit betekent een sterk, nauwkeurig aspect.
                   </p>
                   <div style={{display:'flex',gap:'0.8rem',marginTop:'1rem',flexWrap:'wrap'}}>
@@ -239,7 +239,7 @@ export const NatalChartPage: React.FC = () => {
                 </div>
                 <div style={{display:'grid',gap:'0.6rem'}}>
                   {resultaat.aspecten.length === 0 && (
-                    <p style={{color:'rgba(245,237,216,0.4)',textAlign:'center'}}>Geen aspecten berekend.</p>
+                    <p style={{color:'rgba(255,243,223,0.4)',textAlign:'center'}}>Geen aspecten berekend.</p>
                   )}
                   {resultaat.aspecten.map((a,i) => {
                     const aspInfo = ASPECT_TYPES[a.type_nl?.toLowerCase()] ?? ASPECT_TYPES[a.type?.toLowerCase()] ?? null;
@@ -252,13 +252,13 @@ export const NatalChartPage: React.FC = () => {
                             <span style={{color:aspInfo?.kleur??G.goud,fontSize:13,fontWeight:700}}>{a.type_nl}</span>
                             <span style={{fontFamily:"'Cormorant Garamond', serif",fontSize:12,color:PLANEET_KLEUR[a.planeet2]??G.goudBleek}}>{a.planeet2}</span>
                           </div>
-                          {tekst && <div style={{fontSize:13,color:'rgba(245,237,216,0.65)',lineHeight:1.6}}>{tekst}</div>}
-                          {aspInfo && <div style={{fontSize:11,color:'rgba(245,237,216,0.35)',marginTop:'0.3rem'}}>{aspInfo.beschrijving}</div>}
+                          {tekst && <div style={{fontSize:13,color:'rgba(255,243,223,0.65)',lineHeight:1.6}}>{tekst}</div>}
+                          {aspInfo && <div style={{fontSize:11,color:'rgba(255,243,223,0.35)',marginTop:'0.3rem'}}>{aspInfo.beschrijving}</div>}
                         </div>
                         <div style={{textAlign:'right',minWidth:70}}>
                           <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:11,color:aspInfo?.kleur??G.goud}}>{a.hoek}°</div>
-                          <div style={{fontSize:11,color:'rgba(245,237,216,0.35)'}}>orbit {a.orbit}°</div>
-                          <div style={{fontSize:10,color:'rgba(245,237,216,0.25)',marginTop:'0.2rem'}}>{aspInfo?.energie}</div>
+                          <div style={{fontSize:11,color:'rgba(255,243,223,0.35)'}}>orbit {a.orbit}°</div>
+                          <div style={{fontSize:10,color:'rgba(255,243,223,0.25)',marginTop:'0.2rem'}}>{aspInfo?.energie}</div>
                         </div>
                       </div>
                     );
@@ -280,12 +280,12 @@ export const NatalChartPage: React.FC = () => {
                           <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:9,color:G.goud,opacity:0.7}}>HUIS</div>
                           <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:22,color:G.goud}}>{h.huis}</div>
                           <div style={{fontSize:20}}>{h.symbool}</div>
-                          <div style={{fontSize:11,color:'rgba(245,237,216,0.5)'}}>{h.teken}</div>
+                          <div style={{fontSize:11,color:'rgba(255,243,223,0.5)'}}>{h.teken}</div>
                         </div>
                         <div>
                           <div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:12,color:G.goudBleek,letterSpacing:'0.06em',marginBottom:'0.3rem'}}>{info?.naam}</div>
                           <div style={{fontSize:12,color:G.goud,marginBottom:'0.5rem',opacity:0.8}}>{info?.thema}</div>
-                          <div style={{fontSize:13,color:'rgba(245,237,216,0.7)',lineHeight:1.7}}>{info?.beschrijving}</div>
+                          <div style={{fontSize:13,color:'rgba(255,243,223,0.7)',lineHeight:1.7}}>{info?.beschrijving}</div>
                           {planeten.length>0 && (
                             <div style={{marginTop:'0.6rem',display:'flex',gap:'0.4rem',flexWrap:'wrap'}}>
                               {planeten.map(p => (
@@ -305,8 +305,8 @@ export const NatalChartPage: React.FC = () => {
           </div>
         )}
         {/* Gerelateerde tools */}
-        <div style={{ borderTop: '0.5px solid rgba(184,134,11,0.15)', paddingTop: '1.25rem', paddingBottom: '2rem', marginTop: '0.5rem' }}>
-          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: 'rgba(184,134,11,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Gerelateerde tools</div>
+        <div style={{ borderTop: '0.5px solid rgba(241,203,120,0.15)', paddingTop: '1.25rem', paddingBottom: '2rem', marginTop: '0.5rem' }}>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, color: 'rgba(241,203,120,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Gerelateerde tools</div>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {[
               { to: '/sterrenbeelden', label: 'Sterrenbeelden' },
@@ -314,7 +314,7 @@ export const NatalChartPage: React.FC = () => {
               { to: '/cursus/module-06', label: 'Cursus: Planeten' },
               { to: '/cursus/module-04', label: 'Cursus: Sterrenbeelden' },
             ].map(l => (
-              <a key={l.to} href={l.to} style={{ fontSize: 12, color: 'rgba(184,134,11,0.8)', border: '0.5px solid rgba(184,134,11,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.05em' }}>{l.label}</a>
+              <a key={l.to} href={l.to} style={{ fontSize: 12, color: 'rgba(241,203,120,0.8)', border: '0.5px solid rgba(241,203,120,0.25)', borderRadius: 14, padding: '5px 12px', textDecoration: 'none', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.05em' }}>{l.label}</a>
             ))}
           </div>
         </div>

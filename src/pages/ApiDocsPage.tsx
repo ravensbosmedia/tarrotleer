@@ -77,7 +77,7 @@ const MODULES: Module[] = [
   {
     naam: "Horoscoop",
     emoji: "♈",
-    kleur: "#e74c3c",
+    kleur: "#F0A596",
     beschrijving: "Dagelijkse horoscopen voor 12 westerse tekens en het Chinese sterrenbeeld. Cache wordt elke nacht bijgewerkt.",
     endpoints: [
       {
@@ -134,7 +134,7 @@ const MODULES: Module[] = [
   {
     naam: "Natal Chart (Geboortehoroscoop)",
     emoji: "⭐",
-    kleur: "#d4af37",
+    kleur: "#F1CB78",
     beschrijving: "Berekend via Kerykeion (Swiss Ephemeris) — Python microservice op poort 4211. Exacte planeetposities, huizen en aspecten.",
     endpoints: [
       {
@@ -176,7 +176,7 @@ const MODULES: Module[] = [
   {
     naam: "Numerologie",
     emoji: "🔢",
-    kleur: "#27ae60",
+    kleur: "#7BC98F",
     beschrijving: "Alle numerologische berekeningen: levenspad, bestuursgetal, naam-getallen en meer. Puur JavaScript, geen externe API.",
     endpoints: [
       {
@@ -222,7 +222,7 @@ const MODULES: Module[] = [
 ];
 
 const METHODE_KLEUR: Record<string, string> = {
-  GET: "#27ae60",
+  GET: "#7BC98F",
   POST: "#e67e22",
 };
 
@@ -238,23 +238,23 @@ export function ApiDocsPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0a1628 100%)', padding: '2rem 1rem' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #20162F 0%, #0D0C22 50%, #080718 100%)', padding: '2rem 1rem' }}>
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📡</div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#d4af37', fontSize: '2rem', marginBottom: '0.5rem' }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#F1CB78', fontSize: '2rem', marginBottom: '0.5rem' }}>
             API Overzicht
           </h1>
-          <p style={{ color: '#a89060', fontFamily: 'DM Sans, serif', fontSize: '1.1rem', marginBottom: '1rem' }}>
+          <p style={{ color: '#B9A9CC', fontFamily: 'DM Sans, sans-serif', fontSize: '1.1rem', marginBottom: '1rem' }}>
             Zen Flow-leeromgeving — alle beschikbare endpoints
           </p>
           <div style={{ display: 'inline-flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <span style={{ padding: '0.3rem 0.75rem', borderRadius: 12, fontSize: '0.8rem', background: 'rgba(212,175,55,0.1)', color: '#d4af37', border: '1px solid rgba(212,175,55,0.3)' }}>
+            <span style={{ padding: '0.3rem 0.75rem', borderRadius: 12, fontSize: '0.8rem', background: 'rgba(241,203,120,0.1)', color: '#F1CB78', border: '1px solid rgba(241,203,120,0.3)' }}>
               Base URL: https://tarot.ownyourdot.me
             </span>
-            <span style={{ padding: '0.3rem 0.75rem', borderRadius: 12, fontSize: '0.8rem', background: 'rgba(39,174,96,0.1)', color: '#27ae60', border: '1px solid rgba(39,174,96,0.3)' }}>
+            <span style={{ padding: '0.3rem 0.75rem', borderRadius: 12, fontSize: '0.8rem', background: 'rgba(123,201,143,0.1)', color: '#7BC98F', border: '1px solid rgba(123,201,143,0.3)' }}>
               {MODULES.reduce((sum, m) => sum + m.endpoints.length, 0)} endpoints
             </span>
             <span style={{ padding: '0.3rem 0.75rem', borderRadius: 12, fontSize: '0.8rem', background: 'rgba(52,152,219,0.1)', color: '#3498db', border: '1px solid rgba(52,152,219,0.3)' }}>
@@ -264,16 +264,16 @@ export function ApiDocsPage() {
         </div>
 
         {/* Snel overzicht tabel */}
-        <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(212,175,55,0.2)', padding: '1.5rem', marginBottom: '2rem' }}>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#d4af37', fontSize: '1rem', marginBottom: '1rem' }}>Snel Overzicht</h2>
+        <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(241,203,120,0.2)', padding: '1.5rem', marginBottom: '2rem' }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#F1CB78', fontSize: '1rem', marginBottom: '1rem' }}>Snel Overzicht</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
             {MODULES.flatMap(m => m.endpoints.map(e => (
               <div key={e.pad} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', fontFamily: 'monospace', fontSize: '0.85rem', padding: '0.3rem 0' }}>
                 <span style={{ padding: '0.15rem 0.5rem', borderRadius: 6, fontSize: '0.7rem', fontWeight: 'bold', background: METHODE_KLEUR[e.methode] + '25', color: METHODE_KLEUR[e.methode], minWidth: 40, textAlign: 'center' }}>
                   {e.methode}
                 </span>
-                <span style={{ color: '#d4af37', flex: 1 }}>{e.pad}</span>
-                <span style={{ color: '#7a6a4a', fontSize: '0.8rem', fontFamily: 'DM Sans, serif' }}>{e.beschrijving}</span>
+                <span style={{ color: '#F1CB78', flex: 1 }}>{e.pad}</span>
+                <span style={{ color: '#8E7FA8', fontSize: '0.8rem', fontFamily: 'DM Sans, sans-serif' }}>{e.beschrijving}</span>
               </div>
             )))}
           </div>
@@ -296,11 +296,11 @@ export function ApiDocsPage() {
                 <span style={{ fontSize: '1.5rem' }}>{module.emoji}</span>
                 <div>
                   <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: module.kleur, margin: 0, fontSize: '1rem' }}>{module.naam}</h2>
-                  <p style={{ color: '#7a6a4a', fontFamily: 'DM Sans, serif', margin: 0, fontSize: '0.85rem' }}>{module.beschrijving}</p>
+                  <p style={{ color: '#8E7FA8', fontFamily: 'DM Sans, sans-serif', margin: 0, fontSize: '0.85rem' }}>{module.beschrijving}</p>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <span style={{ color: '#7a6a4a', fontSize: '0.8rem' }}>{module.endpoints.length} endpoints</span>
+                <span style={{ color: '#8E7FA8', fontSize: '0.8rem' }}>{module.endpoints.length} endpoints</span>
                 <span style={{ color: module.kleur, fontSize: '1.2rem' }}>{openModule === module.naam ? '▲' : '▼'}</span>
               </div>
             </div>
@@ -321,9 +321,9 @@ export function ApiDocsPage() {
                         <span style={{ padding: '0.2rem 0.5rem', borderRadius: 6, fontSize: '0.7rem', fontWeight: 'bold', background: METHODE_KLEUR[ep.methode] + '25', color: METHODE_KLEUR[ep.methode], minWidth: 40, textAlign: 'center' }}>
                           {ep.methode}
                         </span>
-                        <span style={{ fontFamily: 'monospace', color: '#d4cfc0', fontSize: '0.9rem', flex: 1 }}>{ep.pad}</span>
-                        <span style={{ color: '#7a6a4a', fontFamily: 'DM Sans, serif', fontSize: '0.85rem' }}>{ep.beschrijving}</span>
-                        <span style={{ color: '#7a6a4a' }}>{isOpen ? '▲' : '▼'}</span>
+                        <span style={{ fontFamily: 'monospace', color: '#E0D5E9', fontSize: '0.9rem', flex: 1 }}>{ep.pad}</span>
+                        <span style={{ color: '#8E7FA8', fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem' }}>{ep.beschrijving}</span>
+                        <span style={{ color: '#8E7FA8' }}>{isOpen ? '▲' : '▼'}</span>
                       </div>
 
                       {isOpen && (
@@ -332,21 +332,21 @@ export function ApiDocsPage() {
                           {/* Parameters */}
                           {ep.parameters && ep.parameters.length > 0 && (
                             <div style={{ marginBottom: '1rem' }}>
-                              <div style={{ color: '#a89060', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.5rem' }}>PARAMETERS</div>
+                              <div style={{ color: '#B9A9CC', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.5rem' }}>PARAMETERS</div>
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                                 {ep.parameters.map(p => (
                                   <div key={p.naam} style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
-                                    <code style={{ color: '#d4af37', background: 'rgba(212,175,55,0.1)', padding: '0.1rem 0.4rem', borderRadius: 4, fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
+                                    <code style={{ color: '#F1CB78', background: 'rgba(241,203,120,0.1)', padding: '0.1rem 0.4rem', borderRadius: 4, fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
                                       {p.naam}
                                     </code>
                                     <span style={{ color: '#3498db', fontSize: '0.8rem', fontFamily: 'monospace' }}>{p.type}</span>
-                                    <span style={{ padding: '0.1rem 0.4rem', borderRadius: 4, fontSize: '0.7rem', background: p.verplicht ? 'rgba(231,76,60,0.15)' : 'rgba(39,174,96,0.1)', color: p.verplicht ? '#e74c3c' : '#27ae60' }}>
+                                    <span style={{ padding: '0.1rem 0.4rem', borderRadius: 4, fontSize: '0.7rem', background: p.verplicht ? 'rgba(240,165,150,0.15)' : 'rgba(123,201,143,0.1)', color: p.verplicht ? '#F0A596' : '#7BC98F' }}>
                                       {p.verplicht ? 'verplicht' : 'optioneel'}
                                     </span>
-                                    <span style={{ color: '#a89060', fontFamily: 'DM Sans, serif', fontSize: '0.9rem', flex: 1 }}>{p.beschrijving}</span>
+                                    <span style={{ color: '#B9A9CC', fontFamily: 'DM Sans, sans-serif', fontSize: '0.9rem', flex: 1 }}>{p.beschrijving}</span>
                                     {p.voorbeeld && (
-                                      <span style={{ color: '#7a6a4a', fontFamily: 'monospace', fontSize: '0.8rem' }}>
-                                        bv. <em style={{ color: '#d4cfc0' }}>{p.voorbeeld}</em>
+                                      <span style={{ color: '#8E7FA8', fontFamily: 'monospace', fontSize: '0.8rem' }}>
+                                        bv. <em style={{ color: '#E0D5E9' }}>{p.voorbeeld}</em>
                                       </span>
                                     )}
                                   </div>
@@ -357,10 +357,10 @@ export function ApiDocsPage() {
 
                           {/* Voorbeeld */}
                           <div style={{ marginBottom: ep.responsVoorbeeld ? '0.75rem' : 0 }}>
-                            <div style={{ color: '#a89060', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.4rem' }}>VOORBEELD</div>
+                            <div style={{ color: '#B9A9CC', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.4rem' }}>VOORBEELD</div>
                             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
                               <code style={{
-                                flex: 1, fontFamily: 'monospace', fontSize: '0.82rem', color: '#d4cfc0',
+                                flex: 1, fontFamily: 'monospace', fontSize: '0.82rem', color: '#E0D5E9',
                                 background: 'rgba(0,0,0,0.3)', padding: '0.6rem 0.75rem', borderRadius: 6,
                                 wordBreak: 'break-all', display: 'block',
                               }}>
@@ -368,7 +368,7 @@ export function ApiDocsPage() {
                               </code>
                               <button
                                 onClick={() => kopieer(ep.voorbeeld, epId + '-example')}
-                                style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', color: '#d4af37', borderRadius: 6, padding: '0.4rem 0.75rem', cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+                                style={{ background: 'rgba(241,203,120,0.1)', border: '1px solid rgba(241,203,120,0.3)', color: '#F1CB78', borderRadius: 6, padding: '0.4rem 0.75rem', cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
                               >
                                 {gekopieerd === epId + '-example' ? '✓ Gekopieerd' : 'Kopieer'}
                               </button>
@@ -378,7 +378,7 @@ export function ApiDocsPage() {
                           {/* Response voorbeeld */}
                           {ep.responsVoorbeeld && (
                             <div>
-                              <div style={{ color: '#a89060', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.4rem' }}>RESPONSE VOORBEELD</div>
+                              <div style={{ color: '#B9A9CC', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.4rem' }}>RESPONSE VOORBEELD</div>
                               <code style={{
                                 fontFamily: 'monospace', fontSize: '0.8rem', color: '#7a9a7a',
                                 background: 'rgba(0,0,0,0.3)', padding: '0.6rem 0.75rem', borderRadius: 6,
@@ -399,8 +399,8 @@ export function ApiDocsPage() {
         ))}
 
         {/* Technische info */}
-        <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(212,175,55,0.15)', padding: '1.5rem', marginTop: '2rem' }}>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#d4af37', fontSize: '1rem', marginBottom: '1rem' }}>⚙️ Technische details</h2>
+        <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(241,203,120,0.15)', padding: '1.5rem', marginTop: '2rem' }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#F1CB78', fontSize: '1rem', marginBottom: '1rem' }}>⚙️ Technische details</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
             {[
               { label: "Express Server", waarde: "Node.js + TypeScript — poort 4210" },
@@ -413,14 +413,14 @@ export function ApiDocsPage() {
               { label: "CORS", waarde: "Alleen https://tarot.ownyourdot.me" },
             ].map(({ label, waarde }) => (
               <div key={label} style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 8, padding: '0.75rem' }}>
-                <div style={{ color: '#a89060', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.3rem' }}>{label}</div>
-                <div style={{ color: '#d4cfc0', fontFamily: 'DM Sans, serif', fontSize: '0.9rem' }}>{waarde}</div>
+                <div style={{ color: '#B9A9CC', fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.75rem', marginBottom: '0.3rem' }}>{label}</div>
+                <div style={{ color: '#E0D5E9', fontFamily: 'DM Sans, sans-serif', fontSize: '0.9rem' }}>{waarde}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '2rem', color: '#7a6a4a', fontFamily: 'DM Sans, serif', fontSize: '0.85rem' }}>
+        <div style={{ textAlign: 'center', marginTop: '2rem', color: '#8E7FA8', fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem' }}>
           Zen Flow-leeromgeving — v2.0 — intern gebruik
         </div>
       </div>

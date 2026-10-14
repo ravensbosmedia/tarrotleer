@@ -140,16 +140,16 @@ const lifeDomains: LifeDomain[] = [
 
 export const TarotInterpretation: React.FC = () => {
   return (
-    <div className="bg-white rounded-lg shadow-lg p-8">
-      <h2 className="text-3xl font-bold text-purple-800 mb-8">Tarot Interpretatie</h2>
+    <div className="bg-[#20162F] rounded-lg shadow-lg p-8">
+      <h2 className="text-3xl font-bold text-[#F1CB78] mb-8">Tarot Interpretatie</h2>
 
       {/* Kaartposities */}
       <div className="mb-12">
-        <h3 className="text-2xl font-semibold text-purple-700 mb-6">Kaartposities</h3>
+        <h3 className="text-2xl font-semibold text-[#F1CB78] mb-6">Kaartposities</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-purple-50 p-6 rounded-lg">
-            <h4 className="text-xl font-semibold text-purple-600 mb-3">Rechtopstaande Kaarten</h4>
-            <ul className="space-y-2 text-gray-700">
+          <div className="bg-[#2D2040] p-6 rounded-lg">
+            <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">Rechtopstaande Kaarten</h4>
+            <ul className="space-y-2 text-[#E0D5E9]">
               <li>• Natuurlijke energie van de kaart</li>
               <li>• Actieve manifestatie</li>
               <li>• Directe en duidelijke boodschap</li>
@@ -157,9 +157,9 @@ export const TarotInterpretation: React.FC = () => {
               <li>• Vrij stromende energie</li>
             </ul>
           </div>
-          <div className="bg-purple-50 p-6 rounded-lg">
-            <h4 className="text-xl font-semibold text-purple-600 mb-3">Omgekeerde Kaarten</h4>
-            <ul className="space-y-2 text-gray-700">
+          <div className="bg-[#2D2040] p-6 rounded-lg">
+            <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">Omgekeerde Kaarten</h4>
+            <ul className="space-y-2 text-[#E0D5E9]">
               <li>• Geblokkeerde of vertraagde energie</li>
               <li>• Interne manifestatie</li>
               <li>• Uitdaging of les</li>
@@ -172,16 +172,16 @@ export const TarotInterpretation: React.FC = () => {
 
       {/* Interpretatieniveaus */}
       <div className="mb-12">
-        <h3 className="text-2xl font-semibold text-purple-700 mb-6">Interpretatieniveaus</h3>
+        <h3 className="text-2xl font-semibold text-[#F1CB78] mb-6">Interpretatieniveaus</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {interpretationLevels.map((level) => (
-            <div key={level.title} className="bg-white border border-purple-100 rounded-lg p-6 shadow-sm">
-              <h4 className="text-xl font-semibold text-purple-600 mb-3">{level.title}</h4>
-              <p className="text-gray-600 mb-4">{level.description}</p>
+            <div key={level.title} className="bg-[#20162F] border border-[rgba(194,146,189,0.3)] rounded-lg p-6 shadow-sm">
+              <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">{level.title}</h4>
+              <p className="text-[#CFC2DC] mb-4">{level.description}</p>
               <ul className="space-y-2">
                 {level.aspects.map((aspect, index) => (
-                  <li key={index} className="flex items-center text-gray-700">
-                    <span className="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                  <li key={index} className="flex items-center text-[#E0D5E9]">
+                    <span className="w-2 h-2 bg-[#B67AC9] rounded-full mr-2"></span>
                     {aspect}
                   </li>
                 ))}
@@ -193,16 +193,16 @@ export const TarotInterpretation: React.FC = () => {
 
       {/* Tijdsaspecten */}
       <div className="mb-12">
-        <h3 className="text-2xl font-semibold text-purple-700 mb-6">Tijdsaspecten</h3>
+        <h3 className="text-2xl font-semibold text-[#F1CB78] mb-6">Tijdsaspecten</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {timeAspects.map((time) => (
-            <div key={time.phase} className="bg-purple-50 p-6 rounded-lg">
-              <h4 className="text-xl font-semibold text-purple-600 mb-3">{time.phase}</h4>
-              <p className="text-gray-600 mb-4">{time.description}</p>
+            <div key={time.phase} className="bg-[#2D2040] p-6 rounded-lg">
+              <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">{time.phase}</h4>
+              <p className="text-[#CFC2DC] mb-4">{time.description}</p>
               <ul className="space-y-2">
                 {time.aspects.map((aspect, index) => (
-                  <li key={index} className="flex items-center text-gray-700">
-                    <span className="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                  <li key={index} className="flex items-center text-[#E0D5E9]">
+                    <span className="w-2 h-2 bg-[#B67AC9] rounded-full mr-2"></span>
                     {aspect}
                   </li>
                 ))}
@@ -214,20 +214,20 @@ export const TarotInterpretation: React.FC = () => {
 
       {/* Levensdomeinen */}
       <div>
-        <h3 className="text-2xl font-semibold text-purple-700 mb-6">Levensdomeinen</h3>
+        <h3 className="text-2xl font-semibold text-[#F1CB78] mb-6">Levensdomeinen</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {lifeDomains.map((domain) => {
             const Icon = domain.icon;
             return (
-              <div key={domain.domain} className="bg-white border border-purple-100 rounded-lg p-6 shadow-sm">
+              <div key={domain.domain} className="bg-[#20162F] border border-[rgba(194,146,189,0.3)] rounded-lg p-6 shadow-sm">
                 <div className="flex items-center mb-4">
-                  <Icon className="w-6 h-6 text-purple-600 mr-2" />
-                  <h4 className="text-lg font-semibold text-purple-600">{domain.domain}</h4>
+                  <Icon className="w-6 h-6 text-[#F1CB78] mr-2" />
+                  <h4 className="text-lg font-semibold text-[#F1CB78]">{domain.domain}</h4>
                 </div>
                 <ul className="space-y-2">
                   {domain.aspects.map((aspect, index) => (
-                    <li key={index} className="flex items-center text-gray-700">
-                      <span className="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                    <li key={index} className="flex items-center text-[#E0D5E9]">
+                      <span className="w-2 h-2 bg-[#B67AC9] rounded-full mr-2"></span>
                       {aspect}
                     </li>
                   ))}

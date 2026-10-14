@@ -4,10 +4,10 @@ import { LenormandKaart } from '../../types/lenormand';
 import { LenormandKaartVisueel } from '../../components/lenormand/LenormandKaartVisueel';
 
 const G = {
-  goud: '#B8860B', goudBleek: '#F5EDD8', goudDonker: '#7A5C00',
-  bg: '#FDFAF4', bg2: '#F5F0E8', bg3: '#EDE6D6',
-  tekst: '#2C2416', tekst2: '#6B5C3E', tekst3: '#9C8A6A',
-  rand: 'rgba(184,134,11,0.20)', rand2: 'rgba(184,134,11,0.35)',
+  goud: '#F1CB78', goudBleek: '#2D2040', goudDonker: '#E0B04A',
+  bg: '#0D0C22', bg2: '#20162F', bg3: '#2D2040',
+  tekst: '#FFF3DF', tekst2: '#E0D5E9', tekst3: '#B9A9CC',
+  rand: 'rgba(239,180,255,0.22)', rand2: 'rgba(239,180,255,0.38)',
 };
 
 const InfoRij: React.FC<{ label: string; tekst: string; kleur?: string }> = ({ label, tekst, kleur }) => (
@@ -61,9 +61,9 @@ const KaartModal: React.FC<{ kaart: LenormandKaart; onSluit: () => void }> = ({ 
       {/* Detail grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.2rem' }}>
         {[
-          { label: 'Liefde & Relaties', tekst: kaart.liefde, kleur: '#DC2626' },
+          { label: 'Liefde & Relaties', tekst: kaart.liefde, kleur: '#F0A596' },
           { label: 'Werk & Carrière',   tekst: kaart.werk,   kleur: '#2563EB' },
-          { label: 'Gezondheid',        tekst: kaart.gezondheid, kleur: '#16A34A' },
+          { label: 'Gezondheid',        tekst: kaart.gezondheid, kleur: '#7BC98F' },
           { label: 'Combinatietip',     tekst: kaart.combinatieTip, kleur: G.goud },
         ].map(({ label, tekst, kleur }) => (
           <div key={label} style={{ background: G.bg2, border: `0.5px solid ${G.rand}`, borderRadius: 6, padding: '0.9rem' }}>
@@ -74,13 +74,13 @@ const KaartModal: React.FC<{ kaart: LenormandKaart; onSluit: () => void }> = ({ 
 
       {/* Positief / Negatief */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
-        <div style={{ background: '#F0FDF4', border: '0.5px solid #86EFAC', borderRadius: 6, padding: '0.9rem' }}>
-          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.10em', color: '#16A34A', textTransform: 'uppercase', marginBottom: 4 }}>Positief aspect</div>
-          <p style={{ fontSize: 14, color: '#15803D', margin: 0 }}>{kaart.positief}</p>
+        <div style={{ background: 'rgba(95,167,119,0.15)', border: '0.5px solid rgba(155,212,155,0.5)', borderRadius: 6, padding: '0.9rem' }}>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.10em', color: '#7BC98F', textTransform: 'uppercase', marginBottom: 4 }}>Positief aspect</div>
+          <p style={{ fontSize: 14, color: '#9BD49B', margin: 0 }}>{kaart.positief}</p>
         </div>
-        <div style={{ background: '#FEF2F2', border: '0.5px solid #FCA5A5', borderRadius: 6, padding: '0.9rem' }}>
-          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.10em', color: '#DC2626', textTransform: 'uppercase', marginBottom: 4 }}>Uitdagend aspect</div>
-          <p style={{ fontSize: 14, color: '#B91C1C', margin: 0 }}>{kaart.negatief}</p>
+        <div style={{ background: 'rgba(200,96,79,0.15)', border: '0.5px solid rgba(240,165,150,0.5)', borderRadius: 6, padding: '0.9rem' }}>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 10, letterSpacing: '0.10em', color: '#F0A596', textTransform: 'uppercase', marginBottom: 4 }}>Uitdagend aspect</div>
+          <p style={{ fontSize: 14, color: '#F0A596', margin: 0 }}>{kaart.negatief}</p>
         </div>
       </div>
 

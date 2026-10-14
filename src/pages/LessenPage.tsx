@@ -19,7 +19,7 @@ const lessons: Lesson[] = [
     level: 'beginner',
     category: 'basis',
     content: (
-      <div className="space-y-3 text-gray-700 leading-relaxed">
+      <div className="space-y-3 text-[#E0D5E9] leading-relaxed">
         <p>Tarot is een systeem van 78 kaarten dat gebruikt wordt voor zelfreflectie, meditatie en inzicht. De kaarten zijn geen toekomstvoorspelling maar een spiegel — ze helpen je bewust te worden van patronen, mogelijkheden en blinde vlekken.</p>
         <p>Het Rider-Waite-Smith deck (1909) is het meest gebruikte deck ter wereld. De beelden zijn rijk aan symboliek: kleuren, figuren, getallen en achtergronden dragen allemaal betekenis.</p>
         <p><strong>Belangrijk:</strong> Tarot werkt het beste als hulpmiddel voor reflectie, niet als absolute waarheid. Jij bepaalt de betekenis in jouw situatie.</p>
@@ -32,13 +32,13 @@ const lessons: Lesson[] = [
     level: 'beginner',
     category: 'basis',
     content: (
-      <div className="space-y-4 text-gray-700">
-        <div className="bg-purple-50 rounded-lg p-4">
-          <h4 className="font-bold text-purple-800 mb-2">Grote Arcana — 22 kaarten (0–21)</h4>
+      <div className="space-y-4 text-[#E0D5E9]">
+        <div className="bg-[#2D2040] rounded-lg p-4">
+          <h4 className="font-bold text-[#F1CB78] mb-2">Grote Arcana — 22 kaarten (0–21)</h4>
           <p>Grote levenslessen en universele archetypen. Van De Dwaas (0) tot De Wereld (21). Dit zijn de meest krachtige kaarten en vertegenwoordigen grote overgangsperiodes in je leven.</p>
         </div>
-        <div className="bg-indigo-50 rounded-lg p-4">
-          <h4 className="font-bold text-indigo-800 mb-2">Kleine Arcana — 56 kaarten</h4>
+        <div className="bg-[rgba(122,155,219,0.14)] rounded-lg p-4">
+          <h4 className="font-bold text-[#AFC3EE] mb-2">Kleine Arcana — 56 kaarten</h4>
           <p>Dagelijkse situaties, verdeeld in 4 suits van elk 14 kaarten (Aas t/m 10 + Schildknaap, Ridder, Koningin, Koning).</p>
           <ul className="mt-3 space-y-1.5">
             <li>🔥 <strong>Staven (Wands)</strong> — Vuur · Passie, creativiteit, energie, ambitie</li>
@@ -56,7 +56,7 @@ const lessons: Lesson[] = [
     level: 'beginner',
     category: 'basis',
     content: (
-      <div className="space-y-3 text-gray-700">
+      <div className="space-y-3 text-[#E0D5E9]">
         <p>De 22 kaarten van de Grote Arcana vertellen samen het verhaal van <strong>De Dwaas</strong> — een reis door het leven van totale onschuld naar volledig bewustzijn. Dit noemen we ook wel "De Dwaasreis".</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
           {[
@@ -83,11 +83,11 @@ const lessons: Lesson[] = [
             ['XX', 'Het Oordeel', 'Innerlijke roeping'],
             ['XXI', 'De Wereld', 'Voltooiing, heelheid'],
           ].map(([nr, naam, sleutel]) => (
-            <div key={nr} className="flex gap-2 bg-gray-50 rounded p-2">
-              <span className="text-purple-500 font-mono text-xs w-8 shrink-0">{nr}</span>
+            <div key={nr} className="flex gap-2 bg-[#17112C] rounded p-2">
+              <span className="text-[#F1CB78] font-mono text-xs w-8 shrink-0">{nr}</span>
               <div>
-                <span className="font-medium text-gray-800">{naam}</span>
-                <span className="text-gray-400 text-xs block">{sleutel}</span>
+                <span className="font-medium text-[#FFF3DF]">{naam}</span>
+                <span className="text-[#9A8CB3] text-xs block">{sleutel}</span>
               </div>
             </div>
           ))}
@@ -101,19 +101,19 @@ const lessons: Lesson[] = [
     level: 'beginner',
     category: 'basis',
     content: (
-      <div className="space-y-3 text-gray-700 leading-relaxed">
+      <div className="space-y-3 text-[#E0D5E9] leading-relaxed">
         <p>Een omgekeerde kaart (upside-down) heeft een aangepaste betekenis. Dit betekent <strong>niet</strong> het tegenovergestelde — eerder een verzwakking, internalisering of blokkade van de rechtopstaande energie.</p>
         <div className="grid sm:grid-cols-2 gap-3">
-          <div className="bg-green-50 rounded-lg p-3">
-            <h4 className="font-semibold text-green-800 mb-1">Rechtop</h4>
+          <div className="bg-[rgba(95,167,119,0.15)] rounded-lg p-3">
+            <h4 className="font-semibold text-[#9BD49B] mb-1">Rechtop</h4>
             <p className="text-sm">De energie stroomt vrij en wordt actief uitgedrukt in het leven.</p>
           </div>
-          <div className="bg-orange-50 rounded-lg p-3">
-            <h4 className="font-semibold text-orange-800 mb-1">Omgekeerd</h4>
+          <div className="bg-[rgba(224,176,74,0.12)] rounded-lg p-3">
+            <h4 className="font-semibold text-[#F2C27A] mb-1">Omgekeerd</h4>
             <p className="text-sm">De energie is geblokkeerd, naar binnen gericht, of vraagt om meer aandacht.</p>
           </div>
         </div>
-        <p className="text-sm text-gray-500">Sommige lezers gebruiken nooit omgekeerde kaarten — beiden zijn geldige werkwijzen.</p>
+        <p className="text-sm text-[#B9A9CC]">Sommige lezers gebruiken nooit omgekeerde kaarten — beiden zijn geldige werkwijzen.</p>
       </div>
     )
   },
@@ -125,7 +125,7 @@ const lessons: Lesson[] = [
     level: 'beginner',
     category: 'interpretatie',
     content: (
-      <div className="space-y-4 text-gray-700">
+      <div className="space-y-4 text-[#E0D5E9]">
         <p className="leading-relaxed">Veel beginners leren lijstjes met trefwoorden, maar echte interpretatie gaat verder. Gebruik deze stappen als leidraad bij elke kaart.</p>
 
         <div className="space-y-3">
@@ -165,13 +165,13 @@ const lessons: Lesson[] = [
               <span className={`text-${kleur}-600 font-bold text-lg w-6 shrink-0`}>{stap}</span>
               <div>
                 <h4 className={`font-semibold text-${kleur}-800 mb-1`}>{titel}</h4>
-                <p className="text-sm text-gray-700 leading-relaxed">{tekst}</p>
+                <p className="text-sm text-[#E0D5E9] leading-relaxed">{tekst}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-600 border border-gray-200">
+        <div className="bg-[#17112C] rounded-lg p-4 text-sm text-[#CFC2DC] border border-[rgba(194,146,189,0.3)]">
           <strong>Oefening:</strong> Trek één kaart. Beschrijf het beeld hardop of op papier zonder de betekenis op te zoeken. Koppel het aan iets in je leven. Kijk daarna pas in de bibliotheek wat de officiële betekenis is — je zult verrast zijn hoe dicht je vaak zit.
         </div>
       </div>
@@ -183,11 +183,11 @@ const lessons: Lesson[] = [
     level: 'gevorderd',
     category: 'interpretatie',
     content: (
-      <div className="space-y-5 text-gray-700">
+      <div className="space-y-5 text-[#E0D5E9]">
         <p className="leading-relaxed">Eén kaart zegt iets; meerdere kaarten samen vertellen een verhaal. Combinaties laten zien hoe energieën elkaar versterken, tegenwerken of nuanceren. Dit is het hart van tarot lezen.</p>
 
-        <div className="bg-purple-50 rounded-lg p-4">
-          <h4 className="font-bold text-purple-800 mb-3">Stap 1 — De dominante energie vinden</h4>
+        <div className="bg-[#2D2040] rounded-lg p-4">
+          <h4 className="font-bold text-[#F1CB78] mb-3">Stap 1 — De dominante energie vinden</h4>
           <div className="space-y-2 text-sm">
             <p><strong>Kijk welke suit het meest voorkomt:</strong></p>
             <ul className="space-y-1 ml-3">
@@ -200,8 +200,8 @@ const lessons: Lesson[] = [
           </div>
         </div>
 
-        <div className="bg-blue-50 rounded-lg p-4">
-          <h4 className="font-bold text-blue-800 mb-3">Stap 2 — Getallen en patronen</h4>
+        <div className="bg-[rgba(122,155,219,0.14)] rounded-lg p-4">
+          <h4 className="font-bold text-[#AFC3EE] mb-3">Stap 2 — Getallen en patronen</h4>
           <div className="space-y-2 text-sm">
             <p>Als meerdere kaarten hetzelfde getal hebben, versterkt dat de betekenis:</p>
             <ul className="space-y-1 ml-3">
@@ -214,8 +214,8 @@ const lessons: Lesson[] = [
           </div>
         </div>
 
-        <div className="bg-green-50 rounded-lg p-4">
-          <h4 className="font-bold text-green-800 mb-3">Stap 3 — Energieën die samenwerken</h4>
+        <div className="bg-[rgba(95,167,119,0.15)] rounded-lg p-4">
+          <h4 className="font-bold text-[#9BD49B] mb-3">Stap 3 — Energieën die samenwerken</h4>
           <div className="space-y-2 text-sm">
             <p>Sommige combinaties versterken elkaar en vertellen een duidelijk verhaal:</p>
             <div className="space-y-2 mt-2">
@@ -227,17 +227,17 @@ const lessons: Lesson[] = [
                 ['De Toren + De Wereld', 'Een abrupte ineenstorting die uiteindelijk leidt tot voltooiing en bevrijding.'],
                 ['Koningin van Kelken + Twee van Kelken', 'Een emotioneel rijpe verbinding, of de roep om je hart open te stellen in een relatie.'],
               ].map(([combo, uitleg]) => (
-                <div key={combo} className="bg-white rounded p-3 border border-green-100">
-                  <p className="font-semibold text-green-800 text-xs">{combo}</p>
-                  <p className="text-gray-600 mt-0.5">{uitleg}</p>
+                <div key={combo} className="bg-[#20162F] rounded p-3 border border-[rgba(155,212,155,0.35)]">
+                  <p className="font-semibold text-[#9BD49B] text-xs">{combo}</p>
+                  <p className="text-[#CFC2DC] mt-0.5">{uitleg}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="bg-orange-50 rounded-lg p-4">
-          <h4 className="font-bold text-orange-800 mb-3">Stap 4 — Spanningsvelden</h4>
+        <div className="bg-[rgba(224,176,74,0.12)] rounded-lg p-4">
+          <h4 className="font-bold text-[#F2C27A] mb-3">Stap 4 — Spanningsvelden</h4>
           <div className="space-y-2 text-sm">
             <p>Tegengestelde kaarten duiden op conflict of een keuze die gemaakt moet worden:</p>
             <div className="space-y-2 mt-2">
@@ -246,16 +246,16 @@ const lessons: Lesson[] = [
                 ['Gerechtigheid + De Maan', 'Spanning tussen rationele waarheid en irrationele angsten of illusies.'],
                 ['Ridder van Zwaarden + Vier van Kelken', 'Enerzijds drang tot actie, anderzijds apathie of navel­staren. Iemand aarzelt terwijl actie vereist is.'],
               ].map(([combo, uitleg]) => (
-                <div key={combo} className="bg-white rounded p-3 border border-orange-100">
-                  <p className="font-semibold text-orange-800 text-xs">{combo}</p>
-                  <p className="text-gray-600 mt-0.5">{uitleg}</p>
+                <div key={combo} className="bg-[#20162F] rounded p-3 border border-orange-100">
+                  <p className="font-semibold text-[#F2C27A] text-xs">{combo}</p>
+                  <p className="text-[#CFC2DC] mt-0.5">{uitleg}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-600 border border-gray-200">
+        <div className="bg-[#17112C] rounded-lg p-4 text-sm text-[#CFC2DC] border border-[rgba(194,146,189,0.3)]">
           <strong>Gouden tip:</strong> Lees eerst élke kaart apart. Vat dan samen: "Wat is het overkoepelende verhaal?" Zoek de rode draad, niet de som van losse betekenissen. De kaarten voeren een gesprek — jij bent de vertaler.
         </div>
       </div>
@@ -269,12 +269,12 @@ const lessons: Lesson[] = [
     level: 'beginner',
     category: 'leggingen',
     content: (
-      <div className="space-y-4 text-gray-700">
+      <div className="space-y-4 text-[#E0D5E9]">
         <p className="leading-relaxed">De dagkaart is de eenvoudigste maar misschien wel krachtigste oefening in tarot. Elke ochtend één kaart trekken verbindt je aan jezelf én aan de energie van de dag.</p>
 
-        <div className="bg-blue-50 rounded-lg p-4">
-          <h4 className="font-bold text-blue-800 mb-2">Waarvoor dient de dagkaart?</h4>
-          <ul className="text-sm space-y-1.5 list-disc list-inside text-gray-700">
+        <div className="bg-[rgba(122,155,219,0.14)] rounded-lg p-4">
+          <h4 className="font-bold text-[#AFC3EE] mb-2">Waarvoor dient de dagkaart?</h4>
+          <ul className="text-sm space-y-1.5 list-disc list-inside text-[#E0D5E9]">
             <li>Een focuspunt voor de dag — wat verdient mijn aandacht?</li>
             <li>Zelfreflectie — wat leeft er in mij op dit moment?</li>
             <li>Oefening in interpretatie — één kaart per dag verdiept je kennis snel</li>
@@ -282,9 +282,9 @@ const lessons: Lesson[] = [
           </ul>
         </div>
 
-        <div className="bg-purple-50 rounded-lg p-4">
-          <h4 className="font-bold text-purple-800 mb-2">Hoe doe je het — ochtend</h4>
-          <ol className="text-sm space-y-2 list-decimal list-inside text-gray-700">
+        <div className="bg-[#2D2040] rounded-lg p-4">
+          <h4 className="font-bold text-[#F1CB78] mb-2">Hoe doe je het — ochtend</h4>
+          <ol className="text-sm space-y-2 list-decimal list-inside text-[#E0D5E9]">
             <li>Neem een rustig moment (voor je telefoon pakt, voor de drukte begint)</li>
             <li>Houd de kaarten even vast, adem in. Stel innerlijk een vraag: <em>"Wat is vandaag belangrijk voor mij?"</em> of <em>"Welke energie kan ik vandaag inzetten?"</em></li>
             <li>Trek één kaart. Kijk eerst naar het beeld — wat valt op?</li>
@@ -292,13 +292,13 @@ const lessons: Lesson[] = [
           </ol>
         </div>
 
-        <div className="bg-green-50 rounded-lg p-4">
-          <h4 className="font-bold text-green-800 mb-2">Avond — reflectie</h4>
-          <p className="text-sm text-gray-700">Kijk 's avonds terug: <em>"Hoe heeft de energie van deze kaart zich vandaag gemanifesteerd?"</em> Dit hoeft niet letterlijk te zijn — de Kelken Twee was niet per se een ontmoeting met iemand, maar misschien had je een gesprek vol verbinding. Die koppeling maakt je een betere lezer.</p>
+        <div className="bg-[rgba(95,167,119,0.15)] rounded-lg p-4">
+          <h4 className="font-bold text-[#9BD49B] mb-2">Avond — reflectie</h4>
+          <p className="text-sm text-[#E0D5E9]">Kijk 's avonds terug: <em>"Hoe heeft de energie van deze kaart zich vandaag gemanifesteerd?"</em> Dit hoeft niet letterlijk te zijn — de Kelken Twee was niet per se een ontmoeting met iemand, maar misschien had je een gesprek vol verbinding. Die koppeling maakt je een betere lezer.</p>
         </div>
 
-        <div className="bg-yellow-50 rounded-lg p-4">
-          <h4 className="font-bold text-yellow-800 mb-2">Voorbeeldinterpretaties</h4>
+        <div className="bg-[rgba(224,176,74,0.12)] rounded-lg p-4">
+          <h4 className="font-bold text-[#F2C27A] mb-2">Voorbeeldinterpretaties</h4>
           <div className="space-y-2 text-sm">
             {[
               ['De Kracht', 'Vandaag vraagt om zachte kracht. Forceer niets — benader uitdagingen met geduld en zelfvertrouwen in plaats van dwang.'],
@@ -306,9 +306,9 @@ const lessons: Lesson[] = [
               ['Aas van Pentakels', 'Er is een kans in het praktische domein — werk, geld of gezondheid. Houd je ogen open voor een concrete mogelijkheid.'],
               ['De Maan', 'Dingen zijn misschien niet wat ze lijken. Vertrouw vandaag meer op gevoel dan op logica alleen.'],
             ].map(([kaart, uitleg]) => (
-              <div key={kaart} className="bg-white rounded p-3 border border-yellow-100">
-                <p className="font-semibold text-yellow-800">{kaart}</p>
-                <p className="text-gray-600 mt-0.5">{uitleg}</p>
+              <div key={kaart} className="bg-[#20162F] rounded p-3 border border-[rgba(224,176,74,0.35)]">
+                <p className="font-semibold text-[#F2C27A]">{kaart}</p>
+                <p className="text-[#CFC2DC] mt-0.5">{uitleg}</p>
               </div>
             ))}
           </div>
@@ -322,65 +322,65 @@ const lessons: Lesson[] = [
     level: 'beginner',
     category: 'leggingen',
     content: (
-      <div className="space-y-4 text-gray-700">
+      <div className="space-y-4 text-[#E0D5E9]">
         <p className="leading-relaxed">De drie-kaarten legging is de meest veelzijdige en gebruikte legging. Drie kaarten, één verhaal. De posities kun je aanpassen aan je vraag — hieronder de meestgebruikte varianten.</p>
 
-        <div className="bg-purple-50 rounded-lg p-5">
-          <h4 className="font-bold text-purple-800 mb-3">Variant 1 — Verleden · Heden · Toekomst</h4>
+        <div className="bg-[#2D2040] rounded-lg p-5">
+          <h4 className="font-bold text-[#F1CB78] mb-3">Variant 1 — Verleden · Heden · Toekomst</h4>
           <div className="grid grid-cols-3 gap-3 mb-3">
             {[
               { pos: '1', naam: 'Verleden', uitleg: 'Wat heeft geleid tot de huidige situatie? Welke ervaringen, beslissingen of patronen zijn relevant?' },
               { pos: '2', naam: 'Heden', uitleg: 'Waar sta je nu? Dit is de kern van de situatie — de energie die actief is op dit moment.' },
               { pos: '3', naam: 'Toekomst', uitleg: 'Waar leidt dit naartoe als de huidige energie voortduurt? Geen vaste bestemming, maar een waarschijnlijke richting.' },
             ].map(({ pos, naam, uitleg }) => (
-              <div key={pos} className="bg-white rounded-lg p-3 border border-purple-100 text-center">
-                <div className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-1">{pos}</div>
-                <p className="font-semibold text-purple-800 text-sm">{naam}</p>
-                <p className="text-xs text-gray-500 mt-1 text-left">{uitleg}</p>
+              <div key={pos} className="bg-[#20162F] rounded-lg p-3 border border-[rgba(194,146,189,0.3)] text-center">
+                <div className="w-8 h-8 bg-[#F1CB78] text-[#1C0D06] rounded-full flex items-center justify-center font-bold mx-auto mb-1">{pos}</div>
+                <p className="font-semibold text-[#F1CB78] text-sm">{naam}</p>
+                <p className="text-xs text-[#B9A9CC] mt-1 text-left">{uitleg}</p>
               </div>
             ))}
           </div>
-          <p className="text-sm text-gray-600"><strong>Hoe lees je het:</strong> Begin bij kaart 1 (het verhaal begint hier), ga naar kaart 2 (wat speelt er nu), en kaart 3 laat zien waar het naartoe gaat. Zoek de <em>rode draad</em> — het thema dat alle drie kaarten verbindt.</p>
+          <p className="text-sm text-[#CFC2DC]"><strong>Hoe lees je het:</strong> Begin bij kaart 1 (het verhaal begint hier), ga naar kaart 2 (wat speelt er nu), en kaart 3 laat zien waar het naartoe gaat. Zoek de <em>rode draad</em> — het thema dat alle drie kaarten verbindt.</p>
         </div>
 
-        <div className="bg-green-50 rounded-lg p-5">
-          <h4 className="font-bold text-green-800 mb-3">Variant 2 — Situatie · Actie · Uitkomst</h4>
+        <div className="bg-[rgba(95,167,119,0.15)] rounded-lg p-5">
+          <h4 className="font-bold text-[#9BD49B] mb-3">Variant 2 — Situatie · Actie · Uitkomst</h4>
           <div className="grid grid-cols-3 gap-3 mb-3">
             {[
               { pos: '1', naam: 'Situatie', uitleg: 'Wat is de aard van het vraagstuk? De kaart beschrijft de context en de huidige staat van zaken.' },
               { pos: '2', naam: 'Actie', uitleg: 'Wat kun je doen? Welke stap of houding helpt je vooruit? Dit is praktisch advies.' },
               { pos: '3', naam: 'Uitkomst', uitleg: 'Wat is het resultaat als je de actie onderneemt? Let op: dit is geen garantie, maar een richting.' },
             ].map(({ pos, naam, uitleg }) => (
-              <div key={pos} className="bg-white rounded-lg p-3 border border-green-100 text-center">
+              <div key={pos} className="bg-[#20162F] rounded-lg p-3 border border-[rgba(155,212,155,0.35)] text-center">
                 <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-1">{pos}</div>
-                <p className="font-semibold text-green-800 text-sm">{naam}</p>
-                <p className="text-xs text-gray-500 mt-1 text-left">{uitleg}</p>
+                <p className="font-semibold text-[#9BD49B] text-sm">{naam}</p>
+                <p className="text-xs text-[#B9A9CC] mt-1 text-left">{uitleg}</p>
               </div>
             ))}
           </div>
-          <p className="text-sm text-gray-600">Goed voor concrete vraagstukken: "Hoe ga ik om met...?" of "Wat doe ik met...?"</p>
+          <p className="text-sm text-[#CFC2DC]">Goed voor concrete vraagstukken: "Hoe ga ik om met...?" of "Wat doe ik met...?"</p>
         </div>
 
-        <div className="bg-indigo-50 rounded-lg p-5">
-          <h4 className="font-bold text-indigo-800 mb-3">Variant 3 — Geest · Hart · Lichaam</h4>
+        <div className="bg-[rgba(122,155,219,0.14)] rounded-lg p-5">
+          <h4 className="font-bold text-[#AFC3EE] mb-3">Variant 3 — Geest · Hart · Lichaam</h4>
           <div className="grid grid-cols-3 gap-3 mb-3">
             {[
               { pos: '1', naam: 'Geest', uitleg: 'Wat denk je over de situatie? Welke overtuigingen of gedachten spelen een rol?' },
               { pos: '2', naam: 'Hart', uitleg: 'Wat voel je? Welke emoties of verlangens zijn aanwezig, ook de onuitgesproken?' },
               { pos: '3', naam: 'Lichaam', uitleg: 'Hoe uit dit zich in je dagelijkse leven, je gedrag of je fysieke welzijn?' },
             ].map(({ pos, naam, uitleg }) => (
-              <div key={pos} className="bg-white rounded-lg p-3 border border-indigo-100 text-center">
+              <div key={pos} className="bg-[#20162F] rounded-lg p-3 border border-indigo-100 text-center">
                 <div className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-1">{pos}</div>
-                <p className="font-semibold text-indigo-800 text-sm">{naam}</p>
-                <p className="text-xs text-gray-500 mt-1 text-left">{uitleg}</p>
+                <p className="font-semibold text-[#AFC3EE] text-sm">{naam}</p>
+                <p className="text-xs text-[#B9A9CC] mt-1 text-left">{uitleg}</p>
               </div>
             ))}
           </div>
-          <p className="text-sm text-gray-600">Goed voor zelfreflectie en het begrijpen van hoe een situatie je als geheel beïnvloedt.</p>
+          <p className="text-sm text-[#CFC2DC]">Goed voor zelfreflectie en het begrijpen van hoe een situatie je als geheel beïnvloedt.</p>
         </div>
 
-        <div className="bg-yellow-50 rounded-lg p-4">
-          <h4 className="font-bold text-yellow-800 mb-2">Andere varianten</h4>
+        <div className="bg-[rgba(224,176,74,0.12)] rounded-lg p-4">
+          <h4 className="font-bold text-[#F2C27A] mb-2">Andere varianten</h4>
           <div className="grid sm:grid-cols-2 gap-2 text-sm">
             {[
               ['Ik · Jij · Wij', 'Voor relatievragen — de energie van jezelf, de ander, en de relatie zelf'],
@@ -388,9 +388,9 @@ const lessons: Lesson[] = [
               ['Wat laat ik los · Wat hou ik vast · Wat omarm ik', 'Voor overgangsmomenten, jaareinde, nieuwe fase'],
               ['Oorzaak · Gevoel · Les', 'Begrijpen waarom iets pijn doet en wat het je leert'],
             ].map(([naam, uitleg]) => (
-              <div key={naam} className="bg-white rounded p-2 border border-yellow-100">
-                <p className="font-semibold text-yellow-800 text-xs">{naam}</p>
-                <p className="text-gray-500">{uitleg}</p>
+              <div key={naam} className="bg-[#20162F] rounded p-2 border border-[rgba(224,176,74,0.35)]">
+                <p className="font-semibold text-[#F2C27A] text-xs">{naam}</p>
+                <p className="text-[#B9A9CC]">{uitleg}</p>
               </div>
             ))}
           </div>
@@ -404,11 +404,11 @@ const lessons: Lesson[] = [
     level: 'beginner',
     category: 'leggingen',
     content: (
-      <div className="space-y-4 text-gray-700">
+      <div className="space-y-4 text-[#E0D5E9]">
         <p className="leading-relaxed">De relatie legging geeft inzicht in de dynamiek tussen twee mensen: een romantische partner, een vriend, een familielid of een collega. Vijf kaarten belichten elk een aspect van de verbinding.</p>
 
         <div className="bg-pink-50 rounded-lg p-5">
-          <h4 className="font-bold text-pink-800 mb-4">De vijf posities</h4>
+          <h4 className="font-bold text-[#F3B6D9] mb-4">De vijf posities</h4>
           <div className="space-y-3">
             {[
               { nr: '1', naam: 'Jouw energie', uitleg: 'Hoe kom jij de relatie in? Welke stemming, houding of verwachting breng jij mee? Dit is niet wie jij bent, maar wie je op dit moment bent in deze relatie.' },
@@ -417,18 +417,18 @@ const lessons: Lesson[] = [
               { nr: '4', naam: 'De uitdaging', uitleg: 'Wat is de grootste hindernis of het grootste groeipunt in deze relatie? Niet per se negatief — een uitdaging kan ook de aanzet zijn tot verdieping.' },
               { nr: '5', naam: 'Het potentieel', uitleg: 'Waar kan de relatie naartoe groeien als beide partijen bewust met de uitdagingen omgaan? Dit is de beste uitkomst, niet de garantie.' },
             ].map(({ nr, naam, uitleg }) => (
-              <div key={nr} className="flex gap-3 bg-white rounded-lg p-3 border border-pink-100">
+              <div key={nr} className="flex gap-3 bg-[#20162F] rounded-lg p-3 border border-pink-100">
                 <div className="w-7 h-7 bg-pink-500 text-white rounded-full flex items-center justify-center font-bold text-sm shrink-0">{nr}</div>
                 <div>
-                  <p className="font-semibold text-pink-800">{naam}</p>
-                  <p className="text-sm text-gray-600 mt-0.5">{uitleg}</p>
+                  <p className="font-semibold text-[#F3B6D9]">{naam}</p>
+                  <p className="text-sm text-[#CFC2DC] mt-0.5">{uitleg}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-600 border border-gray-200">
+        <div className="bg-[#17112C] rounded-lg p-4 text-sm text-[#CFC2DC] border border-[rgba(194,146,189,0.3)]">
           <strong>Leestip:</strong> Begin met kaarten 1 en 2 apart. Welke energie brengt elke persoon mee? Dan kaart 3 — is de verbinding in balans met wat beiden meebrengen? Kaart 4 laat zien waar spanning zit, en kaart 5 geeft perspectief. Lees het als een gesprek, niet als een rapport.
         </div>
       </div>
@@ -440,11 +440,11 @@ const lessons: Lesson[] = [
     level: 'beginner',
     category: 'leggingen',
     content: (
-      <div className="space-y-4 text-gray-700">
+      <div className="space-y-4 text-[#E0D5E9]">
         <p className="leading-relaxed">De carrière legging geeft richting bij werkvragen: loopbaankeuzes, nieuwe projecten, werksfeer of professionele ontwikkeling. Vier kaarten geven een helder beeld.</p>
 
-        <div className="bg-amber-50 rounded-lg p-5">
-          <h4 className="font-bold text-amber-800 mb-4">De vier posities</h4>
+        <div className="bg-[rgba(224,176,74,0.12)] rounded-lg p-5">
+          <h4 className="font-bold text-[#F2C27A] mb-4">De vier posities</h4>
           <div className="space-y-3">
             {[
               { nr: '1', naam: 'Huidige positie', uitleg: 'Waar sta je nu in je werk of carrière? Dit is een eerlijk beeld van de situatie zoals die op dit moment is — niet zoals je die wenst of vreest.' },
@@ -452,19 +452,19 @@ const lessons: Lesson[] = [
               { nr: '3', naam: 'Kansen', uitleg: 'Welke mogelijkheden zijn er? Wat zie je misschien over het hoofd? Deze kaart vraagt je de blik te verbreden naar wat er wél aanwezig is.' },
               { nr: '4', naam: 'Beste pad vooruit', uitleg: 'Wat is de meest vruchtbare richting of aanpak? Dit is advies — welke energie of actie past het beste bij dit moment in je carrière?' },
             ].map(({ nr, naam, uitleg }) => (
-              <div key={nr} className="flex gap-3 bg-white rounded-lg p-3 border border-amber-100">
+              <div key={nr} className="flex gap-3 bg-[#20162F] rounded-lg p-3 border border-amber-100">
                 <div className="w-7 h-7 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-sm shrink-0">{nr}</div>
                 <div>
-                  <p className="font-semibold text-amber-800">{naam}</p>
-                  <p className="text-sm text-gray-600 mt-0.5">{uitleg}</p>
+                  <p className="font-semibold text-[#F2C27A]">{naam}</p>
+                  <p className="text-sm text-[#CFC2DC] mt-0.5">{uitleg}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-amber-50 rounded-lg p-4">
-          <h4 className="font-bold text-amber-800 mb-2">Welke kaarten zijn betekenisvol in een carrière-legging?</h4>
+        <div className="bg-[rgba(224,176,74,0.12)] rounded-lg p-4">
+          <h4 className="font-bold text-[#F2C27A] mb-2">Welke kaarten zijn betekenisvol in een carrière-legging?</h4>
           <div className="space-y-1.5 text-sm">
             {[
               ['Pentakels in het algemeen', 'Goed teken — praktische energie, concrete resultaten, financiële stabiliteit'],
@@ -490,16 +490,16 @@ const lessons: Lesson[] = [
     level: 'gevorderd',
     category: 'leggingen',
     content: (
-      <div className="space-y-4 text-gray-700">
+      <div className="space-y-4 text-[#E0D5E9]">
         <p className="leading-relaxed">Het Keltisch Kruis is de meest gebruikte diepgaande legging. Tien kaarten belichten de situatie vanuit meerdere hoeken: innerlijk en uiterlijk, verleden en toekomst, bewust en onbewust. Het is een volledig beeld van een vraagstuk.</p>
 
-        <div className="bg-purple-50 rounded-lg p-4 text-sm">
-          <p className="font-semibold text-purple-800 mb-1">Leesformule</p>
+        <div className="bg-[#2D2040] rounded-lg p-4 text-sm">
+          <p className="font-semibold text-[#F1CB78] mb-1">Leesformule</p>
           <p>Lees het Keltisch Kruis in twee blokken: eerst het <strong>innerlijk kruis</strong> (posities 1–6) dat de situatie beschrijft, dan de <strong>staf</strong> (posities 7–10) die de weg vooruit laat zien.</p>
         </div>
 
         <div className="space-y-3">
-          <h4 className="font-bold text-gray-800">Het innerlijk kruis</h4>
+          <h4 className="font-bold text-[#FFF3DF]">Het innerlijk kruis</h4>
           {[
             { nr: '1', naam: 'Huidige situatie (de kern)', kleur: 'purple', uitleg: 'De centrale kaart. Dit is de essentie van de vraag of de situatie op dit moment. Alles draait hieromheen.' },
             { nr: '2', naam: 'De kruising (uitdaging)', kleur: 'indigo', uitleg: 'Dwars over de eerste kaart gelegd. Dit is wat de situatie compliceert, blokkeert of juist in beweging zet. Let op: dit kan ook iets positiefs zijn dat teveel invloed heeft.' },
@@ -512,14 +512,14 @@ const lessons: Lesson[] = [
               <div className={`w-7 h-7 bg-${kleur}-600 text-white rounded-full flex items-center justify-center font-bold text-sm shrink-0`}>{nr}</div>
               <div>
                 <p className={`font-semibold text-${kleur}-800`}>{naam}</p>
-                <p className="text-sm text-gray-600 mt-0.5">{uitleg}</p>
+                <p className="text-sm text-[#CFC2DC] mt-0.5">{uitleg}</p>
               </div>
             </div>
           ))}
         </div>
 
         <div className="space-y-3">
-          <h4 className="font-bold text-gray-800">De staf (rechterkolom)</h4>
+          <h4 className="font-bold text-[#FFF3DF]">De staf (rechterkolom)</h4>
           {[
             { nr: '7', naam: 'Jouw houding', kleur: 'yellow', uitleg: 'Hoe sta jij in deze situatie? Welke energie of houding breng je mee — bewust of onbewust? Soms confronterend: je dénkt open te zijn, maar de kaart laat iets anders zien.' },
             { nr: '8', naam: 'Externe invloeden', kleur: 'orange', uitleg: 'Welke invloed hebben anderen of de omgeving? Dit zijn de mensen, omstandigheden of systemen die van buitenaf op je situatie inwerken.' },
@@ -530,13 +530,13 @@ const lessons: Lesson[] = [
               <div className={`w-7 h-7 bg-${kleur}-600 text-white rounded-full flex items-center justify-center font-bold text-sm shrink-0`}>{nr}</div>
               <div>
                 <p className={`font-semibold text-${kleur}-800`}>{naam}</p>
-                <p className="text-sm text-gray-600 mt-0.5">{uitleg}</p>
+                <p className="text-sm text-[#CFC2DC] mt-0.5">{uitleg}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-600 border border-gray-200">
+        <div className="bg-[#17112C] rounded-lg p-4 text-sm text-[#CFC2DC] border border-[rgba(194,146,189,0.3)]">
           <strong>Leestip:</strong> Na het leggen, zoek verbanden: Is er overeenstemming tussen positie 5 (bewust) en positie 6 (onbewust)? Wijkt positie 7 (jouw houding) af van wat positie 8 (de buitenwereld) zegt? Vertel het verhaal van de legging van begin tot eind, alsof je het aan iemand anders uitlegt.
         </div>
       </div>
@@ -550,7 +550,7 @@ const lessons: Lesson[] = [
     level: 'gevorderd',
     category: 'gevorderd',
     content: (
-      <div className="space-y-3 text-gray-700">
+      <div className="space-y-3 text-[#E0D5E9]">
         <p>Elk getal in de Kleine Arcana draagt een universele betekenis:</p>
         <div className="space-y-2 text-sm">
           {[
@@ -569,9 +569,9 @@ const lessons: Lesson[] = [
             ['Koningin', 'Innerlijke kracht, gevoel, meesterschap'],
             ['Koning', 'Meesterschap, leiderschap, uiterlijke kracht'],
           ].map(([nr, uitleg]) => (
-            <div key={nr} className="flex gap-3 py-1.5 border-b border-gray-100">
-              <span className="font-semibold text-purple-700 w-28 shrink-0">{nr}</span>
-              <span className="text-gray-600">{uitleg}</span>
+            <div key={nr} className="flex gap-3 py-1.5 border-b border-[rgba(194,146,189,0.25)]">
+              <span className="font-semibold text-[#F1CB78] w-28 shrink-0">{nr}</span>
+              <span className="text-[#CFC2DC]">{uitleg}</span>
             </div>
           ))}
         </div>
@@ -584,7 +584,7 @@ const lessons: Lesson[] = [
     level: 'gevorderd',
     category: 'gevorderd',
     content: (
-      <div className="space-y-3 text-gray-700 text-sm">
+      <div className="space-y-3 text-[#E0D5E9] text-sm">
         <p className="text-base">De RWS kaarten staan vol bewuste symboliek. Hier zijn de meest voorkomende elementen:</p>
         <div className="grid sm:grid-cols-2 gap-3">
           {[
@@ -601,9 +601,9 @@ const lessons: Lesson[] = [
             ['🌹 Rode roos', 'Passie, verlangens, het hart'],
             ['🌸 Witte lelie', 'Zuiverheid, onschuld, spiritualiteit'],
           ].map(([sym, uitleg]) => (
-            <div key={sym} className="flex gap-2 bg-gray-50 rounded p-2">
+            <div key={sym} className="flex gap-2 bg-[#17112C] rounded p-2">
               <span className="w-28 shrink-0 font-medium">{sym}</span>
-              <span className="text-gray-500">{uitleg}</span>
+              <span className="text-[#B9A9CC]">{uitleg}</span>
             </div>
           ))}
         </div>
@@ -637,11 +637,11 @@ export const LessenPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-purple-700 text-white py-8">
+    <div className="min-h-screen bg-[#17112C]">
+      <div className="bg-[#FFC653] text-[#1C0D06] py-8">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold mb-1">Lessen</h1>
-          <p className="text-purple-200">Gestructureerde uitleg — van kaart lezen tot complexe leggingen</p>
+          <p className="text-[#E0D5E9]">Gestructureerde uitleg — van kaart lezen tot complexe leggingen</p>
         </div>
       </div>
 
@@ -654,7 +654,7 @@ export const LessenPage: React.FC = () => {
                 key={value}
                 onClick={() => setCategory(value)}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  category === value ? 'bg-purple-600 text-white' : 'bg-white border border-gray-300 text-gray-600 hover:border-purple-400'
+                  category === value ? 'bg-[#F1CB78] text-[#1C0D06]' : 'bg-[#20162F] border border-[rgba(194,146,189,0.45)] text-[#CFC2DC] hover:border-[#EFB4FF]'
                 }`}
               >
                 {label}
@@ -667,7 +667,7 @@ export const LessenPage: React.FC = () => {
                 key={v}
                 onClick={() => setLevel(v)}
                 className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  level === v ? 'bg-gray-700 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-400'
+                  level === v ? 'bg-gray-700 text-white' : 'bg-[#20162F] border border-[rgba(194,146,189,0.3)] text-[#B9A9CC] hover:border-gray-400'
                 }`}
               >
                 {l}
@@ -678,48 +678,48 @@ export const LessenPage: React.FC = () => {
 
         {/* Voortgang */}
         <div className="mb-5">
-          <div className="flex justify-between text-sm text-gray-500 mb-1">
+          <div className="flex justify-between text-sm text-[#B9A9CC] mb-1">
             <span>{aantalGelezen} van {lessons.length} lessen gelezen</span>
-            <Link to="/voortgang" className="text-purple-600 hover:underline">Mijn voortgang</Link>
+            <Link to="/voortgang" className="text-[#F1CB78] hover:underline">Mijn voortgang</Link>
           </div>
-          <div className="h-1.5 bg-gray-200 rounded-full">
-            <div className="h-full bg-purple-600 rounded-full transition-all" style={{ width: `${Math.round((aantalGelezen / lessons.length) * 100)}%` }} />
+          <div className="h-1.5 bg-[#3A2A52] rounded-full">
+            <div className="h-full bg-[#F1CB78] rounded-full transition-all" style={{ width: `${Math.round((aantalGelezen / lessons.length) * 100)}%` }} />
           </div>
         </div>
 
         <div className="space-y-3">
           {filtered.map(lesson => (
-            <div key={lesson.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div key={lesson.id} className="bg-[#20162F] rounded-xl shadow-sm overflow-hidden">
               <button
                 onClick={() => setOpen(open === lesson.id ? null : lesson.id)}
-                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-[#17112C] transition-colors"
               >
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    lesson.level === 'beginner' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                    lesson.level === 'beginner' ? 'bg-[rgba(95,167,119,0.22)] text-[#9BD49B]' : 'bg-[rgba(224,176,74,0.2)] text-[#F2C27A]'
                   }`}>
                     {lesson.level}
                   </span>
-                  <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500">
+                  <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-[#2D2040] text-[#B9A9CC]">
                     {lesson.category}
                   </span>
-                  <h3 className="font-semibold text-gray-800">{lesson.title}</h3>
-                  {gelezen.items.has(lesson.id) && <CheckCircle2 className="w-4 h-4 text-green-600" aria-label="Gelezen" />}
+                  <h3 className="font-semibold text-[#FFF3DF]">{lesson.title}</h3>
+                  {gelezen.items.has(lesson.id) && <CheckCircle2 className="w-4 h-4 text-[#9BD49B]" aria-label="Gelezen" />}
                 </div>
                 {open === lesson.id
-                  ? <ChevronUp className="w-5 h-5 text-gray-400 shrink-0 ml-2" />
-                  : <ChevronDown className="w-5 h-5 text-gray-400 shrink-0 ml-2" />}
+                  ? <ChevronUp className="w-5 h-5 text-[#9A8CB3] shrink-0 ml-2" />
+                  : <ChevronDown className="w-5 h-5 text-[#9A8CB3] shrink-0 ml-2" />}
               </button>
               {open === lesson.id && (
-                <div className="px-6 pb-6 border-t border-gray-100">
+                <div className="px-6 pb-6 border-t border-[rgba(194,146,189,0.25)]">
                   <div className="pt-4">{lesson.content}</div>
-                  <div className="mt-5 pt-4 border-t border-gray-100 flex justify-end">
+                  <div className="mt-5 pt-4 border-t border-[rgba(194,146,189,0.25)] flex justify-end">
                     {gelezen.items.has(lesson.id) ? (
-                      <span className="flex items-center gap-1 text-sm text-green-700"><CheckCircle2 className="w-4 h-4" /> Gelezen</span>
+                      <span className="flex items-center gap-1 text-sm text-[#9BD49B]"><CheckCircle2 className="w-4 h-4" /> Gelezen</span>
                     ) : (
                       <button
                         onClick={() => gelezen.zet(lesson.id, { voltooid: true, titel: lesson.title, datum: new Date().toISOString() })}
-                        className="bg-purple-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                        className="bg-[#F1CB78] text-[#1C0D06] text-sm px-4 py-2 rounded-lg hover:bg-[#FFC653] transition-colors"
                       >
                         ✓ Markeer als gelezen
                       </button>
@@ -730,7 +730,7 @@ export const LessenPage: React.FC = () => {
             </div>
           ))}
           {filtered.length === 0 && (
-            <p className="text-center text-gray-400 py-12">Geen lessen gevonden voor deze selectie.</p>
+            <p className="text-center text-[#9A8CB3] py-12">Geen lessen gevonden voor deze selectie.</p>
           )}
         </div>
       </div>

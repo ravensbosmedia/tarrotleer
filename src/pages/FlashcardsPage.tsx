@@ -62,11 +62,11 @@ export const FlashcardsPage: React.FC = () => {
   const done = index > 0 && index % filteredDeck.length === 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-purple-700 text-white py-8">
+    <div className="min-h-screen bg-[#17112C]">
+      <div className="bg-[#FFC653] text-[#1C0D06] py-8">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold mb-1">Flashcards</h1>
-          <p className="text-purple-200">Leer de kaarten kennen door ze te oefenen</p>
+          <p className="text-[#E0D5E9]">Leer de kaarten kennen door ze te oefenen</p>
         </div>
       </div>
 
@@ -76,51 +76,51 @@ export const FlashcardsPage: React.FC = () => {
           <select
             value={suit}
             onChange={e => { setSuit(e.target.value); reset(); }}
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
           >
             {SUITS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
-          <button onClick={reset} className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800">
+          <button onClick={reset} className="flex items-center gap-1 text-sm text-[#F1CB78] hover:text-[#F1CB78]">
             <Shuffle className="w-4 h-4" /> Opnieuw schudden
           </button>
-          <Link to="/voortgang" className="text-sm text-purple-600 hover:underline">Mijn voortgang</Link>
+          <Link to="/voortgang" className="text-sm text-[#F1CB78] hover:underline">Mijn voortgang</Link>
           <div className="ml-auto flex gap-4 text-sm">
-            <span className="text-green-600 font-medium">✓ {known}</span>
-            <span className="text-orange-500 font-medium">↺ {practice}</span>
+            <span className="text-[#9BD49B] font-medium">✓ {known}</span>
+            <span className="text-[#F2C27A] font-medium">↺ {practice}</span>
           </div>
         </div>
 
         {/* Voortgangsbalk */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-[#3A2A52] rounded-full h-2 mb-6">
           <div
-            className="bg-purple-500 h-2 rounded-full transition-all"
+            className="bg-[#F1CB78] h-2 rounded-full transition-all"
             style={{ width: `${(progress / filteredDeck.length) * 100}%` }}
           />
         </div>
-        <p className="text-sm text-gray-500 mb-6 text-center">{progress} / {filteredDeck.length}</p>
+        <p className="text-sm text-[#B9A9CC] mb-6 text-center">{progress} / {filteredDeck.length}</p>
 
         {done ? (
-          <div className="text-center bg-white rounded-2xl shadow-lg p-10">
+          <div className="text-center bg-[#20162F] rounded-2xl shadow-lg p-10">
             <p className="text-4xl mb-4">🎉</p>
-            <h2 className="text-2xl font-bold text-purple-700 mb-2">Deck voltooid!</h2>
-            <p className="text-gray-600 mb-6">Gekend: {known} · Nog oefenen: {practice}</p>
-            <button onClick={reset} className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+            <h2 className="text-2xl font-bold text-[#F1CB78] mb-2">Deck voltooid!</h2>
+            <p className="text-[#CFC2DC] mb-6">Gekend: {known} · Nog oefenen: {practice}</p>
+            <button onClick={reset} className="bg-[#F1CB78] text-[#1C0D06] px-6 py-2 rounded-lg hover:bg-[#FFC653]">
               Opnieuw beginnen
             </button>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="bg-[#20162F] rounded-2xl shadow-lg overflow-hidden">
             {/* Kaart */}
             <div
               className="cursor-pointer select-none"
               onClick={() => setFlipped(!flipped)}
             >
-              <div className="flex justify-center p-8 bg-gradient-to-br from-purple-50 to-indigo-50">
+              <div className="flex justify-center p-8 bg-gradient-to-br from-[#20162F] to-[#2D2040]">
                 <div className={`w-48 rounded-xl shadow-xl overflow-hidden transition-transform duration-300 ${cardReversed ? 'rotate-180' : ''}`}>
                   {flipped ? (
                     <img src={card.imageUrl} alt={card.nameNL} className="w-full h-auto" />
                   ) : (
-                    <div className="w-full aspect-[2/3] bg-gradient-to-br from-purple-600 to-purple-900 flex items-center justify-center">
+                    <div className="w-full aspect-[2/3] bg-gradient-to-br from-[#2D2040] to-[#0D0C22] flex items-center justify-center">
                       <span className="text-white/30 text-6xl">✦</span>
                     </div>
                   )}
@@ -130,19 +130,19 @@ export const FlashcardsPage: React.FC = () => {
               {/* Info (zichtbaar na flip) */}
               <div className={`px-8 pb-4 transition-opacity ${flipped ? 'opacity-100' : 'opacity-0 select-none'}`}>
                 <div className="flex items-center gap-2 mb-2">
-                  <h2 className="text-2xl font-bold text-purple-800">{card.nameNL}</h2>
+                  <h2 className="text-2xl font-bold text-[#F1CB78]">{card.nameNL}</h2>
                   {cardReversed && (
-                    <span className="text-xs px-2 py-0.5 bg-purple-100 text-purple-600 rounded-full">Omgekeerd</span>
+                    <span className="text-xs px-2 py-0.5 bg-[#3A2A52] text-[#F1CB78] rounded-full">Omgekeerd</span>
                   )}
                 </div>
-                <p className="text-gray-500 text-sm mb-3">{card.name}</p>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-[#B9A9CC] text-sm mb-3">{card.name}</p>
+                <p className="text-[#E0D5E9] leading-relaxed">
                   {cardReversed ? card.meaningReversed : card.meaningUpright}
                 </p>
               </div>
 
               {!flipped && (
-                <div className="px-8 pb-6 text-center text-gray-400 text-sm">
+                <div className="px-8 pb-6 text-center text-[#9A8CB3] text-sm">
                   Klik op de kaart om te onthullen
                 </div>
               )}
@@ -153,14 +153,14 @@ export const FlashcardsPage: React.FC = () => {
               <div className="flex border-t">
                 <button
                   onClick={() => nextCard(false)}
-                  className="flex-1 flex items-center justify-center gap-2 py-4 text-orange-500 hover:bg-orange-50 transition-colors font-medium"
+                  className="flex-1 flex items-center justify-center gap-2 py-4 text-[#F2C27A] hover:bg-[rgba(224,176,74,0.12)] transition-colors font-medium"
                 >
                   <ThumbsDown className="w-5 h-5" /> Nog oefenen
                 </button>
-                <div className="w-px bg-gray-200" />
+                <div className="w-px bg-[#3A2A52]" />
                 <button
                   onClick={() => nextCard(true)}
-                  className="flex-1 flex items-center justify-center gap-2 py-4 text-green-600 hover:bg-green-50 transition-colors font-medium"
+                  className="flex-1 flex items-center justify-center gap-2 py-4 text-[#9BD49B] hover:bg-[rgba(95,167,119,0.15)] transition-colors font-medium"
                 >
                   <ThumbsUp className="w-5 h-5" /> Ik kende dit!
                 </button>

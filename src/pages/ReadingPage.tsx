@@ -239,26 +239,26 @@ const ReadingPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-2xl text-purple-600">Laden...</div>
+      <div className="min-h-screen bg-[#2D2040] flex items-center justify-center">
+        <div className="text-2xl text-[#F1CB78]">Laden...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-purple-600 text-white py-6 shadow-lg">
+    <div className="min-h-screen bg-[#2D2040]">
+      <header className="bg-[#F1CB78] text-[#1C0D06] py-6 shadow-lg">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-4 mb-4">
             <button
               onClick={() => navigate('/')}
-              className="text-white hover:text-purple-200 transition-colors"
+              className="text-white hover:text-[#E0D5E9] transition-colors"
             >
               <ArrowLeft className="w-6 h-6" />
             </button>
             <h1 className="text-3xl font-bold">{currentReading.title}</h1>
           </div>
-          <p className="text-purple-100">{currentReading.description}</p>
+          <p className="text-[#E0D5E9]">{currentReading.description}</p>
         </div>
       </header>
 
@@ -266,19 +266,19 @@ const ReadingPage: React.FC = () => {
         <div className="mb-6 flex items-center gap-2">
           <button
             onClick={() => setShowPositionInfo(!showPositionInfo)}
-            className="flex items-center gap-2 text-purple-600 hover:text-purple-700"
+            className="flex items-center gap-2 text-[#F1CB78] hover:text-[#F1CB78]"
           >
             <Info className="w-5 h-5" />
             <span>{showPositionInfo ? 'Verberg positie info' : 'Toon positie info'}</span>
           </button>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="bg-[#20162F] rounded-lg shadow-md p-8">
           {!showInterpretation && (
             <>
               {(type === 'three' || type === 'celtic') && (
                 <div className="mb-8">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-[#E0D5E9] mb-2">
                     Je vraag of intentie (optioneel):
                   </label>
                   <input
@@ -286,7 +286,7 @@ const ReadingPage: React.FC = () => {
                     value={vraagstelling}
                     onChange={(e) => setVraagstelling(e.target.value)}
                     placeholder="Bijvoorbeeld: Wat moet ik weten over mijn huidige situatie?"
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
                   />
                 </div>
               )}
@@ -295,14 +295,14 @@ const ReadingPage: React.FC = () => {
                 <button
                   onClick={shuffleCards}
                   disabled={isShuffling}
-                  className={`bg-purple-600 text-white py-3 px-6 rounded-lg flex items-center gap-2 mx-auto hover:bg-purple-700 transition-colors ${
+                  className={`bg-[#F1CB78] text-[#1C0D06] py-3 px-6 rounded-lg flex items-center gap-2 mx-auto hover:bg-[#FFC653] transition-colors ${
                     isShuffling ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
                   <Shuffle className={`w-5 h-5 ${isShuffling ? 'animate-spin' : ''}`} />
                   {isShuffling ? 'Kaarten worden geschud...' : 'Schud de kaarten automatisch'}
                 </button>
-                <p className="text-gray-600 mt-2">of kies zelf je kaarten:</p>
+                <p className="text-[#CFC2DC] mt-2">of kies zelf je kaarten:</p>
               </div>
 
               <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
@@ -329,7 +329,7 @@ const ReadingPage: React.FC = () => {
                 <div className="mt-8 text-center">
                   <button
                     onClick={handleConfirmSelection}
-                    className="bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition-colors"
+                    className="bg-[#F1CB78] text-[#1C0D06] py-3 px-6 rounded-lg hover:bg-[#FFC653] transition-colors"
                   >
                     Bevestig Keuze en Toon Interpretatie
                   </button>
@@ -344,14 +344,14 @@ const ReadingPage: React.FC = () => {
                 <div className="flex justify-end gap-4 mb-6">
                   <button
                     onClick={handlePrint}
-                    className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors print:hidden"
+                    className="flex items-center gap-2 bg-[#F1CB78] text-[#1C0D06] px-4 py-2 rounded-lg hover:bg-[#FFC653] transition-colors print:hidden"
                   >
                     <Printer className="w-5 h-5" />
                     <span>Print Legging</span>
                   </button>
                   <button
                     onClick={handleSavePDF}
-                    className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors print:hidden"
+                    className="flex items-center gap-2 bg-[#F1CB78] text-[#1C0D06] px-4 py-2 rounded-lg hover:bg-[#FFC653] transition-colors print:hidden"
                   >
                     <Download className="w-5 h-5" />
                     <span>Opslaan als PDF</span>
@@ -399,11 +399,11 @@ const ReadingPage: React.FC = () => {
                             {showPositionInfo && (
                               <div className="mt-4">
                                 <div className="flex items-center justify-center gap-2 mb-2">
-                                  {Icon && <Icon className="w-5 h-5 text-purple-600" />}
-                                  <p className="font-medium text-gray-700">{position}</p>
+                                  {Icon && <Icon className="w-5 h-5 text-[#F1CB78]" />}
+                                  <p className="font-medium text-[#E0D5E9]">{position}</p>
                                 </div>
                                 {currentReading.positionDescriptions && (
-                                  <p className="text-sm text-gray-500 mt-1 max-w-[200px] mx-auto">
+                                  <p className="text-sm text-[#B9A9CC] mt-1 max-w-[200px] mx-auto">
                                     {currentReading.positionDescriptions[index]}
                                   </p>
                                 )}
@@ -432,19 +432,19 @@ const ReadingPage: React.FC = () => {
 
               <div className="mt-6 flex justify-center items-center gap-3 flex-wrap">
                 {bewaard === 'ja' ? (
-                  <span className="text-green-700 text-sm">✓ Bewaard — terug te vinden bij <Link to="/voortgang#leggingen" className="underline">Mijn voortgang</Link></span>
+                  <span className="text-[#9BD49B] text-sm">✓ Bewaard — terug te vinden bij <Link to="/voortgang#leggingen" className="underline">Mijn voortgang</Link></span>
                 ) : (
                   <button
                     onClick={bewaar}
                     disabled={bewaard === 'bezig'}
-                    className="border border-purple-600 text-purple-700 py-2 px-4 rounded hover:bg-purple-50 transition-colors disabled:opacity-50"
+                    className="border border-[#EFB4FF] text-[#F1CB78] py-2 px-4 rounded hover:bg-[#2D2040] transition-colors disabled:opacity-50"
                   >
                     {bewaard === 'bezig' ? 'Bewaren…' : bewaard === 'fout' ? 'Opnieuw proberen' : '💾 Bewaar legging'}
                   </button>
                 )}
                 <button
                   onClick={resetReading}
-                  className="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition-colors"
+                  className="bg-[#F1CB78] text-[#1C0D06] py-2 px-4 rounded hover:bg-[#FFC653] transition-colors"
                 >
                   Nieuwe Legging
                 </button>
@@ -459,21 +459,21 @@ const ReadingPage: React.FC = () => {
             onClick={() => setSelectedCardDetails(null)}
           >
             <div
-              className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-[#20162F] rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-gray-100">
-                <h3 className="text-xl font-bold text-purple-800">
+              <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-[rgba(194,146,189,0.25)]">
+                <h3 className="text-xl font-bold text-[#F1CB78]">
                   {selectedCardDetails.card.nameNL}
                   {selectedCardDetails.position && (
-                    <span className="ml-2 text-sm font-normal text-gray-400">
+                    <span className="ml-2 text-sm font-normal text-[#9A8CB3]">
                       — {selectedCardDetails.position}
                     </span>
                   )}
                 </h3>
                 <button
                   onClick={() => setSelectedCardDetails(null)}
-                  className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+                  className="text-[#9A8CB3] hover:text-[#CFC2DC] text-2xl leading-none"
                 >
                   ×
                 </button>

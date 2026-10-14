@@ -8,18 +8,18 @@ const STORAGE_VIDEO_PREFIX = 'pendel_video_';
 
 // ─── Kleurstijlen ──────────────────────────────────────────────────────────
 const G = {
-  goud: '#B8860B',
-  goudLicht: '#D4A84B',
-  goudBleek: '#F5EDD8',
-  goudDonker: '#7A5C00',
-  bg: '#FDFAF4',
-  bg2: '#F5F0E8',
-  bg3: '#EDE6D6',
-  tekst: '#2C2416',
-  tekst2: '#6B5C3E',
-  tekst3: '#9C8A6A',
-  rand: 'rgba(184,134,11,0.20)',
-  rand2: 'rgba(184,134,11,0.35)',
+  goud: '#F1CB78',
+  goudLicht: '#FFC653',
+  goudBleek: '#2D2040',
+  goudDonker: '#E0B04A',
+  bg: '#0D0C22',
+  bg2: '#20162F',
+  bg3: '#2D2040',
+  tekst: '#FFF3DF',
+  tekst2: '#E0D5E9',
+  tekst3: '#B9A9CC',
+  rand: 'rgba(239,180,255,0.22)',
+  rand2: 'rgba(239,180,255,0.38)',
 };
 
 const catLabels: Record<PendelCategorie, string> = {
@@ -80,24 +80,24 @@ const LesInhoud: React.FC<{ inhoud: PendelLesInhoud[] }> = ({ inhoud }) => (
         case 'tip':
           return (
             <div key={idx} style={{
-              background: '#F0FDF4',
-              border: '0.5px solid #86EFAC',
+              background: 'rgba(95,167,119,0.15)',
+              border: '0.5px solid rgba(155,212,155,0.5)',
               borderRadius: 6,
               padding: '0.9rem 1.1rem',
               marginBottom: '0.9rem',
               display: 'flex',
               gap: '0.6rem',
             }}>
-              <span style={{ color: '#16A34A', fontWeight: 600, flexShrink: 0 }}>💡 Tip:</span>
-              <p style={{ margin: 0, color: '#15803D' }}>{item.tekst}</p>
+              <span style={{ color: '#7BC98F', fontWeight: 600, flexShrink: 0 }}>💡 Tip:</span>
+              <p style={{ margin: 0, color: '#9BD49B' }}>{item.tekst}</p>
             </div>
           );
 
         case 'waarschuwing':
           return (
             <div key={idx} style={{
-              background: '#FFF7ED',
-              border: '0.5px solid #FDBA74',
+              background: 'rgba(224,176,74,0.12)',
+              border: '0.5px solid rgba(224,176,74,0.5)',
               borderRadius: 6,
               padding: '0.9rem 1.1rem',
               marginBottom: '0.9rem',
@@ -105,7 +105,7 @@ const LesInhoud: React.FC<{ inhoud: PendelLesInhoud[] }> = ({ inhoud }) => (
               gap: '0.6rem',
             }}>
               <span style={{ color: '#EA580C', fontWeight: 600, flexShrink: 0 }}>⚠️ Let op:</span>
-              <p style={{ margin: 0, color: '#C2410C' }}>{item.tekst}</p>
+              <p style={{ margin: 0, color: '#F2B27A' }}>{item.tekst}</p>
             </div>
           );
 
@@ -245,7 +245,7 @@ export const LessenPage: React.FC = () => {
         </div>
         <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '0.6rem' }}>
           {les.heeftAnimatie && (
-            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: '#F3E5F5', color: '#6A1B9A', border: '0.5px solid rgba(106,27,154,0.2)' }}>
+            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: 'rgba(239,180,255,0.12)', color: '#6A1B9A', border: '0.5px solid rgba(106,27,154,0.2)' }}>
               Animatie
             </span>
           )}
@@ -267,7 +267,7 @@ export const LessenPage: React.FC = () => {
         onClick={e => { if (e.target === e.currentTarget) setOpenLes(null); }}
         style={{
           position: 'fixed', inset: 0, zIndex: 200,
-          background: 'rgba(44,36,22,0.72)',
+          background: 'rgba(8,4,21,0.8)',
           backdropFilter: 'blur(4px)',
           display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
           overflowY: 'auto', padding: '2rem 1rem',
@@ -327,7 +327,7 @@ export const LessenPage: React.FC = () => {
               {openLes.niveau === 'beginner' ? 'Beginnersniveau' : 'Gevorderd niveau'}
             </span>
             {voltooid ? (
-              <span style={{ fontSize: 13, color: '#16A34A', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontSize: 13, color: '#7BC98F', display: 'flex', alignItems: 'center', gap: 6 }}>
                 ✓ Les voltooid
               </span>
             ) : (
@@ -337,7 +337,7 @@ export const LessenPage: React.FC = () => {
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: 13, letterSpacing: '0.06em',
                   padding: '10px 22px',
-                  background: G.goud, color: '#fff',
+                  background: G.goud, color: '#1C0D06',
                   border: 'none', borderRadius: 4,
                   cursor: 'pointer', transition: 'background 0.2s',
                 }}
@@ -402,7 +402,7 @@ export const LessenPage: React.FC = () => {
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
               <a href="#lessen" style={{
                 fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: '0.08em',
-                padding: '10px 24px', background: G.goud, color: '#fff',
+                padding: '10px 24px', background: G.goud, color: '#1C0D06',
                 border: 'none', borderRadius: 4, cursor: 'pointer', textDecoration: 'none',
               }}>
                 Begin met lessen
@@ -526,10 +526,10 @@ const VideoKaart: React.FC<{
 
   return (
     <div style={{
-      border: `0.5px solid rgba(184,134,11,0.35)`,
+      border: `0.5px solid rgba(239,180,255,0.38)`,
       borderRadius: 8,
       overflow: 'hidden',
-      background: '#FDFAF4',
+      background: '#0D0C22',
       transition: 'transform 0.2s, box-shadow 0.2s',
     }}>
       {/* Thumbnail / embed */}
@@ -543,7 +543,7 @@ const VideoKaart: React.FC<{
         >
           <svg width="100%" height="100%" viewBox="0 0 320 180" style={{ position: 'absolute', inset: 0 }}>
             <rect width={320} height={180} fill="#1a1a2e" />
-            <circle cx={160} cy={90} r={60} fill="rgba(184,134,11,0.12)" />
+            <circle cx={160} cy={90} r={60} fill="rgba(241,203,120,0.12)" />
             <polygon points="145,70 145,110 185,90" fill="rgba(255,255,255,0.08)" />
             <text x={160} y={148} textAnchor="middle" fontFamily="'Cormorant Garamond', serif" fontSize={11} fill="rgba(255,255,255,0.35)" letterSpacing={2}>
               PENDELEN
@@ -551,7 +551,7 @@ const VideoKaart: React.FC<{
           </svg>
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{
-              width: 52, height: 52, background: 'rgba(184,134,11,0.88)',
+              width: 52, height: 52, background: 'rgba(241,203,120,0.88)',
               borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               <svg width={20} height={20} viewBox="0 0 20 20"><polygon points="6,4 16,10 6,16" fill="white" /></svg>
@@ -571,15 +571,15 @@ const VideoKaart: React.FC<{
       )}
       <div style={{ padding: '1rem 1.2rem' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: '0.3rem' }}>
-          <span style={{ fontSize: 15, color: '#2C2416', lineHeight: 1.4 }}>{video.titel}</span>
+          <span style={{ fontSize: 15, color: '#FFF3DF', lineHeight: 1.4 }}>{video.titel}</span>
           {bekeken && (
-            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: '#E8F5E9', color: '#2E7D32', flexShrink: 0, border: '0.5px solid #A5D6A7' }}>
+            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: 'rgba(95,167,119,0.15)', color: '#2E7D32', flexShrink: 0, border: '0.5px solid #A5D6A7' }}>
               Bekeken
             </span>
           )}
         </div>
-        <p style={{ fontSize: 13, color: '#9C8A6A', fontStyle: 'italic', lineHeight: 1.5, marginBottom: '0.6rem' }}>{video.beschrijving}</p>
-        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: '#F5EDD8', color: '#7A5C00', border: '0.5px solid rgba(184,134,11,0.35)' }}>
+        <p style={{ fontSize: 13, color: '#B9A9CC', fontStyle: 'italic', lineHeight: 1.5, marginBottom: '0.6rem' }}>{video.beschrijving}</p>
+        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: '#2D2040', color: '#E0B04A', border: '0.5px solid rgba(239,180,255,0.38)' }}>
           {video.geschiktVoor}
         </span>
       </div>

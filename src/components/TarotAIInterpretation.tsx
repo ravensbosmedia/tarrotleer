@@ -82,8 +82,8 @@ export const TarotAIInterpretation: React.FC<Props> = ({
 
   if (error || aiError) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-6">
-        <div className="flex items-center gap-2 text-red-600">
+      <div className="bg-[rgba(200,96,79,0.15)] border border-[rgba(240,165,150,0.5)] rounded-lg p-4 mt-6">
+        <div className="flex items-center gap-2 text-[#F0A596]">
           <AlertCircle className="w-5 h-5" />
           <p>{error || aiError}</p>
         </div>
@@ -93,10 +93,10 @@ export const TarotAIInterpretation: React.FC<Props> = ({
 
   if (loading || isLoading) {
     return (
-      <div className="bg-purple-50 rounded-lg p-6 mt-6">
+      <div className="bg-[#2D2040] rounded-lg p-6 mt-6">
         <div className="flex items-center justify-center gap-3">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
-          <p className="text-purple-600">Je persoonlijke interpretatie wordt voorbereid...</p>
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#EFB4FF]"></div>
+          <p className="text-[#F1CB78]">Je persoonlijke interpretatie wordt voorbereid...</p>
         </div>
       </div>
     );
@@ -105,17 +105,17 @@ export const TarotAIInterpretation: React.FC<Props> = ({
   if (!interpretation.length) return null;
 
   return (
-    <div className="bg-purple-50 rounded-lg p-6 mt-6">
+    <div className="bg-[#2D2040] rounded-lg p-6 mt-6">
       <div className="flex items-center gap-2 mb-4">
-        {isPaidReading && <Lock className="w-5 h-5 text-purple-600" />}
-        <Sparkles className="w-6 h-6 text-purple-600" />
-        <h3 className="text-xl font-semibold text-purple-700">
+        {isPaidReading && <Lock className="w-5 h-5 text-[#F1CB78]" />}
+        <Sparkles className="w-6 h-6 text-[#F1CB78]" />
+        <h3 className="text-xl font-semibold text-[#F1CB78]">
           {isPaidReading ? 'Premium Tarot Interpretatie' : 'Jouw Persoonlijke Tarot Interpretatie'}
         </h3>
       </div>
       <div className="prose prose-purple max-w-none">
         {interpretation.map((part, index) => (
-          <div key={index} className="whitespace-pre-line text-gray-700 mb-6">
+          <div key={index} className="whitespace-pre-line text-[#E0D5E9] mb-6">
             {index > 0 && <hr className="my-6" />}
             {part}
           </div>

@@ -49,7 +49,7 @@ function createEngine(canvas: HTMLCanvasElement, startMode: PendelMode): Engine 
       ctx.rotate(ang + (i % 2 === 0 ? 0 : Math.PI / 2));
       ctx.beginPath();
       ctx.ellipse(0, 0, 2.4, 1.2, 0, 0, Math.PI * 2);
-      ctx.fillStyle = i % 2 === 0 ? '#D4A84B' : '#B87A0B';
+      ctx.fillStyle = i % 2 === 0 ? '#FFC653' : '#B87A0B';
       ctx.fill();
       ctx.strokeStyle = '#8B6914';
       ctx.lineWidth = 0.3;
@@ -72,13 +72,13 @@ function createEngine(canvas: HTMLCanvasElement, startMode: PendelMode): Engine 
     const g = ctx.createRadialGradient(px - 5, py - 5, 1, px, py, 16);
     g.addColorStop(0, '#F8F090');
     g.addColorStop(0.25, '#E0C040');
-    g.addColorStop(0.6, '#B8860B');
+    g.addColorStop(0.6, '#F1CB78');
     g.addColorStop(1, '#4A3000');
     ctx.beginPath();
     ctx.arc(px, py, 16, 0, Math.PI * 2);
     ctx.fillStyle = g;
     ctx.fill();
-    ctx.strokeStyle = '#7A5C00';
+    ctx.strokeStyle = '#E0B04A';
     ctx.lineWidth = 1;
     ctx.stroke();
 
@@ -100,7 +100,7 @@ function createEngine(canvas: HTMLCanvasElement, startMode: PendelMode): Engine 
   }
 
   function drawFingers() {
-    const skin = '#E8C9A0', skinD = '#C9A080', nail = '#F5E8C0';
+    const skin = '#E8C9A0', skinD = '#D9B48A', nail = '#F5E8C0';
 
     // Wijsvinger links
     ctx.save(); ctx.translate(cx - 11, cy);
@@ -122,10 +122,10 @@ function createEngine(canvas: HTMLCanvasElement, startMode: PendelMode): Engine 
 
     // Gouden ring — ketting hangt hier aan
     ctx.beginPath(); ctx.arc(cx, cy, 6, 0, Math.PI * 2);
-    ctx.fillStyle = '#D4A84B'; ctx.fill();
+    ctx.fillStyle = '#FFC653'; ctx.fill();
     ctx.strokeStyle = '#8B6914'; ctx.lineWidth = 1.2; ctx.stroke();
     ctx.beginPath(); ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
-    ctx.fillStyle = '#7A5C00'; ctx.fill();
+    ctx.fillStyle = '#E0B04A'; ctx.fill();
   }
 
   function drawTrail(time: number) {
@@ -133,7 +133,7 @@ function createEngine(canvas: HTMLCanvasElement, startMode: PendelMode): Engine 
     for (let i = 0; i < 40; i++) {
       const p = getPos(time - (40 - i) * 0.018);
       ctx.beginPath(); ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(184,134,11,${(i / 40) * 0.13})`;
+      ctx.fillStyle = `rgba(241,203,120,${(i / 40) * 0.13})`;
       ctx.fill();
     }
   }
@@ -142,7 +142,7 @@ function createEngine(canvas: HTMLCanvasElement, startMode: PendelMode): Engine 
     if (mode === 'still') return;
     ctx.save();
     ctx.globalAlpha = 0.13;
-    ctx.strokeStyle = '#B8860B';
+    ctx.strokeStyle = '#F1CB78';
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 6]);
     if (mode === 'right' || mode === 'left') {
@@ -170,7 +170,7 @@ function createEngine(canvas: HTMLCanvasElement, startMode: PendelMode): Engine 
     const ex = px + Math.cos(ang) * len, ey = py + Math.sin(ang) * len;
     ctx.save();
     ctx.globalAlpha = 0.55;
-    ctx.strokeStyle = '#B8860B';
+    ctx.strokeStyle = '#F1CB78';
     ctx.lineWidth = 2.2;
     ctx.lineCap = 'round';
     ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(ex, ey); ctx.stroke();
@@ -215,11 +215,11 @@ const LABELS: Record<PendelMode, string> = {
 };
 
 const G = {
-  goud:     '#B8860B',
-  goudBleek:'#F5EDD8',
-  goudDonker:'#7A5C00',
-  rand2:    'rgba(184,134,11,0.35)',
-  tekst3:   '#9C8A6A',
+  goud:     '#F1CB78',
+  goudBleek:'#2D2040',
+  goudDonker:'#E0B04A',
+  rand2:    'rgba(239,180,255,0.38)',
+  tekst3:   '#B9A9CC',
 };
 
 export const PendelAnimatie: React.FC<PendelAnimatieProps> = ({

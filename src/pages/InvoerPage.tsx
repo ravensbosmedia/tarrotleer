@@ -204,7 +204,7 @@ const Synthese: React.FC<SyntheseProps> = ({ spread, kaarten }) => {
   const verhaalRegels = spreadVerhaal(spread.id, kaarten);
 
   return (
-    <div className="bg-gradient-to-br from-purple-900 to-indigo-900 text-white rounded-2xl p-6 space-y-5">
+    <div className="bg-gradient-to-br from-[#0D0C22] to-[#20162F] text-white rounded-2xl p-6 space-y-5">
       <h4 className="text-lg font-bold flex items-center gap-2">
         <span className="text-yellow-300">✦</span>
         De kaarten samen — het verhaal van deze legging
@@ -214,7 +214,7 @@ const Synthese: React.FC<SyntheseProps> = ({ spread, kaarten }) => {
       <div className="grid sm:grid-cols-3 gap-3">
         <div className="bg-white/10 rounded-xl p-3 text-center">
           <p className="text-2xl font-bold text-yellow-300">{aantalMajor}</p>
-          <p className="text-xs text-purple-200 mt-0.5">Grote Arcana</p>
+          <p className="text-xs text-[#E0D5E9] mt-0.5">Grote Arcana</p>
           <p className="text-xs text-white/60 mt-1">
             {aantalMajor === 0
               ? 'Dagelijks, praktisch vraagstuk'
@@ -225,7 +225,7 @@ const Synthese: React.FC<SyntheseProps> = ({ spread, kaarten }) => {
         </div>
         <div className="bg-white/10 rounded-xl p-3 text-center">
           <p className="text-2xl font-bold text-orange-300">{aantalOmgekeerd}</p>
-          <p className="text-xs text-purple-200 mt-0.5">Omgekeerd</p>
+          <p className="text-xs text-[#E0D5E9] mt-0.5">Omgekeerd</p>
           <p className="text-xs text-white/60 mt-1">
             {aantalOmgekeerd === 0
               ? 'Energie stroomt vrij'
@@ -236,7 +236,7 @@ const Synthese: React.FC<SyntheseProps> = ({ spread, kaarten }) => {
         </div>
         <div className="bg-white/10 rounded-xl p-3 text-center">
           <p className="text-sm font-bold text-green-300">{dominant ? SUIT_LABEL[dominant] : 'Gemengd'}</p>
-          <p className="text-xs text-purple-200 mt-0.5">Dominant element</p>
+          <p className="text-xs text-[#E0D5E9] mt-0.5">Dominant element</p>
           <p className="text-xs text-white/60 mt-1">
             {dominant ? `Thema: ${SUIT_THEMA[dominant]}` : 'Meerdere levensgebieden betrokken'}
           </p>
@@ -254,7 +254,7 @@ const Synthese: React.FC<SyntheseProps> = ({ spread, kaarten }) => {
 
       {/* Reflectievraag */}
       <div className="border-t border-white/20 pt-4">
-        <p className="text-xs text-purple-300 font-semibold uppercase tracking-wide mb-1">Reflectievraag</p>
+        <p className="text-xs text-[#E0D5E9] font-semibold uppercase tracking-wide mb-1">Reflectievraag</p>
         <p className="text-sm text-white/80 italic">
           {spread.id === 'dagkaart' && 'Aan het einde van de dag: hoe heeft de energie van deze kaart zich gemanifesteerd — groot of klein?'}
           {spread.id === 'drie' && 'Welk thema verbindt alle drie de kaarten? Zoek het woord dat over alle drie past — dat is de kernboodschap van deze legging.'}
@@ -298,7 +298,7 @@ const KaartKiezer: React.FC<KaartKiezerProps> = ({ positie, positieIndex, spread
 
   if (gekozen) {
     return (
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-[#20162F] rounded-xl shadow-sm overflow-hidden">
         <div className="flex items-start gap-4 p-4">
           {/* Kaartafbeelding */}
           <div className={`w-16 rounded-lg overflow-hidden shadow shrink-0 ${gekozen.omgekeerd ? 'rotate-180' : ''}`}>
@@ -308,26 +308,26 @@ const KaartKiezer: React.FC<KaartKiezerProps> = ({ positie, positieIndex, spread
           {/* Info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <span className="text-xs font-medium text-purple-500">Positie {positieIndex + 1}</span>
-              <span className="text-xs text-gray-400">·</span>
-              <span className="text-xs text-gray-500">{positie}</span>
+              <span className="text-xs font-medium text-[#F1CB78]">Positie {positieIndex + 1}</span>
+              <span className="text-xs text-[#9A8CB3]">·</span>
+              <span className="text-xs text-[#B9A9CC]">{positie}</span>
               {gekozen.omgekeerd && (
-                <span className="text-xs bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded-full">Omgekeerd</span>
+                <span className="text-xs bg-[rgba(224,176,74,0.2)] text-[#F2C27A] px-1.5 py-0.5 rounded-full">Omgekeerd</span>
               )}
             </div>
-            <p className="font-semibold text-gray-800">{gekozen.kaart.nameNL}</p>
-            <p className="text-sm text-gray-500">{gekozen.kaart.name}</p>
-            <p className="text-sm text-gray-700 mt-1 leading-relaxed">
+            <p className="font-semibold text-[#FFF3DF]">{gekozen.kaart.nameNL}</p>
+            <p className="text-sm text-[#B9A9CC]">{gekozen.kaart.name}</p>
+            <p className="text-sm text-[#E0D5E9] mt-1 leading-relaxed">
               {gekozen.omgekeerd ? gekozen.kaart.meaningReversed : gekozen.kaart.meaningUpright}
             </p>
-            <p className="text-xs text-purple-600 mt-2 italic">{uitleg}</p>
+            <p className="text-xs text-[#F1CB78] mt-2 italic">{uitleg}</p>
           </div>
 
           {/* Acties */}
           <div className="flex flex-col gap-1 shrink-0">
             <button
               onClick={onVerwijder}
-              className="text-xs text-gray-400 hover:text-red-500 px-2 py-1 rounded hover:bg-red-50 transition-colors"
+              className="text-xs text-[#9A8CB3] hover:text-red-500 px-2 py-1 rounded hover:bg-[rgba(200,96,79,0.15)] transition-colors"
             >
               Wijzig
             </button>
@@ -338,24 +338,24 @@ const KaartKiezer: React.FC<KaartKiezerProps> = ({ positie, positieIndex, spread
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-[#20162F] rounded-xl shadow-sm overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full px-5 py-4 flex items-center gap-3 hover:bg-gray-50 transition-colors text-left"
+        className="w-full px-5 py-4 flex items-center gap-3 hover:bg-[#17112C] transition-colors text-left"
       >
-        <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 font-bold text-sm flex items-center justify-center shrink-0">
+        <div className="w-8 h-8 rounded-full bg-[#3A2A52] text-[#F1CB78] font-bold text-sm flex items-center justify-center shrink-0">
           {positieIndex + 1}
         </div>
         <div className="flex-1">
-          <p className="font-medium text-gray-700">{positie}</p>
-          <p className="text-xs text-gray-400 mt-0.5">Klik om een kaart te selecteren</p>
+          <p className="font-medium text-[#E0D5E9]">{positie}</p>
+          <p className="text-xs text-[#9A8CB3] mt-0.5">Klik om een kaart te selecteren</p>
         </div>
-        {open ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+        {open ? <ChevronUp className="w-4 h-4 text-[#9A8CB3]" /> : <ChevronDown className="w-4 h-4 text-[#9A8CB3]" />}
       </button>
 
       {open && (
-        <div className="border-t border-gray-100 p-4 space-y-3">
-          <p className="text-xs text-purple-600 italic">{uitleg}</p>
+        <div className="border-t border-[rgba(194,146,189,0.25)] p-4 space-y-3">
+          <p className="text-xs text-[#F1CB78] italic">{uitleg}</p>
 
           {/* Omgekeerd toggle */}
           <div className="flex items-center gap-2">
@@ -363,26 +363,26 @@ const KaartKiezer: React.FC<KaartKiezerProps> = ({ positie, positieIndex, spread
               onClick={() => setOmgekeerd(!omgekeerd)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
                 omgekeerd
-                  ? 'bg-orange-100 border-orange-300 text-orange-700'
-                  : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-gray-300'
+                  ? 'bg-[rgba(224,176,74,0.2)] border-orange-300 text-[#F2C27A]'
+                  : 'bg-[#17112C] border-[rgba(194,146,189,0.3)] text-[#B9A9CC] hover:border-[rgba(194,146,189,0.45)]'
               }`}
             >
               <RotateCcw className="w-3 h-3" />
               {omgekeerd ? 'Omgekeerd' : 'Rechtop'}
             </button>
-            <span className="text-xs text-gray-400">Stond de kaart omgekeerd?</span>
+            <span className="text-xs text-[#9A8CB3]">Stond de kaart omgekeerd?</span>
           </div>
 
           {/* Zoekbalk */}
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-2.5 w-4 h-4 text-[#9A8CB3]" />
             <input
               autoFocus
               type="text"
               placeholder="Zoek op naam (bv. Maan, Kelken, Dood...)"
               value={zoek}
               onChange={e => setZoek(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full pl-9 pr-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#F1CB78]"
             />
           </div>
 
@@ -396,12 +396,12 @@ const KaartKiezer: React.FC<KaartKiezerProps> = ({ positie, positieIndex, spread
                   setOpen(false);
                   setZoek('');
                 }}
-                className="flex items-center gap-2 p-2 rounded-lg border border-gray-100 hover:border-purple-400 hover:bg-purple-50 transition-colors text-left"
+                className="flex items-center gap-2 p-2 rounded-lg border border-[rgba(194,146,189,0.25)] hover:border-[#EFB4FF] hover:bg-[#2D2040] transition-colors text-left"
               >
                 <div className={`w-8 rounded overflow-hidden shrink-0 ${omgekeerd ? 'rotate-180' : ''}`}>
                   <img src={kaart.imageUrl} alt={kaart.nameNL} className="w-full h-auto" />
                 </div>
-                <span className="text-xs text-gray-700 leading-tight">{kaart.nameNL}</span>
+                <span className="text-xs text-[#E0D5E9] leading-tight">{kaart.nameNL}</span>
               </button>
             ))}
           </div>
@@ -444,11 +444,11 @@ export const InvoerPage: React.FC = () => {
   const aantalIngevuld = kaarten.filter(k => k !== null).length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-purple-700 text-white py-8">
+    <div className="min-h-screen bg-[#17112C]">
+      <div className="bg-[#FFC653] text-[#1C0D06] py-8">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold mb-1">Mijn Legging Invoeren</h1>
-          <p className="text-purple-200">Heb je al kaarten getrokken? Voer ze hier in en krijg uitleg per positie.</p>
+          <p className="text-[#E0D5E9]">Heb je al kaarten getrokken? Voer ze hier in en krijg uitleg per positie.</p>
         </div>
       </div>
 
@@ -456,14 +456,14 @@ export const InvoerPage: React.FC = () => {
 
         {/* Stap 1 — Legging kiezen */}
         <div className="mb-6">
-          <h2 className="text-lg font-bold text-gray-800 mb-3">
+          <h2 className="text-lg font-bold text-[#FFF3DF] mb-3">
             {gekozenSpread ? (
               <span className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <CheckCircle2 className="w-5 h-5 text-[#9BD49B]" />
                 Legging: {gekozenSpread.label}
                 <button
                   onClick={() => { setGekozenSpread(null); setKaarten([]); setToonSamenvatting(false); }}
-                  className="text-sm font-normal text-purple-600 hover:underline ml-2"
+                  className="text-sm font-normal text-[#F1CB78] hover:underline ml-2"
                 >
                   Wijzig
                 </button>
@@ -477,10 +477,10 @@ export const InvoerPage: React.FC = () => {
                 <button
                   key={spread.id}
                   onClick={() => kiesSpread(spread)}
-                  className="bg-white rounded-xl shadow-sm p-4 text-left hover:shadow-md hover:border-purple-300 border border-transparent transition-all"
+                  className="bg-[#20162F] rounded-xl shadow-sm p-4 text-left hover:shadow-md hover:border-[#C292BD] border border-transparent transition-all"
                 >
-                  <p className="font-semibold text-purple-800">{spread.label}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{spread.posities.length} kaart{spread.posities.length > 1 ? 'en' : ''} · {spread.beschrijving}</p>
+                  <p className="font-semibold text-[#F1CB78]">{spread.label}</p>
+                  <p className="text-xs text-[#B9A9CC] mt-0.5">{spread.posities.length} kaart{spread.posities.length > 1 ? 'en' : ''} · {spread.beschrijving}</p>
                 </button>
               ))}
             </div>
@@ -491,10 +491,10 @@ export const InvoerPage: React.FC = () => {
         {gekozenSpread && (
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-gray-800">
+              <h2 className="text-lg font-bold text-[#FFF3DF]">
                 Stap 2 — Voer de kaarten in
               </h2>
-              <span className="text-sm text-gray-400">{aantalIngevuld} / {gekozenSpread.posities.length}</span>
+              <span className="text-sm text-[#9A8CB3]">{aantalIngevuld} / {gekozenSpread.posities.length}</span>
             </div>
 
             <div className="space-y-3 mb-6">
@@ -515,7 +515,7 @@ export const InvoerPage: React.FC = () => {
             {allesIngevuld && (
               <button
                 onClick={() => setToonSamenvatting(!toonSamenvatting)}
-                className="w-full bg-purple-600 text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors"
+                className="w-full bg-[#F1CB78] text-[#1C0D06] py-3 rounded-xl font-semibold hover:bg-[#FFC653] transition-colors"
               >
                 {toonSamenvatting ? 'Verberg samenvatting' : 'Bekijk volledige lezing'}
               </button>
@@ -523,10 +523,10 @@ export const InvoerPage: React.FC = () => {
 
             {/* Volledige samenvatting */}
             {toonSamenvatting && allesIngevuld && (
-              <div className="mt-6 bg-white rounded-2xl shadow-lg overflow-hidden">
-                <div className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white px-6 py-4">
+              <div className="mt-6 bg-[#20162F] rounded-2xl shadow-lg overflow-hidden">
+                <div className="bg-gradient-to-r from-[#20162F] to-[#2D2040] text-white px-6 py-4">
                   <h3 className="text-xl font-bold">{gekozenSpread.label}</h3>
-                  <p className="text-purple-200 text-sm mt-0.5">{gekozenSpread.beschrijving}</p>
+                  <p className="text-[#E0D5E9] text-sm mt-0.5">{gekozenSpread.beschrijving}</p>
                 </div>
 
                 <div className="divide-y divide-gray-100">
@@ -539,22 +539,22 @@ export const InvoerPage: React.FC = () => {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 flex-wrap mb-1">
-                            <span className="text-xs font-bold text-purple-500 uppercase tracking-wide">
+                            <span className="text-xs font-bold text-[#F1CB78] uppercase tracking-wide">
                               {gekozenSpread.posities[i]}
                             </span>
                             {item.omgekeerd && (
-                              <span className="text-xs bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded-full">Omgekeerd</span>
+                              <span className="text-xs bg-[rgba(224,176,74,0.2)] text-[#F2C27A] px-1.5 py-0.5 rounded-full">Omgekeerd</span>
                             )}
                           </div>
-                          <p className="font-bold text-gray-800 text-lg">{item.kaart.nameNL}</p>
-                          <p className="text-sm text-gray-400 mb-2">{item.kaart.name}</p>
-                          <p className="text-gray-700 leading-relaxed">
+                          <p className="font-bold text-[#FFF3DF] text-lg">{item.kaart.nameNL}</p>
+                          <p className="text-sm text-[#9A8CB3] mb-2">{item.kaart.name}</p>
+                          <p className="text-[#E0D5E9] leading-relaxed">
                             {item.omgekeerd ? item.kaart.meaningReversed : item.kaart.meaningUpright}
                           </p>
                           {item.kaart.description && (
-                            <p className="text-sm text-gray-500 mt-2 italic">{item.kaart.description}</p>
+                            <p className="text-sm text-[#B9A9CC] mt-2 italic">{item.kaart.description}</p>
                           )}
-                          <p className="text-xs text-purple-600 mt-2 italic border-t border-purple-50 pt-2">
+                          <p className="text-xs text-[#F1CB78] mt-2 italic border-t border-purple-50 pt-2">
                             {POSITIE_UITLEG[gekozenSpread.id]?.[i]}
                           </p>
                         </div>
@@ -571,10 +571,10 @@ export const InvoerPage: React.FC = () => {
                   />
                 </div>
 
-                <div className="px-6 py-4 bg-gray-50 border-t text-center">
+                <div className="px-6 py-4 bg-[#17112C] border-t text-center">
                   <button
                     onClick={() => { setGekozenSpread(null); setKaarten([]); setToonSamenvatting(false); }}
-                    className="text-sm text-purple-600 hover:underline"
+                    className="text-sm text-[#F1CB78] hover:underline"
                   >
                     Nieuwe legging invoeren
                   </button>

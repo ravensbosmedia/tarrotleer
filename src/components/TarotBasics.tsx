@@ -67,22 +67,22 @@ const suitInfo: SuitInfo[] = [
 
 export const TarotBasics: React.FC = () => {
   return (
-    <div className="bg-white rounded-lg shadow-lg p-8">
-      <h2 className="text-3xl font-bold text-purple-800 mb-8">De Basis van Tarot</h2>
+    <div className="bg-[#20162F] rounded-lg shadow-lg p-8">
+      <h2 className="text-3xl font-bold text-[#F1CB78] mb-8">De Basis van Tarot</h2>
       
       <div className="mb-12">
-        <h3 className="text-2xl font-semibold text-purple-700 mb-4">Structuur van het Deck</h3>
+        <h3 className="text-2xl font-semibold text-[#F1CB78] mb-4">Structuur van het Deck</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-purple-50 p-6 rounded-lg">
-            <h4 className="text-xl font-semibold text-purple-600 mb-3">Grote Arcana</h4>
-            <p className="text-gray-700">
+          <div className="bg-[#2D2040] p-6 rounded-lg">
+            <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">Grote Arcana</h4>
+            <p className="text-[#E0D5E9]">
               22 kaarten (0-21) die de grote levenslessen en spirituele reizen vertegenwoordigen.
               Deze kaarten zijn de meest krachtige in het deck en tonen belangrijke archetypen en levensfasen.
             </p>
           </div>
-          <div className="bg-purple-50 p-6 rounded-lg">
-            <h4 className="text-xl font-semibold text-purple-600 mb-3">Kleine Arcana</h4>
-            <p className="text-gray-700">
+          <div className="bg-[#2D2040] p-6 rounded-lg">
+            <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">Kleine Arcana</h4>
+            <p className="text-[#E0D5E9]">
               56 kaarten verdeeld over vier suits, die dagelijkse situaties en ervaringen weerspiegelen.
               Elke suit heeft 10 genummerde kaarten en 4 hofkaarten.
             </p>
@@ -91,22 +91,22 @@ export const TarotBasics: React.FC = () => {
       </div>
 
       <div className="mb-12">
-        <h3 className="text-2xl font-semibold text-purple-700 mb-6">De Vier Suits</h3>
+        <h3 className="text-2xl font-semibold text-[#F1CB78] mb-6">De Vier Suits</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {suitInfo.map((suit) => {
             const Icon = suit.icon;
             return (
-              <div key={suit.name} className="bg-white border border-purple-100 rounded-lg p-6 shadow-sm">
+              <div key={suit.name} className="bg-[#20162F] border border-[rgba(194,146,189,0.3)] rounded-lg p-6 shadow-sm">
                 <div className="flex items-center mb-4">
-                  <Icon className="w-6 h-6 text-purple-600 mr-2" />
-                  <h4 className="text-xl font-semibold text-purple-600">{suit.name}</h4>
+                  <Icon className="w-6 h-6 text-[#F1CB78] mr-2" />
+                  <h4 className="text-xl font-semibold text-[#F1CB78]">{suit.name}</h4>
                 </div>
-                <p className="text-purple-700 font-medium mb-2">Element: {suit.element}</p>
-                <p className="text-purple-700 font-medium mb-4">Seizoen: {suit.seizoen}</p>
-                <ul className="text-gray-600 space-y-2">
+                <p className="text-[#F1CB78] font-medium mb-2">Element: {suit.element}</p>
+                <p className="text-[#F1CB78] font-medium mb-4">Seizoen: {suit.seizoen}</p>
+                <ul className="text-[#CFC2DC] space-y-2">
                   {suit.eigenschappen.map((eigenschap, index) => (
                     <li key={index} className="flex items-center">
-                      <span className="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                      <span className="w-2 h-2 bg-[#B67AC9] rounded-full mr-2"></span>
                       {eigenschap}
                     </li>
                   ))}
@@ -118,7 +118,7 @@ export const TarotBasics: React.FC = () => {
       </div>
 
       <div>
-        <h3 className="text-2xl font-semibold text-purple-700 mb-6">Hofkaarten</h3>
+        <h3 className="text-2xl font-semibold text-[#F1CB78] mb-6">Hofkaarten</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
@@ -138,9 +138,9 @@ export const TarotBasics: React.FC = () => {
               beschrijving: "Representeert meesterschap, autoriteit en voltooiing"
             }
           ].map((kaart) => (
-            <div key={kaart.title} className="bg-purple-50 p-6 rounded-lg">
-              <h4 className="text-xl font-semibold text-purple-600 mb-3">{kaart.title}</h4>
-              <p className="text-gray-700">{kaart.beschrijving}</p>
+            <div key={kaart.title} className="bg-[#2D2040] p-6 rounded-lg">
+              <h4 className="text-xl font-semibold text-[#F1CB78] mb-3">{kaart.title}</h4>
+              <p className="text-[#E0D5E9]">{kaart.beschrijving}</p>
             </div>
           ))}
         </div>

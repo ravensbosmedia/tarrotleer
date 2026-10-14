@@ -5,17 +5,17 @@ import { slaRondeOp, haalVoortgang, QuizAntwoord, QuizResultaat } from '../../li
 const HIGHSCORE_KEY = 'pendel_quiz_highscore';
 
 const G = {
-  goud: '#B8860B',
-  goudBleek: '#F5EDD8',
-  goudDonker: '#7A5C00',
-  bg: '#FDFAF4',
-  bg2: '#F5F0E8',
-  bg3: '#EDE6D6',
-  tekst: '#2C2416',
-  tekst2: '#6B5C3E',
-  tekst3: '#9C8A6A',
-  rand: 'rgba(184,134,11,0.20)',
-  rand2: 'rgba(184,134,11,0.35)',
+  goud: '#F1CB78',
+  goudBleek: '#2D2040',
+  goudDonker: '#E0B04A',
+  bg: '#0D0C22',
+  bg2: '#20162F',
+  bg3: '#2D2040',
+  tekst: '#FFF3DF',
+  tekst2: '#E0D5E9',
+  tekst3: '#B9A9CC',
+  rand: 'rgba(239,180,255,0.22)',
+  rand2: 'rgba(239,180,255,0.38)',
 };
 
 function schudVragen(vragen: QuizVraag[]): QuizVraag[] {
@@ -154,7 +154,7 @@ export const QuizPage: React.FC = () => {
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: 13, letterSpacing: '0.08em',
                   padding: '11px 28px',
-                  background: G.goud, color: '#fff',
+                  background: G.goud, color: '#1C0D06',
                   border: 'none', borderRadius: 4,
                   cursor: 'pointer', transition: 'background 0.2s',
                 }}
@@ -310,7 +310,7 @@ export const QuizPage: React.FC = () => {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 13, letterSpacing: '0.06em',
                 padding: '10px 24px',
-                background: G.goud, color: '#fff',
+                background: G.goud, color: '#1C0D06',
                 border: 'none', borderRadius: 4,
                 cursor: 'pointer', transition: 'background 0.2s',
               }}

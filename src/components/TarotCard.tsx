@@ -25,7 +25,7 @@ export const TarotCard: React.FC<Props> = ({
       className={`relative w-20 h-32 md:w-24 md:h-36 rounded-lg shadow-lg cursor-pointer
         transition-all duration-300 transform
         ${disabled ? 'opacity-25 cursor-not-allowed' : 'hover:scale-105 hover:shadow-xl'}
-        ${selected ? 'ring-4 ring-purple-600 scale-105' : ''}`}
+        ${selected ? 'ring-4 ring-[#F1CB78] scale-105' : ''}`}
       onClick={disabled ? undefined : onClick}
     >
       {/* roterende kaartinhoud */}
@@ -34,8 +34,8 @@ export const TarotCard: React.FC<Props> = ({
           ${isReversed ? 'rotate-180' : ''}`}
       >
         {faceDown ? (
-          <div className="w-full h-full bg-gradient-to-br from-purple-600 to-purple-800 p-0.5">
-            <div className="w-full h-full bg-gradient-to-br from-purple-500 to-purple-700 rounded-lg">
+          <div className="w-full h-full bg-gradient-to-br from-[#2D2040] to-[#17112C] p-0.5">
+            <div className="w-full h-full bg-gradient-to-br from-[#2D2040] to-[#20162F] rounded-lg">
               <div className="w-full h-full flex items-center justify-center bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48cGF0aCBkPSJNMzAgMEwwIDMwbDMwIDMwIDMwLTMwTDMwIDB6TTMwIDUyLjVMMy43NSAzMCAzMCA3LjUgNTYuMjUgMzAgMzAgNTIuNXoiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] bg-repeat">
                 <div className="w-12 h-12 text-white/20">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
@@ -58,7 +58,7 @@ export const TarotCard: React.FC<Props> = ({
 
       {/* selectiebadge staat buiten de rotatie */}
       {selected && selectionNumber !== undefined && (
-        <div className="absolute top-1 right-1 w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold z-10">
+        <div className="absolute top-1 right-1 w-5 h-5 bg-[#F1CB78] rounded-full flex items-center justify-center text-[#1C0D06] text-xs font-bold z-10">
           {selectionNumber}
         </div>
       )}

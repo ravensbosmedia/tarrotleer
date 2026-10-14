@@ -33,7 +33,7 @@ export const ImportButton: React.FC<ImportButtonProps> = ({ onImported }) => {
       <button
         onClick={handleImport}
         disabled={importing}
-        className={`bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition-colors ${
+        className={`bg-[#F1CB78] text-[#1C0D06] py-2 px-4 rounded hover:bg-[#FFC653] transition-colors ${
           importing ? 'opacity-50 cursor-not-allowed' : ''
         }`}
       >
@@ -41,7 +41,7 @@ export const ImportButton: React.FC<ImportButtonProps> = ({ onImported }) => {
       </button>
       {message && (
         <p className={`mt-2 ${
-          message.includes('succesvol') ? 'text-green-600' : 'text-red-600'
+          message.includes('succesvol') ? 'text-[#9BD49B]' : 'text-[#F0A596]'
         }`}>
           {message}
         </p>

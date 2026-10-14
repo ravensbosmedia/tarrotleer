@@ -44,10 +44,10 @@ export const CelticCrossLayout: React.FC<Props> = ({
       return (
         <button
           onClick={onDrawCard}
-          className="w-20 h-32 md:w-24 md:h-36 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors"
+          className="w-20 h-32 md:w-24 md:h-36 bg-[#2D2040] rounded-lg flex items-center justify-center hover:bg-[#3A2A52] transition-colors"
           style={{ transform: `rotate(${rotatie}deg)` }}
         >
-          <Shuffle className="w-8 h-8 text-gray-400" />
+          <Shuffle className="w-8 h-8 text-[#9A8CB3]" />
         </button>
       );
     }
@@ -68,9 +68,9 @@ export const CelticCrossLayout: React.FC<Props> = ({
 
   const label = (index: number) => (
     <div className="mt-2 text-center">
-      <p className="text-xs md:text-sm font-medium text-gray-600">{index + 1}. {positions[index]}</p>
+      <p className="text-xs md:text-sm font-medium text-[#CFC2DC]">{index + 1}. {positions[index]}</p>
       {showPositionDescriptions && positionDescriptions && (
-        <p className="mt-1 text-xs text-gray-500 max-w-[140px] mx-auto">{positionDescriptions[index]}</p>
+        <p className="mt-1 text-xs text-[#B9A9CC] max-w-[140px] mx-auto">{positionDescriptions[index]}</p>
       )}
     </div>
   );
@@ -106,8 +106,8 @@ export const CelticCrossLayout: React.FC<Props> = ({
                     </div>
                   </div>
                   <div className="mt-6 text-center">
-                    <p className="text-xs md:text-sm font-medium text-gray-600">1. {positions[0]}</p>
-                    <p className="text-xs md:text-sm font-medium text-gray-600">2. {positions[1]}</p>
+                    <p className="text-xs md:text-sm font-medium text-[#CFC2DC]">1. {positions[0]}</p>
+                    <p className="text-xs md:text-sm font-medium text-[#CFC2DC]">2. {positions[1]}</p>
                   </div>
                 </div>
               ) : (

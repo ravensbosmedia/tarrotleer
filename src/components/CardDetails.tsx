@@ -35,15 +35,15 @@ export const CardDetails: React.FC<Props> = ({ card, isReversed, position }) => 
           />
         </div>
         <div className="text-center">
-          <p className="font-bold text-purple-800 text-lg">{card.nameNL}</p>
-          <p className="text-gray-400 text-sm">{card.name}</p>
+          <p className="font-bold text-[#F1CB78] text-lg">{card.nameNL}</p>
+          <p className="text-[#9A8CB3] text-sm">{card.name}</p>
           {isReversed && (
-            <span className="inline-block mt-1 px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full">
+            <span className="inline-block mt-1 px-2 py-0.5 bg-[#3A2A52] text-[#F1CB78] text-xs rounded-full">
               Omgekeerd
             </span>
           )}
           {position && (
-            <p className="mt-1 text-sm text-gray-500 italic">{position}</p>
+            <p className="mt-1 text-sm text-[#B9A9CC] italic">{position}</p>
           )}
         </div>
       </div>
@@ -52,27 +52,27 @@ export const CardDetails: React.FC<Props> = ({ card, isReversed, position }) => 
       <div className="flex-1 min-w-0">
 
         <div className="mb-4">
-          <h4 className="text-sm font-semibold text-purple-600 uppercase tracking-wide mb-1">
+          <h4 className="text-sm font-semibold text-[#F1CB78] uppercase tracking-wide mb-1">
             {isReversed ? 'Omgekeerde betekenis' : 'Betekenis'}
           </h4>
-          <p className="text-gray-800 leading-relaxed">
+          <p className="text-[#FFF3DF] leading-relaxed">
             {isReversed ? card.meaningReversed : card.meaningUpright}
           </p>
         </div>
 
         <div className="mb-4">
-          <h4 className="text-sm font-semibold text-purple-600 uppercase tracking-wide mb-1">
+          <h4 className="text-sm font-semibold text-[#F1CB78] uppercase tracking-wide mb-1">
             Beschrijving
           </h4>
-          <p className="text-gray-700 leading-relaxed">{card.description}</p>
+          <p className="text-[#E0D5E9] leading-relaxed">{card.description}</p>
         </div>
 
         {card.extendedDescription && (
           <div className="mb-4">
-            <h4 className="text-sm font-semibold text-purple-600 uppercase tracking-wide mb-1">
+            <h4 className="text-sm font-semibold text-[#F1CB78] uppercase tracking-wide mb-1">
               Uitgebreide beschrijving
             </h4>
-            <div className="text-gray-700 whitespace-pre-line leading-relaxed text-sm">
+            <div className="text-[#E0D5E9] whitespace-pre-line leading-relaxed text-sm">
               {card.extendedDescription}
             </div>
           </div>
@@ -80,16 +80,16 @@ export const CardDetails: React.FC<Props> = ({ card, isReversed, position }) => 
 
         {card.loveReading && (
           <div className="mb-4">
-            <h4 className="text-sm font-semibold text-purple-600 uppercase tracking-wide mb-1">
+            <h4 className="text-sm font-semibold text-[#F1CB78] uppercase tracking-wide mb-1">
               In de liefde
             </h4>
-            <p className="text-gray-700 leading-relaxed text-sm">{card.loveReading}</p>
+            <p className="text-[#E0D5E9] leading-relaxed text-sm">{card.loveReading}</p>
           </div>
         )}
 
-        <div className="pt-4 border-t border-gray-100 flex gap-4 text-sm text-gray-500">
-          <span><span className="font-medium text-purple-600">Arcana:</span> {suitName()}</span>
-          <span><span className="font-medium text-purple-600">Nummer:</span> {card.number}</span>
+        <div className="pt-4 border-t border-[rgba(194,146,189,0.25)] flex gap-4 text-sm text-[#B9A9CC]">
+          <span><span className="font-medium text-[#F1CB78]">Arcana:</span> {suitName()}</span>
+          <span><span className="font-medium text-[#F1CB78]">Nummer:</span> {card.number}</span>
         </div>
       </div>
     </div>
