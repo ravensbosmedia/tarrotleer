@@ -83,15 +83,7 @@ const SECTIES: Sectie[] = [
     match: (p) => p.startsWith('/cursus') || p.startsWith('/academie'),
     links: [
       { to: '/academie',         label: 'Spirituele Academie' },
-      { to: '/cursus',           label: 'Overzicht' },
-      { to: '/cursus/module-01', label: 'Module 1: Getallen' },
-      { to: '/cursus/module-02', label: 'Module 2: Naam' },
-      { to: '/cursus/module-03', label: 'Module 3: Letters' },
-      { to: '/cursus/module-04', label: 'Module 4: Sterrenbeelden' },
-      { to: '/cursus/module-05', label: 'Module 5: Maanfasen' },
-      { to: '/cursus/module-06', label: 'Module 6: Planeten' },
-      { to: '/cursus/module-07', label: 'Module 7: Compatibiliteit' },
-      { to: '/cursus/module-08', label: 'Module 8: Synthese' },
+      { to: '/cursus',           label: 'Numerologie & astrologie (8 modules)' },
     ],
   },
 ];

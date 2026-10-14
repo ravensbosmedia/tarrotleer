@@ -96,7 +96,7 @@ export function CursusModule01Page() {
             Module 1 — Geboortedatum-getallen
           </h1>
           <p style={{ color: '#B9A9CC', fontFamily: 'DM Sans, sans-serif', fontSize: '1rem', margin: '0 0 0.5rem' }}>
-            AuraLine Cursus — 10 getallen uit jouw geboortedatum
+            Numerologie & astrologie — 10 getallen uit jouw geboortedatum
           </p>
           <div style={{ display: 'inline-flex', gap: '0.5rem' }}>
             <span style={{ padding: '0.2rem 0.6rem', borderRadius: 10, fontSize: '0.75rem', background: 'rgba(241,203,120,0.15)', color: '#F1CB78' }}>10 berekeningen</span>

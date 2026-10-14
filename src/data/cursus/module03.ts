@@ -85,7 +85,7 @@ export const LETTER_BETEKENISSEN: LetterBetekenis[] = [
 
 export const MODULE03_QUIZ: QuizVraag[] = [
   {
-    vraag: 'Welke letter is de Cornerstone van "Jan van Dijk" in AuraLine\'s analyse?',
+    vraag: 'Welke letter is de Cornerstone van "Jan van Dijk" in de Zen Flow-analyse?',
     opties: ['J', 'V', 'D', 'N'],
     juist: 0,
     uitleg: '"Jan van Dijk" → filter "van" → "JanDijk" → Cornerstone = J',
@@ -115,10 +115,10 @@ export const MODULE03_QUIZ: QuizVraag[] = [
     uitleg: 'E is de Vrijheids-letter (waarde 5) — vanbinnen drijft behoefte aan beweging, variatie en onafhankelijkheid.',
   },
   {
-    vraag: 'Welke letter is ALTIJD een medeklinker in AuraLine?',
+    vraag: 'Welke letter is ALTIJD een medeklinker in Zen Flow?',
     opties: ['E', 'Y', 'A', 'I'],
     juist: 1,
-    uitleg: 'Y heeft in AuraLine altijd waarde 7 als medeklinker, ook al klinkt het soms als een klinker.',
+    uitleg: 'Y heeft in Zen Flow altijd waarde 7 als medeklinker, ook al klinkt het soms als een klinker.',
   },
   {
     vraag: 'Capstone L — hoe sluit deze persoon doorgaans af?',
@@ -127,10 +127,10 @@ export const MODULE03_QUIZ: QuizVraag[] = [
     uitleg: 'L is de Lichte-letter (waarde 3) — sluit af met expressie, een gebaar, niet zwaar.',
   },
   {
-    vraag: 'Welk voorvoegsel filtert AuraLine NIET uit?',
+    vraag: 'Welk voorvoegsel filtert Zen Flow NIET uit?',
     opties: ['van', 'der', 'ten', 'den'],
     juist: 2,
-    uitleg: '"ten" staat niet in AuraLine\'s filter. Gefilterd worden: van, de, het, der, ter, den, \'t, te.',
+    uitleg: '"ten" staat niet in het Zen Flow-filter. Gefilterd worden: van, de, het, der, ter, den, \'t, te.',
   },
   {
     vraag: 'Iemand met Cornerstone A en Capstone A:',

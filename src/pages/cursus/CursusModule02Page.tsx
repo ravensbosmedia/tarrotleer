@@ -177,7 +177,7 @@ export const CursusModule02Page: React.FC = () => {
                 </div>
               </div>
               <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'rgba(241,203,120,0.08)', borderRadius: 6, fontSize: 13.5, color: 'rgba(255,243,223,0.7)' }}>
-                <strong style={{ color: G.goud }}>Y</strong> telt in AuraLine altijd als medeklinker (waarde 7) — ook al klinkt het soms als een klinker.
+                <strong style={{ color: G.goud }}>Y</strong> telt in Zen Flow altijd als medeklinker (waarde 7) — ook al klinkt het soms als een klinker.
               </div>
               <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: 'rgba(241,203,120,0.08)', borderRadius: 6, fontSize: 13.5, color: 'rgba(255,243,223,0.7)' }}>
                 <strong style={{ color: G.goud }}>NL voorvoegsels</strong> worden gefilterd: van · de · het · der · ter · den · 't · te

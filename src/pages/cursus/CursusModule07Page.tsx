@@ -169,7 +169,7 @@ export const CursusModule07Page: React.FC = () => {
               </div>
             ) : (
               <div style={{ background: G.bg2, border: '0.5px solid rgba(241,203,120,0.15)', borderRadius: 10, padding: '1.5rem', textAlign: 'center', color: 'rgba(255,243,223,0.45)', fontSize: 14 }}>
-                Combinatie niet gevonden in de AuraLine matrix. Probeer een andere combinatie.
+                Combinatie niet gevonden in de Zen Flow-matrix. Probeer een andere combinatie.
               </div>
             )}
           </div>

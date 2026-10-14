@@ -31,14 +31,14 @@ export const MATRIX: CompatibiliteitCombinatie[] = [
 ];
 
 export const MODULE07_QUIZ: QuizVraag[] = [
-  { vraag: 'Welk getal gebruikt AuraLine als basis voor compatibiliteits-berekening?', opties: ['Expression Number', 'Levenspad', 'Soul Number', 'Zonneteken'], juist: 1, uitleg: 'Levenspad is het meest fundamentele getal — hoofdles van het leven.' },
+  { vraag: 'Welk getal gebruikt Zen Flow als basis voor compatibiliteits-berekening?', opties: ['Expression Number', 'Levenspad', 'Soul Number', 'Zonneteken'], juist: 1, uitleg: 'Levenspad is het meest fundamentele getal — hoofdles van het leven.' },
   { vraag: 'Combinatie 2 + 4 wordt geclassificeerd als:', opties: ['Hoog', 'Medium', 'Uitdagend', 'Neutraal'], juist: 0, uitleg: '2 + 4 = Hoog. Diplomaat + Bouwer = harmonie + structuur.' },
   { vraag: 'Combinatie 1 + 4 wordt geclassificeerd als:', opties: ['Hoog', 'Medium', 'Uitdagend', 'Hoog vanwege gedeeld initiatief'], juist: 2, uitleg: '1 + 4 = Uitdagend. Vrijheid (1) versus structuur (4) botsen fundamenteel.' },
   { vraag: 'Wat is de juiste interpretatie van een "Uitdagende" score?', opties: ['De relatie gaat falen', 'De partners moeten uit elkaar', 'Veel groei mogelijk, vraagt bewust werk', 'Negeer deze klanten'], juist: 2, uitleg: 'Uitdagend = tegengestelde grondhouding, maar veel groeipotentieel als beiden reflecteren.' },
-  { vraag: 'Twee mensen met hetzelfde Levenspad — score?', opties: ['Altijd hoog', 'Altijd uitdagend', 'Hoog volgens AuraLine', 'Niet in matrix'], juist: 2, uitleg: 'Zelfde Levenspad = Hoog (gedeeld begrip). Risico: te weinig wrijving.' },
+  { vraag: 'Twee mensen met hetzelfde Levenspad — score?', opties: ['Altijd hoog', 'Altijd uitdagend', 'Hoog volgens Zen Flow', 'Niet in matrix'], juist: 2, uitleg: 'Zelfde Levenspad = Hoog (gedeeld begrip). Risico: te weinig wrijving.' },
   { vraag: 'Frans (Levenspad 2) + Partner (Levenspad 8):', opties: ['Hoog', 'Medium', 'Uitdagend', 'Onmogelijk'], juist: 0, uitleg: '2 + 8 = Hoog. Diplomaat + Manifest.' },
   { vraag: 'Klant: "Onze match is laag, we moeten stoppen." Beste reactie?', opties: ['"Ja, helaas"', '"De matrix toont een dynamiek, geen oordeel — relaties hangen af van hoe je met verschillen omgaat"', '"Probeer eerst astrologie"', '"Bereken opnieuw"'], juist: 1, uitleg: 'Compatibiliteits-scores zijn gespreksopdeners, geen voorspellingen.' },
-  { vraag: 'Bij meestergetal-Levenspad (11 of 22) in AuraLine\'s matrix:', opties: ['Eigen unieke combinaties', 'Reduceert naar gewoon cijfer (11→2, 22→4)', 'Negeert de match', 'Markeert altijd hoog'], juist: 1, uitleg: 'AuraLine reduceert voor matrix-lookup, maar de meester-laag blijft in je analyse.' },
+  { vraag: 'Bij meestergetal-Levenspad (11 of 22) in de Zen Flow-matrix:', opties: ['Eigen unieke combinaties', 'Reduceert naar gewoon cijfer (11→2, 22→4)', 'Negeert de match', 'Markeert altijd hoog'], juist: 1, uitleg: 'Zen Flow reduceert voor matrix-lookup, maar de meester-laag blijft in je analyse.' },
   { vraag: 'Naast Levenspad — welk getal geeft een dieper compat.-beeld?', opties: ['Bestuursgetal', 'Verledengetal', 'Soul Number', 'Capstone-letter'], juist: 2, uitleg: 'Soul Number geeft de diepste verlangen-laag — versterkt of verzacht de LP-match.' },
   { vraag: 'Combinatie 3 + 9 — wat mist er praktisch?', opties: ['Beide te serieus', 'Beide te creatief en idealistisch — wie doet het dagelijkse werk?', 'Te veel structuur', 'Te weinig empathie'], juist: 1, uitleg: '3 + 9 = Hoog qua vibe, maar beiden vluchten in dromen. Praktische taken blijven liggen.' },
 ];

@@ -15,7 +15,7 @@ const MODULES = [
     nr: '01',
     titel: 'Geboortedatum-getallen',
     subtitel: '10 getallen uit je geboortedatum',
-    beschrijving: 'Leer de 10 fundamentele getallen berekenen die AuraLine haalt uit iemands geboortedatum: van Bestuursgetal tot Doelgetal.',
+    beschrijving: 'Leer de 10 basisgetallen berekenen die je uit iemands geboortedatum haalt: van Bestuursgetal tot Doelgetal.',
     path: '/cursus/module-01',
     kleur: '#8B4513',
     emoji: '📅',
@@ -81,7 +81,7 @@ const MODULES = [
     nr: '07',
     titel: 'Numerologische Compatibiliteit',
     subtitel: 'Levenspad-combinaties & scores',
-    beschrijving: 'De AuraLine compatibiliteits-matrix. Welke Levenspad-combinaties zijn hoog, medium of uitdagend — en wat betekent dat echt?',
+    beschrijving: 'De Zen Flow-compatibiliteitsmatrix. Welke Levenspad-combinaties zijn hoog, medium of uitdagend — en wat betekent dat echt?',
     path: '/cursus/module-07',
     kleur: '#8B4570',
     emoji: '💞',
@@ -106,14 +106,12 @@ export const CursusHubPage: React.FC = () => {
     <div style={{ background: G.bg, minHeight: '100vh', color: G.goudBleek, fontFamily: "'DM Sans', sans-serif" }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '3rem 1.5rem' }}>
 
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <div style={{ fontSize: 48, marginBottom: '1rem' }}>✦</div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: G.goud, letterSpacing: '0.08em', marginBottom: '0.5rem' }}>
-            AuraLine Cursus
-          </h1>
-          <p style={{ color: 'rgba(255,243,223,0.70)', fontSize: 16, maxWidth: 600, margin: '0 auto', lineHeight: 1.6 }}>
-            Leerplatform voor adviseurs. Leer alle berekeningen, betekenissen en technieken die AuraLine gebruikt — zodat je de output kunt duiden en uitleggen.
+        {/* Kop (Zen Flow, zoals de andere onderdelen) */}
+        <div style={{ borderBottom: '0.5px solid rgba(239,180,255,0.22)', paddingBottom: '2rem', marginBottom: '2.5rem' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.14em', color: '#F1CB78', textTransform: 'uppercase', marginBottom: '0.6rem' }}>Cursus · 8 modules</p>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, fontWeight: 400, color: '#FFF3DF', marginBottom: '0.6rem' }}>Numerologie &amp; astrologie</h1>
+          <p style={{ fontSize: 17, fontStyle: 'italic', color: '#E0D5E9', lineHeight: 1.7, maxWidth: 640 }}>
+            Leer stap voor stap de getallen uit je geboortedatum en naam berekenen en duiden, ontdek sterrenbeelden, maanfasen en planeten, en breng alles samen in één persoonlijk verhaal.
           </p>
         </div>
 

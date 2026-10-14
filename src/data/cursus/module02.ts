@@ -74,7 +74,7 @@ export const NAAM_LESSEN: NaamLes[] = [
     watIsHet: 'Het Soul Number komt uit alleen de klinkers (A, E, I, O, U). Het is het verborgenste getal — het toont wat je hart stil verlangt, het deel dat alleen zichtbaar wordt in intimiteit.',
     watVerteltHet: 'Dit getal raakt mensen diep omdat het gaat over hun ware innerlijk. Het is het verlangen vóór alle sociale lagen. Als iemand zegt "ik voel me nooit helemaal mezelf", dan zit de sleutel vaak hier. Het Soul Number is wat je nodig hebt om echt gelukkig te zijn.',
     inGesprek: '"Als niemand kijkt, wat verlang je dan echt? Dit getal gaat voorbij je werk, je rol, je masker. Het is de stille stem achter al je keuzes." — Dit is het getal dat mensen het meest raakt, gebruik het met zorg.',
-    input: 'Alleen klinkers (A, E, I, O, U — Y telt altijd als medeklinker in AuraLine)',
+    input: 'Alleen klinkers (A, E, I, O, U — Y telt altijd als medeklinker in Zen Flow)',
     stappen: [
       'Filter NL voorvoegsels uit de naam',
       'Pak alleen de klinkers (A, E, I, O, U)',
@@ -91,7 +91,7 @@ export const MODULE02_QUIZ: QuizVraag[] = [
     vraag: 'Welke letter heeft waarde 9 in de Pythagoreaanse tabel?',
     opties: ['A', 'I', 'Y', 'R'],
     juist: 3,
-    uitleg: 'R heeft waarde 9. I heeft ook waarde 9. Y is in AuraLine altijd medeklinker met waarde 7.',
+    uitleg: 'R heeft waarde 9. I heeft ook waarde 9. Y is in Zen Flow altijd medeklinker met waarde 7.',
   },
   {
     vraag: 'Welk naam-getal gebruikt ALLE letters (klinkers + medeklinkers)?',
@@ -106,10 +106,10 @@ export const MODULE02_QUIZ: QuizVraag[] = [
     uitleg: 'Personality Number = de medeklinkers = je buitenkant = de eerste indruk bij anderen.',
   },
   {
-    vraag: 'Welke letter beschouwt AuraLine ALTIJD als medeklinker?',
+    vraag: 'Welke letter beschouwt Zen Flow ALTIJD als medeklinker?',
     opties: ['E', 'Y', 'W', 'H'],
     juist: 1,
-    uitleg: 'Y heeft in AuraLine altijd waarde 7 als medeklinker. In sommige tradities wordt Y soms als klinker gezien, maar AuraLine kiest voor consistentie.',
+    uitleg: 'Y heeft in Zen Flow altijd waarde 7 als medeklinker. In sommige tradities wordt Y soms als klinker gezien, maar Zen Flow kiest voor consistentie.',
   },
   {
     vraag: 'Soul Number van "Anna" (A-N-N-A)?',
@@ -118,10 +118,10 @@ export const MODULE02_QUIZ: QuizVraag[] = [
     uitleg: 'Anna: klinkers = A(1) + A(1) = 2. Medeklinkers N+N worden niet meegeteld bij Soul.',
   },
   {
-    vraag: 'Welk voorvoegsel filtert AuraLine NIET uit?',
+    vraag: 'Welk voorvoegsel filtert Zen Flow NIET uit?',
     opties: ['van', 'den', 'le (Frans)', 'der'],
     juist: 2,
-    uitleg: '"le" is Frans/niet-NL. AuraLine filtert alleen: van, de, het, der, ter, den, \'t, te.',
+    uitleg: '"le" is Frans/niet-NL. Zen Flow filtert alleen: van, de, het, der, ter, den, \'t, te.',
   },
   {
     vraag: 'Iemand heeft Personality 4 en Soul 3. Wat is een goed advies?',
