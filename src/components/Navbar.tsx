@@ -80,10 +80,11 @@ const SECTIES: Sectie[] = [
   },
   {
     id: 'cursus', label: 'Cursus',
-    match: (p) => p.startsWith('/cursus') || p.startsWith('/academie'),
+    match: (p) => p.startsWith('/cursus') || p.startsWith('/academie') || p.startsWith('/bijeenkomsten'),
     links: [
       { to: '/academie',         label: 'Spirituele Academie' },
       { to: '/cursus',           label: 'Numerologie & astrologie (8 modules)' },
+      { to: '/bijeenkomsten',    label: 'Bijeenkomsten' },
     ],
   },
 ];
@@ -294,7 +295,7 @@ export const Navbar: React.FC = () => {
                   {[
                     { to: '/voortgang', label: 'Mijn voortgang' },
                     { to: '/account', label: 'Mijn account' },
-                    ...(lid.rol === 'admin' ? [{ to: '/admin/leden', label: 'Leden beheren' }, { to: '/admin/academie', label: 'Academie (beheer)' }, { to: '/admin/cursussen', label: 'Cursus-uploads' }, { to: '/admin/teksten', label: 'Teksten (disclaimers)' }, { to: '/admin/horoscopen', label: 'Maandhoroscopen' }, { to: '/admin/statistiek', label: 'Statistiek (bezoekers)' }, { to: '/admin/mails', label: 'Mails' }, { to: '/admin/abonnementen', label: 'Abonnementen' }] : []),
+                    ...(lid.rol === 'admin' ? [{ to: '/admin/leden', label: 'Leden beheren' }, { to: '/admin/academie', label: 'Academie (beheer)' }, { to: '/admin/cursussen', label: 'Cursus-uploads' }, { to: '/admin/teksten', label: 'Teksten (disclaimers)' }, { to: '/admin/horoscopen', label: 'Maandhoroscopen' }, { to: '/admin/statistiek', label: 'Statistiek (bezoekers)' }, { to: '/admin/mails', label: 'Mails' }, { to: '/admin/abonnementen', label: 'Abonnementen' }, { to: '/admin/bijeenkomsten', label: 'Bijeenkomsten (beheer)' }] : []),
                   ].map((l) => (
                     <Link key={l.to} to={l.to} style={itemStijl(linkActief(l.to))} onMouseEnter={zweefAan} onMouseLeave={zweefUit(linkActief(l.to))}>{l.label}</Link>
                   ))}
@@ -385,6 +386,7 @@ export const Navbar: React.FC = () => {
                   <Link to="/admin/statistiek" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Statistiek (bezoekers)</Link>
                   <Link to="/admin/mails" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Mails</Link>
                   <Link to="/admin/abonnementen" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Abonnementen</Link>
+                  <Link to="/admin/bijeenkomsten" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Bijeenkomsten (beheer)</Link>
                 </>
               )}
               <button onClick={uitloggen} style={{ textAlign: 'left', background: 'none', border: 'none', color: '#B9A9CC', fontFamily: SANS, fontSize: 15, padding: '9px 0', cursor: 'pointer' }}>Uitloggen</button>

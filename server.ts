@@ -6,6 +6,7 @@ import { allCards } from './src/data/cards/index.js';
 import { installeerAccounts } from './accounts.js';
 import { installeerMailBeheer } from './mails.js';
 import { installeerAbonnementen } from './abonnementen.js';
+import { installeerBijeenkomsten } from './bijeenkomsten.js';
 import { installeerCursusUploads } from './cursussen.js';
 import { installeerAcademie } from './academie.js';
 import { installeerPubliek, installeerTekstenBeheer } from './publiek.js';
@@ -31,6 +32,7 @@ installeerAccounts(app, __dirname);
 installeerTekstenBeheer(app, __dirname);
 installeerMailBeheer(app, __dirname);
 installeerAbonnementen(app, __dirname);
+installeerBijeenkomsten(app, __dirname);
 installeerCursusUploads(app, __dirname);
 installeerAcademie(app, __dirname);
 

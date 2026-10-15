@@ -263,3 +263,37 @@ De mails:
 - Slotregels op een kopie van de database (7 gevallen): controle uit, geen abonnement, beheerder, één cursus, verlopen, "alle cursussen", gepland.
 - Beheerroutes op een testserver (11 controles).
 - Alle testgegevens zijn daarna verwijderd.
+
+## Bijeenkomsten en privégesprekken (beheer: /admin/bijeenkomsten, leden: /bijeenkomsten) — 16-10-2026, 's nachts gebouwd
+
+`bijeenkomsten.ts` laat beheerders online bijeenkomsten en privégesprekken plannen. Leden zien hun uitnodigingen onder **Cursus → Bijeenkomsten**, met de link, de pincode, de knop "Deelnemen" en een agenda-item (.ics, met een herinnering 15 minuten vooraf).
+
+**Groepsbijeenkomst** — wie is uitgenodigd:
+- alle leden;
+- de leden van één cursus: wie met die cursus bezig is (voortgang `academie-<slug>`), of wie hem in een actief abonnement heeft;
+- losse personen.
+
+**Privégesprek:** precies één lid.
+
+**Tijd en link**
+- Tijden worden opgeslagen als Nederlandse tijd (`JJJJ-MM-DDTHH:MM`). `nlNaarUtc()` rekent zomer- en wintertijd om voor de .ics.
+- Een bijeenkomst blijft voor leden zichtbaar tot 2 uur na het einde.
+- De link is standaard `https://bijeenkomst.zen-flow.nl/` (groep) of `https://gesprek.zen-flow.nl/` (privé). Dat is het live portaal op de OVH-VPS 57.129.169.181. De pincode stel je in het portaal zelf in.
+- Er is nog geen koppeling met het portaal: het portaal weet niets van deze planning.
+
+**Annuleren** = de status wordt `geannuleerd` (archiveren; er wordt niets verwijderd).
+
+**Techniek**
+- Tabellen: `bijeenkomsten` en `bijeenkomst_genodigden`.
+- Routes:
+  - `GET/POST /api/admin/bijeenkomsten`, `PUT /api/admin/bijeenkomsten/:id` (`{status}` = annuleren of terugzetten), alleen beheerders;
+  - `GET /api/bijeenkomsten` en `GET /api/bijeenkomsten/:id/agenda.ics`, alleen voor genodigden.
+- **Later:** uitnodigingsmails via `stuurVasteMail` (na Office 365), en eventueel een koppeling met het portaal (bijvoorbeeld een eigen ruimte of pincode per bijeenkomst).
+
+**Getest op 15-10** (testserver, een tijdelijk lid met eigen sessie; daarna verwijderd):
+- foute invoer;
+- wie wat ziet bij "alle leden", privé, "losse personen" en "cursus" (ook na voortgang);
+- de .ics: tijd in UTC, gevouwen regels en escapes;
+- geen toegang tot andermans .ics;
+- annuleren;
+- dat een lid de beheerroute niet kan gebruiken (403).
