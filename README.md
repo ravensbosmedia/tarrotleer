@@ -168,3 +168,6 @@ Knop **Aa** in het menu (op de telefoon bovenin het uitklapmenu): Normaal / Grot
 **Beheer → Maandhoroscopen** (`/admin/horoscopen`): per teken origineel naast de makkelijke versie, zelf aanpassen (opslaan = meteen zichtbaar; eerste AI-versie blijft bewaard als `…-b1.json.ai`), opnieuw laten herschrijven (vorige versie → `…-b1.json.vorige-<tijd>`), of een nog niet opgehaald teken ophalen.
 `scripts/maandhoroscoop-klaarzetten.sh` zet alle 12 tekens klaar (eerste keer ±1 minuut per teken); bedoeld voor het begin van de maand (cron).
 
+## Statistiek zen-flow.nl en meditatie (15-10-2026)
+
+`/admin/statistiek` (alleen beheerders) toont bezoekers, pagina's, herkomst, crawlers en 404's van zen-flow.nl en meditatie.zen-flow.nl, zonder cookies. De gegevens komen uit `data/statistiek-zenflow.json`, dat `zen-flow-voorpagina/scripts/statistiek.py` elk uur maakt uit het nginx-logboek. Route: `GET /api/admin/statistiek` in `server.ts`. Pagina: `src/pages/admin/StatistiekPage.tsx`. Uitleg: README van zen-flow-voorpagina, kopje "Bezoekersstatistiek".

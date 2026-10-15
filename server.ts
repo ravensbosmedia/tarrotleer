@@ -399,6 +399,14 @@ const alleenBeheer: express.RequestHandler = (req, res, next) => {
 const maandBestand = (maand: string, teken: string, b1 = false) => join(ASTRO_DIR, `maand-${maand}-${teken}${b1 ? '-b1' : ''}.json`);
 const geldigeMaand = (m: unknown) => (typeof m === 'string' && /^\d{4}-\d{2}$/.test(m) ? m : vandaagNL().slice(0, 7));
 
+// ─── Bezoekersstatistiek zen-flow.nl en meditatie.zen-flow.nl (zonder cookies; gemaakt door zen-flow-voorpagina/scripts/statistiek.py, elk uur) ───
+app.get('/api/admin/statistiek', alleenBeheer, (_req, res) => {
+  const bestand = join(__dirname, 'data', 'statistiek-zenflow.json');
+  if (!existsSync(bestand)) { res.status(404).json({ error: 'Nog geen statistiek. Die wordt elk uur bijgewerkt.' }); return; }
+  res.setHeader('Cache-Control', 'no-store');
+  res.type('json').send(readFileSync(bestand, 'utf8'));
+});
+
 app.get('/api/admin/horoscoop/maand', alleenBeheer, (req, res) => {
   const maand = geldigeMaand(req.query.maand);
   res.json({ maand, tekens: ALLE_TEKENS.map((t) => {
