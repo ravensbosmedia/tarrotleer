@@ -6,6 +6,7 @@ import Database from 'better-sqlite3';
 import { randomBytes, scryptSync, timingSafeEqual, createHash } from 'crypto';
 import { mkdirSync } from 'fs';
 import { join } from 'path';
+import { mailIngesteld, verstuurMail, mailHtml } from './mail.js';
 
 export type Abonnement = 'gratis' | 'maand' | 'jaar';
 const ABONNEMENTEN: Abonnement[] = ['gratis', 'maand', 'jaar'];
@@ -128,6 +129,13 @@ export function installeerAccounts(app: express.Express, root: string) {
     );
   `);
   db.prepare(`DELETE FROM sessies WHERE verloopt < datetime('now')`).run();
+  db.exec(`CREATE TABLE IF NOT EXISTS wachtwoord_herstel (
+    token_hash TEXT PRIMARY KEY,
+    lid_id INTEGER NOT NULL REFERENCES leden(id) ON DELETE CASCADE,
+    verloopt TEXT NOT NULL,
+    gebruikt INTEGER NOT NULL DEFAULT 0
+  )`);
+  db.prepare(`DELETE FROM wachtwoord_herstel WHERE verloopt < datetime('now', '-1 day')`).run();
 
   const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
   const zoekOpEmail = db.prepare<[string], LidRij>('SELECT * FROM leden WHERE email = ?');
@@ -206,6 +214,55 @@ export function installeerAccounts(app: express.Express, root: string) {
     res.setHeader('Set-Cookie', `${SESSIE_COOKIE}=; HttpOnly; Secure; Path=/; Max-Age=0; SameSite=Lax`);
     res.json({ ok: true });
   });
+
+  // ── Wachtwoord vergeten (vóór de toegangscontrole). Werkt alleen als mail is ingesteld (mail.ts). ──
+  // Antwoordt altijd hetzelfde, zodat niemand kan uitzoeken welke e-mailadressen een account hebben.
+  const LEREN_URL = (process.env.LEREN_URL || 'https://leren.zen-flow.nl').replace(/\/$/, '');
+  const herstelPerEmail = new Map<string, { aantal: number; tot: number }>();
+  app.get('/api/auth/herstel-beschikbaar', (_req, res) => { res.json({ beschikbaar: mailIngesteld() }); });
+
+  app.post('/api/auth/wachtwoord-vergeten', async (req, res) => {
+    if (!mailIngesteld()) { res.status(503).json({ error: 'Wachtwoord herstellen is nog niet beschikbaar' }); return; }
+    if (teVeelPogingen(req.ip || '')) { res.status(429).json({ error: 'Te veel pogingen, probeer het over een kwartier opnieuw' }); return; }
+    const email = String(req.body?.email || '').trim().toLowerCase().slice(0, 200);
+    const antwoord = { ok: true, bericht: 'Als er een account is met dit e-mailadres, krijg je binnen een paar minuten een mail met een link. Kijk ook bij je spam.' };
+    const r = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? zoekOpEmail.get(email) : undefined;
+    const nu = Date.now(), p = herstelPerEmail.get(email);
+    if (p && p.tot > nu && p.aantal >= 3) { res.json(antwoord); return; }          // max. 3 mails per uur per adres
+    herstelPerEmail.set(email, p && p.tot > nu ? { aantal: p.aantal + 1, tot: p.tot } : { aantal: 1, tot: nu + 3600_000 });
+    if (!r || !r.actief) { res.json(antwoord); return; }
+    const token = randomBytes(32).toString('base64url');
+    db.prepare('DELETE FROM wachtwoord_herstel WHERE lid_id = ?').run(r.id);       // alleen de nieuwste link werkt
+    db.prepare(`INSERT INTO wachtwoord_herstel (token_hash, lid_id, verloopt) VALUES (?, ?, datetime('now', '+60 minutes'))`).run(sha256(token), r.id);
+    const url = `${LEREN_URL}/herstel?token=${token}`;
+    const tekst = [`Hoi ${r.naam},`, 'Je hebt gevraagd om een nieuw wachtwoord voor je Zen Flow-account. Klik op de knop om een nieuw wachtwoord te kiezen.',
+      'De link werkt één uur en maar één keer.', 'Heb je dit niet zelf gevraagd? Dan hoef je niets te doen. Je wachtwoord blijft hetzelfde.'];
+    try {
+      await verstuurMail(root, { aan: r.email, soort: 'wachtwoord_herstel', onderwerp: 'Kies een nieuw wachtwoord voor Zen Flow',
+        html: mailHtml('Kies een nieuw wachtwoord', tekst, { tekst: 'Nieuw wachtwoord kiezen', url }),
+        tekst: `${tekst.join('\n\n')}\n\n${url}` });
+    } catch (e) { console.error('Herstelmail mislukt:', (e as Error).message); }
+    res.json(antwoord);
+  });
+
+  app.post('/api/auth/wachtwoord-herstellen', (req, res) => {
+    if (teVeelPogingen(req.ip || '')) { res.status(429).json({ error: 'Te veel pogingen, probeer het over een kwartier opnieuw' }); return; }
+    const token = String(req.body?.token || ''), nieuw = String(req.body?.wachtwoord || '');
+    if (nieuw.length < 8) { res.status(400).json({ error: 'Kies een wachtwoord van minimaal 8 tekens' }); return; }
+    const h = db.prepare<[string], { lid_id: number }>(`SELECT lid_id FROM wachtwoord_herstel
+      WHERE token_hash = ? AND gebruikt = 0 AND verloopt > datetime('now')`).get(sha256(token));
+    const r = h ? zoekOpId.get(h.lid_id) : undefined;
+    if (!h || !r || !r.actief) { res.status(400).json({ error: 'Deze link is verlopen of al gebruikt. Vraag een nieuwe link aan.' }); return; }
+    db.transaction(() => {
+      db.prepare('UPDATE leden SET wachtwoord_hash = ? WHERE id = ?').run(hashWachtwoord(nieuw), r.id);
+      db.prepare('DELETE FROM wachtwoord_herstel WHERE lid_id = ?').run(r.id);
+      db.prepare('DELETE FROM sessies WHERE lid_id = ?').run(r.id);                 // overal uitloggen
+    })();
+    startSessie(res, r.id);
+    res.json({ ok: true });
+  });
+
+  app.get('/herstel', (_req, res) => { res.type('html').send(HERSTEL_PAGINA); });
 
   // ── Toegangscontrole: alles hierna alleen met een account ──
   app.use((req, res, next) => {
@@ -352,14 +409,7 @@ export function installeerAccounts(app: express.Express, root: string) {
   });
 }
 
-const TOEGANG_PAGINA = `<!doctype html><html lang="nl"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0D0C22">
-<title>Zen Flow — Inloggen</title>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
+const STIJL = `  *{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
   font:15px/1.5 'DM Sans',sans-serif;color:#FFF3DF;
   background:radial-gradient(ellipse at 15% 20%,#5f286a55,transparent 45%),radial-gradient(ellipse at 85% 80%,#632a6d55,transparent 45%),#0D0C22}
   .box{background:#20162F;border:1px solid #C292BD;border-radius:13px;padding:36px 30px;width:100%;max-width:400px;box-shadow:0 0 70px #AC55B23B}
@@ -382,7 +432,16 @@ const TOEGANG_PAGINA = `<!doctype html><html lang="nl"><head><meta charset="utf-
   .klein{font-size:12px;color:#B9A9CC;text-align:center;margin-top:14px}
   .klein a{color:#F1CB78;text-decoration:none}
   .verborgen{display:none}
-</style></head><body>
+`;
+
+const TOEGANG_PAGINA = `<!doctype html><html lang="nl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0D0C22">
+<title>Zen Flow — Inloggen</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+${STIJL}</style></head><body>
 <div class="box">
   <div class="merk"><span>☾</span>ZEN FLOW</div>
   <h1>Welkom terug</h1>
@@ -398,11 +457,13 @@ const TOEGANG_PAGINA = `<!doctype html><html lang="nl"><head><meta charset="utf-
     <button class="knop" id="knop" type="submit">Inloggen</button>
     <div class="fout" id="fout"></div>
   </form>
+  <p class="klein verborgen" id="vergeten"><a href="/herstel">Wachtwoord vergeten?</a></p>
   <p class="klein" id="uitleg">Nog geen account? Aanmelden is gratis.</p>
   <p class="klein"><a href="https://zen-flow.nl">← Naar zen-flow.nl</a></p>
 </div>
 <script>
 let modus='in';
+fetch('/api/auth/herstel-beschikbaar').then(r=>r.json()).then(d=>{if(d.beschikbaar)document.getElementById('vergeten').className='klein'}).catch(()=>{});
 function kies(m){modus=m;
   document.getElementById('t-in').className=m==='in'?'aan':'';
   document.getElementById('t-aan').className=m==='aan'?'aan':'';
@@ -410,6 +471,7 @@ function kies(m){modus=m;
   document.getElementById('knop').textContent=m==='aan'?'Gratis account maken':'Inloggen';
   document.getElementById('ww').autocomplete=m==='aan'?'new-password':'current-password';
   document.getElementById('uitleg').textContent=m==='aan'?'Minimaal 8 tekens voor je wachtwoord.':'Nog geen account? Aanmelden is gratis.';
+  document.getElementById('vergeten').style.display=m==='aan'?'none':'';
   document.getElementById('fout').textContent='';}
 async function verstuur(e){e.preventDefault();
   const knop=document.getElementById('knop');knop.disabled=true;document.getElementById('fout').textContent='';
@@ -419,4 +481,54 @@ async function verstuur(e){e.preventDefault();
     const d=await r.json().catch(()=>({}));document.getElementById('fout').textContent=d.error||'Er ging iets mis';
   }catch{document.getElementById('fout').textContent='Geen verbinding, probeer het opnieuw'}
   knop.disabled=false;return false}
+</script></body></html>`;
+
+// Wachtwoord vergeten: zonder token een adres invullen, met token (uit de mail) een nieuw wachtwoord kiezen.
+const HERSTEL_PAGINA = `<!doctype html><html lang="nl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0D0C22"><meta name="robots" content="noindex">
+<title>Zen Flow — Wachtwoord herstellen</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+${STIJL}
+  .ok{color:#E0D5E9;font-size:14px;text-align:center;margin-top:14px}
+</style></head><body>
+<div class="box">
+  <div class="merk"><span>☾</span>ZEN FLOW</div>
+  <div id="vraag" class="verborgen">
+    <h1>Wachtwoord vergeten?</h1>
+    <p class="sub">Vul je e-mailadres in. Je krijgt een mail met een link om een nieuw wachtwoord te kiezen.</p>
+    <form onsubmit="return vraagAan(event)">
+      <label for="email">E-mailadres</label><input id="email" type="email" autocomplete="email" required>
+      <button class="knop" id="k1" type="submit">Stuur mij een link</button>
+      <div class="fout" id="f1"></div>
+    </form>
+  </div>
+  <div id="nieuw" class="verborgen">
+    <h1>Kies een nieuw wachtwoord</h1>
+    <p class="sub">Minimaal 8 tekens. Daarna ben je meteen ingelogd.</p>
+    <form onsubmit="return stelIn(event)">
+      <label for="ww">Nieuw wachtwoord</label><input id="ww" type="password" autocomplete="new-password" required minlength="8">
+      <label for="ww2">Nog een keer</label><input id="ww2" type="password" autocomplete="new-password" required minlength="8">
+      <button class="knop" id="k2" type="submit">Wachtwoord opslaan</button>
+      <div class="fout" id="f2"></div>
+    </form>
+  </div>
+  <div id="uit" class="verborgen"><h1>Nog niet beschikbaar</h1><p class="sub">Wachtwoord herstellen kan binnenkort. Neem tot die tijd contact met ons op.</p></div>
+  <p class="klein"><a href="/">← Terug naar inloggen</a></p>
+</div>
+<script>
+const token=new URLSearchParams(location.search).get('token');
+const toon=id=>document.getElementById(id).className='';
+if(token){toon('nieuw');history.replaceState(null,'','/herstel')}
+else fetch('/api/auth/herstel-beschikbaar').then(r=>r.json()).then(d=>toon(d.beschikbaar?'vraag':'uit')).catch(()=>toon('uit'));
+async function post(url,body){const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Er ging iets mis');return d}
+async function vraagAan(e){e.preventDefault();const k=document.getElementById('k1'),f=document.getElementById('f1');k.disabled=true;f.textContent='';
+  try{const d=await post('/api/auth/wachtwoord-vergeten',{email:document.getElementById('email').value});
+    document.getElementById('vraag').innerHTML='<h1>Kijk in je mail</h1><p class="ok"></p>';document.querySelector('#vraag .ok').textContent=d.bericht}
+  catch(err){f.textContent=err.message;k.disabled=false}return false}
+async function stelIn(e){e.preventDefault();const k=document.getElementById('k2'),f=document.getElementById('f2');f.textContent='';
+  const a=document.getElementById('ww').value,b=document.getElementById('ww2').value;if(a!==b){f.textContent='De twee wachtwoorden zijn niet hetzelfde';return false}
+  k.disabled=true;try{await post('/api/auth/wachtwoord-herstellen',{token,wachtwoord:a});location.href='/'}catch(err){f.textContent=err.message;k.disabled=false}return false}
 </script></body></html>`;

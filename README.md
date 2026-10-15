@@ -171,3 +171,24 @@ Knop **Aa** in het menu (op de telefoon bovenin het uitklapmenu): Normaal / Grot
 ## Statistiek zen-flow.nl en meditatie (15-10-2026)
 
 `/admin/statistiek` (alleen beheerders) toont bezoekers, pagina's, herkomst, crawlers en 404's van zen-flow.nl en meditatie.zen-flow.nl, zonder cookies. De gegevens komen uit `data/statistiek-zenflow.json`, dat `zen-flow-voorpagina/scripts/statistiek.py` elk uur maakt uit het nginx-logboek. Route: `GET /api/admin/statistiek` in `server.ts`. Pagina: `src/pages/admin/StatistiekPage.tsx`. Uitleg: README van zen-flow-voorpagina, kopje "Bezoekersstatistiek".
+
+## Mail en wachtwoord vergeten (16-10-2026, 's nachts voorbereid)
+
+**`mail.ts`** verstuurt mail via **Microsoft 365 (Graph-API, `sendMail`)** met een app-registratie in Entra (recht `Mail.Send` als toepassing, beperkt tot één afzendermailbox).
+- Instellingen in `.env` (alleen de namen): `MS_TENANT_ID`, `MS_CLIENT_ID`, `MS_CLIENT_SECRET`, `MAIL_AFZENDER` (bijvoorbeeld `noreply@zen-flow.nl`, een gedeelde mailbox), en optioneel `LEREN_URL` (standaard `https://leren.zen-flow.nl`).
+- Zolang deze instellingen ontbreken, is mail **niet ingesteld** en blijven alle functies die mail nodig hebben uit.
+- `MAIL_MODUS=bestand` is alleen voor tests: mails komen dan als JSON in `data/mail-test/` en worden niet verstuurd.
+- Elke verzendpoging komt in de tabel `mail_log` (aan, soort, onderwerp, status, fout), **zonder de inhoud**.
+- `mailHtml(titel, alineas, knop?)` geeft de Zen Flow-opmaak voor mail: tabellen met inline stijlen, zodat het werkt in Outlook en Gmail.
+
+**Wachtwoord vergeten** (`accounts.ts`, vóór de toegangscontrole):
+- `GET /api/auth/herstel-beschikbaar` → `{beschikbaar}`. Het inlogscherm, de voorpagina en `/herstel` tonen de functie alleen als dit `true` is.
+- `POST /api/auth/wachtwoord-vergeten {email}`:
+  - het antwoord is altijd hetzelfde, zodat niet te zien is welke adressen een account hebben;
+  - een rem van 10 pogingen per IP per kwartier en 3 mails per adres per uur;
+  - de link werkt 60 minuten, één keer, en alleen de nieuwste link is geldig (tabel `wachtwoord_herstel`, alleen de sha256 van de token).
+- `POST /api/auth/wachtwoord-herstellen {token, wachtwoord}`: zet het nieuwe wachtwoord, verwijdert alle sessies van het lid (overal uitgelogd) en logt meteen in.
+- `GET /herstel`: de pagina om een adres in te vullen, of met `?token=` een nieuw wachtwoord te kiezen. De token wordt direct uit de adresbalk gehaald.
+- Getest op 15-10 op een testserver met `MAIL_MODUS=bestand` en een tijdelijk account (daarna verwijderd): onbekend adres, echt adres, foute token, te kort wachtwoord, herstellen, de token een tweede keer gebruiken, oud en nieuw wachtwoord, en de link die verborgen blijft zonder mail. Alles werkte.
+- **Aanzetten:** zet de vier `MS_*`/`MAIL_*`-variabelen in `.env` → herstart de leerserver → stuur een test via `/herstel` met je eigen adres.
+- **Voorpagina:** de link in het inlogvenster staat al in de code (`zen-flow-voorpagina`), maar is nog niet gepubliceerd.
