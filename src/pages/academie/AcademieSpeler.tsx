@@ -21,7 +21,7 @@ const knop: React.CSSProperties = {
 const knopLicht: React.CSSProperties = { ...knop, background: 'transparent', color: G.goudBleek, border: `1px solid ${G.rand}` };
 
 interface HoofdstukKort { nr: number; titel: string; afbeelding: string | null; stappen: number }
-interface Cursus { slug: string; nr: number; titel: string; beschrijving: string; live: number; hoofdstukken: HoofdstukKort[] }
+interface Cursus { slug: string; nr: number; titel: string; beschrijving: string; live: number; toegang?: boolean; hoofdstukken: HoofdstukKort[] }
 interface LesVoortgang { stap?: number; klaar?: boolean; oefeningen?: Record<string, boolean>; antwoorden?: Record<string, string>; score?: { goed: number; totaal: number }; datum?: string }
 
 async function haal<T>(pad: string): Promise<T> {
@@ -57,7 +57,7 @@ export const AcademieOverzicht: React.FC = () => {
             <Link key={c.slug} to={`/academie/${c.slug}`} style={{ textDecoration: 'none', color: G.goudBleek, background: G.bg2, border: `1px solid ${G.rand}`, borderRadius: 14, overflow: 'hidden', display: 'block' }}>
               {c.afbeelding && <img src={c.afbeelding} alt="" loading="lazy" style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />}
               <div style={{ padding: '0.9rem 1.1rem' }}>
-                <div style={{ fontSize: 12, color: G.tekst3 }}>Cursus {c.nr} · {c.hoofdstukken} hoofdstukken {!c.live && <span style={{ color: '#E0B04A' }}>· niet live</span>}</div>
+                <div style={{ fontSize: 12, color: G.tekst3 }}>Cursus {c.nr} · {c.hoofdstukken} hoofdstukken {!c.live && <span style={{ color: '#E0B04A' }}>· niet live</span>}{c.toegang === false && <span style={{ color: '#E0B04A' }}> · 🔒 niet in je abonnement</span>}</div>
                 <div style={{ fontSize: 19, marginTop: 2 }}>{c.titel}</div>
               </div>
             </Link>
@@ -103,7 +103,10 @@ export const AcademieCursus: React.FC = () => {
               <div style={{ fontSize: 15, color: G.tekst2, marginBottom: 6 }}>{klaar} van {c.hoofdstukken.length} hoofdstukken afgerond · {pct}%</div>
               <div style={{ height: 8, background: G.bg3, borderRadius: 4 }}><div style={{ width: `${pct}%`, height: '100%', background: G.goud, borderRadius: 4 }} /></div>
             </div>
-            {volgende && (
+            {c.toegang === false && (
+              <div style={{ flex: '1 1 100%', fontSize: 15, color: G.tekst2 }}>🔒 Deze cursus zit niet in je abonnement. Je ziet wel wat erin staat; openen kan als de cursus bij je abonnement hoort.</div>
+            )}
+            {volgende && c.toegang !== false && (
               <Link to={`/academie/${c.slug}/${volgende.nr}`} style={knop}>
                 {klaar === c.hoofdstukken.length ? 'Opnieuw bekijken' : begonnen ? 'Ga verder →' : 'Start de cursus →'}
               </Link>

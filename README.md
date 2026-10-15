@@ -227,3 +227,39 @@ De mails:
   - een welkomstmail bij het registreren;
   - dat de herstelmail niet uit te zetten is en zijn link niet verandert;
   - de lijst van verstuurde mails.
+
+## Abonnementstypen voor de cursussen (beheer: /admin/abonnementen) — 16-10-2026, 's nachts gebouwd
+
+`abonnementen.ts` regelt **welke Academie-cursussen bij welk abonnement horen**, en welk lid welk abonnement heeft. Er is nog geen betaling (die komt later, zie de taak "Betaalprovider").
+
+**Abonnementstypen**
+- Per type: naam, omschrijving en looptijd (30/90/180/365 dagen of onbeperkt).
+- Je kiest losse cursussen, of "alle cursussen" (dan horen ook toekomstige cursussen erbij).
+- Archiveren in plaats van verwijderen: een gearchiveerd type kun je niet meer toekennen, maar bestaande toekenningen blijven werken.
+
+**Toekennen**
+- Zoek een lid op naam of e-mailadres en kies een type, een start (leeg = vandaag) en een notitie.
+- De einddatum wordt start + looptijd − 1 dag.
+- **Beëindigen** zet de einddatum op gisteren; de geschiedenis blijft bewaard.
+- Status per toekenning: actief, gepland of verlopen.
+
+**Toegangscontrole**
+- Instelling `toegang_via_abonnement` in de tabel `instellingen`, standaard **UIT**.
+- Uit: iedereen kan alle live cursussen openen, zoals voorheen.
+- Aan:
+  - `/api/academie` geeft per cursus `toegang`, en de Academie toont "🔒 niet in je abonnement";
+  - `/api/academie/:slug/:nr` geeft 403;
+  - de cursuspagina laat zien wat erin zit, zonder startknop.
+- Beheerders zien altijd alles. De functie `cursussenMetToegang(root, lid)` geeft `null` (alles) of een set met de slugs van de cursussen.
+- De vaste onderdelen (tarot, Lenormand, pendel, numerologie) vallen hier (nog) **niet** onder.
+
+**Techniek**
+- Tabellen: `abonnement_typen`, `abonnement_type_cursussen`, `lid_abonnementen`.
+- Routes (alleen beheerders): `GET /api/admin/abonnementen`, `PUT …/toegang`, `POST/PUT …/typen[/:id]`, `GET/POST /api/admin/leden/:id/abonnementen`, `POST /api/admin/lid-abonnementen/:id/beeindigen`.
+- Voor het lid zelf: `GET /api/mijn-abonnementen`.
+- Het oude veld `leden.abonnement` (gratis/maand/jaar) bestaat nog en wordt alleen getoond. Bij de koppeling met een betaalprovider vervangen de abonnementstypen het.
+
+**Getest op 15-10**
+- Slotregels op een kopie van de database (7 gevallen): controle uit, geen abonnement, beheerder, één cursus, verlopen, "alle cursussen", gepland.
+- Beheerroutes op een testserver (11 controles).
+- Alle testgegevens zijn daarna verwijderd.

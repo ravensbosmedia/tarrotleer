@@ -5,6 +5,7 @@ import { readFileSync, existsSync, writeFileSync, mkdirSync, renameSync } from '
 import { allCards } from './src/data/cards/index.js';
 import { installeerAccounts } from './accounts.js';
 import { installeerMailBeheer } from './mails.js';
+import { installeerAbonnementen } from './abonnementen.js';
 import { installeerCursusUploads } from './cursussen.js';
 import { installeerAcademie } from './academie.js';
 import { installeerPubliek, installeerTekstenBeheer } from './publiek.js';
@@ -29,6 +30,7 @@ installeerPubliek(app, __dirname, { maandhoroscoop: (teken) => maandHoroscoop(te
 installeerAccounts(app, __dirname);
 installeerTekstenBeheer(app, __dirname);
 installeerMailBeheer(app, __dirname);
+installeerAbonnementen(app, __dirname);
 installeerCursusUploads(app, __dirname);
 installeerAcademie(app, __dirname);
 

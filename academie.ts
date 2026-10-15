@@ -4,6 +4,7 @@
 // Bewust GEEN AI-aanroep op de server (kost tegoed); verbeteren gebeurt via ChatGPT in de browser.
 // Niets hiervan is zichtbaar voor gewone leden.
 import express from 'express';
+import { cursussenMetToegang } from './abonnementen.js';
 import Database from 'better-sqlite3';
 import { execFileSync, execFile } from 'child_process';
 import { promisify } from 'util';
@@ -901,7 +902,8 @@ export function installeerAcademie(app: express.Express, root: string) {
       (SELECT inhoud FROM academie_hoofdstukken WHERE cursus_id = c.id ORDER BY nr LIMIT 1) AS eerste
       FROM academie_cursussen c LEFT JOIN academie_hoofdstukken h ON h.cursus_id = c.id
       ${admin ? '' : 'WHERE c.live = 1'} GROUP BY c.id ORDER BY c.nr`).all() as (Record<string, unknown> & { eerste: string | null })[];
-    res.json(rijen.map(({ eerste, ...c }) => ({ ...c, afbeelding: eerste ? kopAfbeelding(eerste) : null })));
+    const toegang = cursussenMetToegang(root, req.lid);   // null = alles (controle uit of beheerder)
+    res.json(rijen.map(({ eerste, ...c }) => ({ ...c, afbeelding: eerste ? kopAfbeelding(eerste) : null, toegang: !toegang || toegang.has(String(c.slug)) })));
   });
 
   app.get('/api/academie/:slug', (req, res) => {
@@ -910,6 +912,7 @@ export function installeerAcademie(app: express.Express, root: string) {
     const hoofdstukken = db.prepare<[number], { nr: number; titel: string; inhoud: string }>('SELECT nr, titel, inhoud FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(c!.id);
     res.json({
       slug: c!.slug, nr: c!.nr, titel: c!.titel, beschrijving: c!.beschrijving, live: c!.live,
+      toegang: (() => { const tg = cursussenMetToegang(root, req.lid); return !tg || tg.has(c!.slug); })(),
       hoofdstukken: hoofdstukken.map((h) => ({ nr: h.nr, titel: h.titel, afbeelding: kopAfbeelding(h.inhoud), stappen: (h.inhoud.match(/^## /gm) || []).length })),
     });
   });
@@ -917,6 +920,8 @@ export function installeerAcademie(app: express.Express, root: string) {
   app.get('/api/academie/:slug/:nr', (req, res) => {
     const c = cursusVan.get(String(req.params.slug)) as (CursusRij & { live: number }) | undefined;
     if (!magZien(c, req)) { res.status(404).json({ error: 'Cursus niet gevonden' }); return; }
+    const tg = cursussenMetToegang(root, req.lid);
+    if (tg && !tg.has(c!.slug)) { res.status(403).json({ error: 'Deze cursus zit niet in je abonnement' }); return; }
     const alle = db.prepare<[number], { nr: number; titel: string }>('SELECT nr, titel FROM academie_hoofdstukken WHERE cursus_id = ? ORDER BY nr').all(c!.id);
     const h = db.prepare<[number, number], { nr: number; titel: string; inhoud: string }>('SELECT nr, titel, inhoud FROM academie_hoofdstukken WHERE cursus_id = ? AND nr = ?').get(c!.id, Number(req.params.nr));
     if (!h) { res.status(404).json({ error: 'Hoofdstuk niet gevonden' }); return; }
