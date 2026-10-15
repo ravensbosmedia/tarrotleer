@@ -294,7 +294,7 @@ export const Navbar: React.FC = () => {
                   {[
                     { to: '/voortgang', label: 'Mijn voortgang' },
                     { to: '/account', label: 'Mijn account' },
-                    ...(lid.rol === 'admin' ? [{ to: '/admin/leden', label: 'Leden beheren' }, { to: '/admin/academie', label: 'Academie (beheer)' }, { to: '/admin/cursussen', label: 'Cursus-uploads' }, { to: '/admin/teksten', label: 'Teksten (disclaimers)' }, { to: '/admin/horoscopen', label: 'Maandhoroscopen' }, { to: '/admin/statistiek', label: 'Statistiek (bezoekers)' }] : []),
+                    ...(lid.rol === 'admin' ? [{ to: '/admin/leden', label: 'Leden beheren' }, { to: '/admin/academie', label: 'Academie (beheer)' }, { to: '/admin/cursussen', label: 'Cursus-uploads' }, { to: '/admin/teksten', label: 'Teksten (disclaimers)' }, { to: '/admin/horoscopen', label: 'Maandhoroscopen' }, { to: '/admin/statistiek', label: 'Statistiek (bezoekers)' }, { to: '/admin/mails', label: 'Mails' }] : []),
                   ].map((l) => (
                     <Link key={l.to} to={l.to} style={itemStijl(linkActief(l.to))} onMouseEnter={zweefAan} onMouseLeave={zweefUit(linkActief(l.to))}>{l.label}</Link>
                   ))}
@@ -383,6 +383,7 @@ export const Navbar: React.FC = () => {
                   <Link to="/admin/teksten" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Teksten (disclaimers)</Link>
                   <Link to="/admin/horoscopen" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Maandhoroscopen</Link>
                   <Link to="/admin/statistiek" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Statistiek (bezoekers)</Link>
+                  <Link to="/admin/mails" style={{ color: '#E0D5E9', fontFamily: SANS, fontSize: 15, padding: '9px 0', textDecoration: 'none' }}>Mails</Link>
                 </>
               )}
               <button onClick={uitloggen} style={{ textAlign: 'left', background: 'none', border: 'none', color: '#B9A9CC', fontFamily: SANS, fontSize: 15, padding: '9px 0', cursor: 'pointer' }}>Uitloggen</button>

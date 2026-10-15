@@ -13,6 +13,7 @@ import { TarotLeggingPage } from './pages/tarot/TarotLeggingPage';
 import { TekstenPage } from './pages/admin/TekstenPage';
 import { HoroscoopBeheerPage } from './pages/admin/HoroscoopBeheerPage';
 import { StatistiekPage } from './pages/admin/StatistiekPage';
+import { MailsPage } from './pages/admin/MailsPage';
 import { Navbar } from './components/Navbar';
 import { StartPage } from './pages/StartPage';
 import { BibliotheekPage } from './pages/BibliotheekPage';
@@ -78,6 +79,7 @@ function App() {
         <Route path="/admin/cursussen" element={<ProtectedRoute><Layout><CursussenPage /></Layout></ProtectedRoute>} />
         <Route path="/admin/horoscopen" element={<ProtectedRoute><Layout><HoroscoopBeheerPage /></Layout></ProtectedRoute>} />
         <Route path="/admin/statistiek" element={<ProtectedRoute><Layout><StatistiekPage /></Layout></ProtectedRoute>} />
+        <Route path="/admin/mails" element={<ProtectedRoute><Layout><MailsPage /></Layout></ProtectedRoute>} />
         <Route path="/admin/teksten" element={<ProtectedRoute><Layout><TekstenPage /></Layout></ProtectedRoute>} />
         <Route path="/admin/academie" element={<ProtectedRoute><Layout><AcademieOverzichtPage /></Layout></ProtectedRoute>} />
         <Route path="/admin/academie/h/:id" element={<ProtectedRoute><Layout><AcademieHoofdstukPage /></Layout></ProtectedRoute>} />

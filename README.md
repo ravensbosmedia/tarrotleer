@@ -192,3 +192,38 @@ Knop **Aa** in het menu (op de telefoon bovenin het uitklapmenu): Normaal / Grot
 - Getest op 15-10 op een testserver met `MAIL_MODUS=bestand` en een tijdelijk account (daarna verwijderd): onbekend adres, echt adres, foute token, te kort wachtwoord, herstellen, de token een tweede keer gebruiken, oud en nieuw wachtwoord, en de link die verborgen blijft zonder mail. Alles werkte.
 - **Aanzetten:** zet de vier `MS_*`/`MAIL_*`-variabelen in `.env` → herstart de leerserver → stuur een test via `/herstel` met je eigen adres.
 - **Voorpagina:** de link in het inlogvenster staat al in de code (`zen-flow-voorpagina`), maar is nog niet gepubliceerd.
+
+## Vaste mails (beheer: /admin/mails) — 16-10-2026, 's nachts gebouwd
+
+`mails.ts` beheert de vaste mails die Zen Flow automatisch verstuurt. Beheerders passen ze aan op **/admin/mails** (menu → Mails).
+
+Per mail stel je in:
+- onderwerp, titel en tekst (een lege regel is een nieuwe alinea);
+- een knop met tekst en link (de link moet met `https://` of met een invulveld beginnen);
+- aan of uit.
+
+Verder op de pagina:
+- **Invulvelden:** `{naam}`, `{email}`, `{link}` en `{leeromgeving}`.
+- **Voorbeeld:** wordt live bijgewerkt terwijl je typt, met de voorbeeldnaam Sanne.
+- **Testmail naar mij:** stuurt de opgeslagen versie naar je eigen adres, met `[TEST]` in het onderwerp.
+- **Standaardtekst terugzetten.**
+- **Lijst van verstuurde mails:** de laatste 100 uit `mail_log`.
+
+De mails:
+
+| Sleutel | Wanneer | Standaard |
+|---|---|---|
+| `welkom` | direct na het aanmaken van een account (ook via zen-flow.nl); de registratie wacht er niet op | **uit**: zet hem aan nadat je de tekst hebt bekeken |
+| `wachtwoord_herstel` | bij "Wachtwoord vergeten?" | altijd aan; de knop gaat altijd naar `{link}`, die je niet kunt veranderen |
+
+- **Opslag:** tabel `mail_sjablonen`. Zonder rij geldt de standaardtekst uit `STANDAARD_MAILS`.
+- **Versturen:** `stuurVasteMail(root, sleutel, aan, waarden)` doet niets als de mail uit staat of als mail niet is ingesteld.
+- **Een nieuwe vaste mail toevoegen:** zet hem in `STANDAARD_MAILS` en roep `stuurVasteMail` aan waar hij moet worden verstuurd.
+- **Routes** (alleen beheerders): `GET /api/admin/mails`, `PUT /api/admin/mails/:sleutel` (`{standaard:true}` = terugzetten), `POST …/:sleutel/voorbeeld`, `POST …/:sleutel/test`, `GET /api/admin/mails/log`.
+- **Getest op 15-10** (testserver, `MAIL_MODUS=bestand`, tijdelijk lid; daarna alles verwijderd):
+  - de lijst, en 401 zonder login;
+  - het voorbeeld, en dat een `javascript:`-link wordt geweigerd;
+  - opslaan en een testmail;
+  - een welkomstmail bij het registreren;
+  - dat de herstelmail niet uit te zetten is en zijn link niet verandert;
+  - de lijst van verstuurde mails.

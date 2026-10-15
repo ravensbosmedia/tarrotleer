@@ -4,6 +4,7 @@ import { dirname, join } from 'path';
 import { readFileSync, existsSync, writeFileSync, mkdirSync, renameSync } from 'fs';
 import { allCards } from './src/data/cards/index.js';
 import { installeerAccounts } from './accounts.js';
+import { installeerMailBeheer } from './mails.js';
 import { installeerCursusUploads } from './cursussen.js';
 import { installeerAcademie } from './academie.js';
 import { installeerPubliek, installeerTekstenBeheer } from './publiek.js';
@@ -27,6 +28,7 @@ app.set('trust proxy', 'loopback'); // nginx ervoor → echte IP voor de inlogre
 installeerPubliek(app, __dirname, { maandhoroscoop: (teken) => maandHoroscoop(teken) });
 installeerAccounts(app, __dirname);
 installeerTekstenBeheer(app, __dirname);
+installeerMailBeheer(app, __dirname);
 installeerCursusUploads(app, __dirname);
 installeerAcademie(app, __dirname);
 

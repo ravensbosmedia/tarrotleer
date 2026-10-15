@@ -6,7 +6,8 @@ import Database from 'better-sqlite3';
 import { randomBytes, scryptSync, timingSafeEqual, createHash } from 'crypto';
 import { mkdirSync } from 'fs';
 import { join } from 'path';
-import { mailIngesteld, verstuurMail, mailHtml } from './mail.js';
+import { mailIngesteld } from './mail.js';
+import { stuurVasteMail } from './mails.js';
 
 export type Abonnement = 'gratis' | 'maand' | 'jaar';
 const ABONNEMENTEN: Abonnement[] = ['gratis', 'maand', 'jaar'];
@@ -192,6 +193,8 @@ export function installeerAccounts(app: express.Express, root: string) {
     const info = db.prepare(`INSERT INTO leden (email, naam, wachtwoord_hash, rol) VALUES (?, ?, ?, ?)`)
       .run(email, naam, hashWachtwoord(wachtwoord), rol);
     startSessie(res, Number(info.lastInsertRowid));
+    // Welkomstmail (alleen als die aan staat op /admin/mails en mail is ingesteld); wacht er niet op
+    stuurVasteMail(root, 'welkom', email, { naam }).catch((e) => console.error('Welkomstmail mislukt:', (e as Error).message));
     res.json({ ok: true });
   });
 
@@ -235,13 +238,8 @@ export function installeerAccounts(app: express.Express, root: string) {
     db.prepare('DELETE FROM wachtwoord_herstel WHERE lid_id = ?').run(r.id);       // alleen de nieuwste link werkt
     db.prepare(`INSERT INTO wachtwoord_herstel (token_hash, lid_id, verloopt) VALUES (?, ?, datetime('now', '+60 minutes'))`).run(sha256(token), r.id);
     const url = `${LEREN_URL}/herstel?token=${token}`;
-    const tekst = [`Hoi ${r.naam},`, 'Je hebt gevraagd om een nieuw wachtwoord voor je Zen Flow-account. Klik op de knop om een nieuw wachtwoord te kiezen.',
-      'De link werkt één uur en maar één keer.', 'Heb je dit niet zelf gevraagd? Dan hoef je niets te doen. Je wachtwoord blijft hetzelfde.'];
-    try {
-      await verstuurMail(root, { aan: r.email, soort: 'wachtwoord_herstel', onderwerp: 'Kies een nieuw wachtwoord voor Zen Flow',
-        html: mailHtml('Kies een nieuw wachtwoord', tekst, { tekst: 'Nieuw wachtwoord kiezen', url }),
-        tekst: `${tekst.join('\n\n')}\n\n${url}` });
-    } catch (e) { console.error('Herstelmail mislukt:', (e as Error).message); }
+    try { await stuurVasteMail(root, 'wachtwoord_herstel', r.email, { naam: r.naam, link: url }); }   // tekst aanpasbaar op /admin/mails
+    catch (e) { console.error('Herstelmail mislukt:', (e as Error).message); }
     res.json(antwoord);
   });
 
