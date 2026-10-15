@@ -34,3 +34,4 @@ cache/
 
 # Voorbeeld van de Zen Flow-voorpagina (bron: /home/ubuntu/zen-flow-voorpagina)
 /public/voorbeeld-zen-flow/
+server-test-tmp.ts
